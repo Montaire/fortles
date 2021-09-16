@@ -1,0 +1,24 @@
+{
+  "name": "essentials",
+  "version": "1.0.0",
+  "description": "Lighweight HTML framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Montaire/essentials-node.git"
+  },
+  "keywords": [
+    "essentials",
+    "framework",
+    "mvc"
+  ],
+  "author": "Barták Iván",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Montaire/essentials-node/issues"
+  },
+  "homepage": "https://github.com/Montaire/essentials-node#readme"
+}
