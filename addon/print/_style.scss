@@ -1,0 +1,5 @@
+@media print{
+  .e-print-area-container > *:not(.e-print-area):not(.e-print-area-container){
+        display: none;
+  }
+}

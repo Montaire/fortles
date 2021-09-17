@@ -9,6 +9,9 @@ var essentials = (function() {
         };
     return{
     eUri: function(source){
+        if(typeof source == "string" || source === null){
+            return source;
+        }
         var parent = source;
         while(parent = parent.parentElement){
             if(parent.id && parent.id.indexOf("ec-") === 0){
@@ -21,29 +24,37 @@ var essentials = (function() {
         return this.go(source, source.getAttribute("href"), data);
     },
     go: function(source, uri, data){
-         var eUri = this.eUri(source);
-         if(window.history && history.pushState){
-            this.id("e-feedback").innerHTML = "";
-            if(uri == document.location){
-                return false;
-            }
-            ipcRenderer.send("e-update", {
-                uri:uri, 
-                eUri:eUri,
-                data: data || null,
-                referer: ''
-            });
+        var eUri = this.eUri(source);
+        this.id("e-feedback").innerHTML = "";
+        if(uri == Html.history.top().uri){
             return false;
-         }else{
-             return true;
-         }
-    },
-    action: function(source, action, data, callback){
-        callback = callback || this.xhttpSuccess;
-        if(action.indexOf(".") === -1){
-            action+=".html";
         }
-        this.post(document.location.pathname+"$"+this.eUri(source)+"!"+action, callback, this.xhttpError, data);
+        ipcRenderer.send("e-update", {
+            uri:uri, 
+            eUri:eUri,
+            data: data || null,
+            referer: ''
+        });
+        return false;
+    },
+    back: function(){
+        if( Html.history.length() > 2){
+            Html.history.pop();
+            var location = Html.history.pop();
+            return this.go(location.target, location.uri);
+        }else{
+            return false;
+        }
+    },
+    action: function(source, action, data){
+        ipcRenderer.send("e-action", {
+            uri: Html.history.top().uri,
+            action: action,
+            eUri: this.eUri(source),
+            data: data || null,
+            extension: 'html'
+        });
+        return false;
     },
     html: function(source, action, callback, data){
         this.action(source, action+".html",data,function(xhttp){
@@ -55,36 +66,52 @@ var essentials = (function() {
            callback(JSON.parse(xhttp.responseText)); 
         });
     },
-    form: function(form){
+    form: function(){
+        var form = this;
         //serialize
         var data = {};
         var e = form.getElementsByTagName('input');
         for(var i=0; i<e.length; i++){
             if(e[i].type === 'radio' || e[i].type === 'checkbox'){
                 if(e[i].checked){
-                    data[e[i].name] = e[i].value;
+                    essentials.addToData(data, e[i].name, e[i].value);
                 }
             }else{
-                data[e[i].name] = e[i].value;
+                essentials.addToData(data, e[i].name, e[i].value);
             }
         }
         e = form.getElementsByTagName('select');
         for(var i=0; i<e.length; i++){
             if(e[i].options[e[i].selectedIndex]){
-                data[e[i].name] = e[i].options[e[i].selectedIndex].value;
+                essentials.addToData(data, e[i].name, e[i].options[e[i].selectedIndex].value);
             }
         }
         e = form.getElementsByTagName('textarea');
         for(var i=0; i<e.length; i++){
-            data[e[i].name] = e[i].value;
+            essentials.addToData(data, e[i].name, e[i].value);
         }
         //send
-        if(form.method === "post"){
-            this.post(form.getAttribute("action")+".html", this.xhttpSuccess,this.xhttpError,data);
-        }else if(form.method === "get"){
-            
-        }
+        // console.log(data);
+        ipcRenderer.send("e-action", {
+            uri: Html.history.top().uri,
+            action: form.getAttribute('action'),
+            eUri: essentials.eUri(form),
+            data: data || null,
+            extension: 'html'
+        });
         return false;
+    },
+    addToData: function(data, name, value){
+        if(name.endsWith("[]")){
+            name = name.substring(0, name.length-2);
+            if(!data[name]){
+                data[name] = [value];
+            }else{
+                data[name].push(value);
+            }
+        }else{
+            data[name] = value;
+        }
     },
     toUrl: function(object){
         var str = [];
@@ -98,47 +125,6 @@ var essentials = (function() {
     },
     class: function(name){
         return document.getElementsByClassName(name);
-    },
-    xhttpError: function(xhttp){
-        var feedback = essentials.id("e-feedback");
-        feedback.className = "";//reset animation
-        void feedback.offsetWidth;
-        feedback.innerHTML = xhttp.responseText;
-        feedback.className = "e-error";
-    },
-    xhttpSuccess: function(xhttp){
-        var uri = xhttp.getResponseHeader("e-uri");
-        if(uri){
-            history.pushState({eUri: document.location.pathname}, document.title, uri);
-        }
-        var focus = xhttp.getResponseHeader("e-focus");
-        if(focus){
-            this.id(focus).focus();
-        }
-        var target = xhttp.getResponseHeader("e-target");
-        if(target !== null){
-            target = target ? essentials.id("ec-"+target) : document.body;
-            if(target.parentElement.classList.contains("e-modal")){
-                if(xhttp.responseText == ''){
-                    target.parentElement.classList.remove("e-active");
-                }else{
-                    target.parentElement.classList.add("e-active");
-                }
-            }
-            target.innerHTML = xhttp.responseText;
-            var scripts = target.getElementsByTagName('script');
-            while(scripts[0]){
-                var script = document.createElement('script');
-                script.innerHTML = scripts[0].innerHTML;
-                scripts[0].remove();
-                document.body.appendChild(script);
-            }
-            eReplacer();
-        }
-        var feedback = xhttp.getResponseHeader("e-feedback");
-        if(feedback){
-            essentials.feedback(feedback.substring(0,1), JSON.parse(feedback.substring(1)));
-        }
     },
     activeId: function(id){
         this.active(essentials.id(id));
@@ -160,19 +146,42 @@ var essentials = (function() {
     },
     close: function(object, uri_part){
         object.classList.remove("e-active");
-        console.log(window.location.href);
+    },
+    error(input, message){
+        if(!input){
+            return;
+        }
+        if(input.nextElementSibling && input.nextElementSibling.classList.contains("e-error")){
+            var error = input.nextElementSibling;
+            error.innerHTML = message;
+        }else{
+            var error = document.createElement("DIV");
+            error.innerHTML = message;
+            error.classList.add("e-error");
+            input.after(error);
+        }
+        input.addEventListener("onfocus", essentials.errorRemoveHandler);
+    },
+    errorRemoveHandler: function(){
+        if(this.nextElementSibling.classList.contains("e-error")){
+            this.nextElementSibling.remove();
+        }
     }
 };
 })();
 
 ipcRenderer.on('e-response', function(e, response){
-    if(response.uri){
-        history.pushState({eUri: document.location.pathname}, document.title, response.uri);
+    // console.log(response);
+    if(response.uri && response.uri != Html.history.top().uri){
+        Html.history.push({
+            uri: response.uri,
+            target: response.eUri
+        });
     }
     if(response.focus){
         essentials.id(response.focus).focus();
     }
-    if(response.eUri !== null){
+    //if(response.eUri !== null){
         var target = response.eUri ? essentials.id("ec-"+response.eUri) : document.body;
         if(target.parentElement.classList.contains("e-modal")){
             if(response.content == ''){
@@ -181,12 +190,31 @@ ipcRenderer.on('e-response', function(e, response){
                 target.parentElement.classList.add("e-active");
             }
         }
-        target.innerHTML = "";
-        var range = document.createRange();
-        target.appendChild(range.createContextualFragment(response.content), target);
-    }
-    var feedback = target.feedback;
+        if(typeof response.content == "string"){
+            target.innerHTML = "";
+            Html.stack.clear();
+            Html.stack.push(response.controller);
+            var range = document.createRange();
+            target.appendChild(range.createContextualFragment(response.content), target);
+        }
+    //}
+    var feedback = response.feedback;
     if(feedback){
-        essentials.feedback(feedback.substring(0,1), JSON.parse(feedback.substring(1)));
+        essentials.feedback(feedback.substring(0,1), feedback.substring(1));
+    }
+    var errors = response.error;
+    if(errors){
+        for(var name in errors){
+            if(typeof errors[name] == "object"){
+                var inputs = document.getElementsByName(name+"[]");
+                for(var index in errors[name]){
+                    essentials.error(inputs[index], errors[name][index])
+                    
+                }
+            }else{
+                var inputs = document.getElementsByName(name);
+                essentials.error(inputs[0], errors[name]);
+            }
+        }
     }
 });
