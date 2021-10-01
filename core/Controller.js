@@ -4,10 +4,10 @@ const Filter   = require("./Filter.js");
 
 class Controller{
 
-    eInit(){
+    async eInit(){
         if(Auth.is(this.eAuthGroup)){
             Render.stack.push(this);
-            this.eRouted = this.eAction('router');
+            this.eRouted = await this.eAction('router');
             this.eError = null;
             return true;
         }else{
@@ -15,7 +15,7 @@ class Controller{
         }
     }
     
-    eAction(action){
+    async eAction(action){
         var vars = {};
         if(this["_"+action]){
             var input = this["_"+action];
@@ -55,9 +55,9 @@ class Controller{
                 return 403;
             }else{
                 if(length > 1 && this[action].toString().match(/\(.*?\)/)[0].indexOf(",") == -1){
-                    var view = this[action].call(this, vars);
+                    var view = await this[action].call(this, vars);
                 }else{
-                    var view = this[action].apply(this, Object.values(vars));
+                    var view = await this[action].apply(this, Object.values(vars));
                 }
                 if(view){
                     if(view.FEEDBACK_DONE || view.DONE){
@@ -105,13 +105,13 @@ class Controller{
         }
     }
     
-    eDrawRouted(name){
+    async eDrawRouted(name){
         var routed = this.eGetRouted(name);
         if(!routed){
             throw new Error("Add '"+name+"' key to "+this.constructor.name+"'s router function's return array");
         }
         if(routed instanceof Controller){
-            return routed.eDraw();
+            return await routed.eDraw();
         }else if(typeof routed == "string"){
             return{
                 eUri : this.eUri,
@@ -134,9 +134,9 @@ class Controller{
             return null;
         }
     }
-    eDraw(){
-        if(this.eInit()){
-            var view = this.eAction('view');
+    async eDraw(){
+        if(await this.eInit()){
+            var view = await this.eAction('view');
             return this.eView(view);
         }
     }

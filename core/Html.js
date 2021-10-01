@@ -1,24 +1,29 @@
 const ipcRenderer = require('electron').ipcRenderer;
 class Html{
-    static main(){
-        var component = ipcRenderer.sendSync("e-get-main");
-        Html.stack.clear();
-        Html.stack.push(component.controller);
-        Html.history.push({uri: "", target: null});
-        document.write(component.content);
-        document.currentScript.remove();
+    static async main(){
+        ipcRenderer.send("e-get-main");
+        ipcRenderer.on('e-set-main', (event, component) => {
+            Html.stack.clear();
+            Html.stack.push(component.controller);
+            Html.history.push({uri: "", target: null});
+            document.write(component.content);
+            document.currentScript.remove();
+        });
     }
     
-    static component(name, attributes){
-        var component = ipcRenderer.sendSync("e-get-component",name);
-        Html.stack.push(component.controller);
-        if(component.eUri){
-            var id = "ec-"+component.eUri;
-        }else{
-            var id = "ec-"+name;
-        }
-        Html.write("<div id='"+id+"'"+Html.attributes(attributes)+">"+component.content+"</div>");
-        Html.stack.pop();
+    static async component(name, attributes){
+        ipcRenderer.send("e-get-component",name);
+        ipcRenderer.once('e-set-component', (event, component) => {
+            console.log(component);
+            Html.stack.push(component.controller);
+            if(component.eUri){
+                var id = "ec-"+component.eUri;
+            }else{
+                var id = "ec-"+name;
+            }
+            Html.write("<div id='"+id+"'"+Html.attributes(attributes)+">"+component.content+"</div>");
+            Html.stack.pop();
+        });
     }
     
     static attributes(attributes){

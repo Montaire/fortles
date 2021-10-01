@@ -6,32 +6,32 @@ const Auth = require("./Auth.js");
 class Render{
     static dispatch(main){
         Render.mainController = main;
-        ipcMain.on('e-get-main',function(e){
+        ipcMain.on('e-get-main', async (e) => {
             Render.stack.clear();
-            main.eInit();
-            var view = Render.mainController.eAction("view");
-            e.returnValue = Render.mainController.eView(view);
+            await main.eInit();
+            var view = await Render.mainController.eAction("view");
+            e.reply('e-set-main', Render.mainController.eView(view));
         });
-        ipcMain.on('e-get-component',function(e, name){
+        ipcMain.on('e-get-component', async (e, name) => {
             var controller = Render.stack.top();
-            e.returnValue = controller.eDrawRouted(name);
+            e.reply('e-set-component', await controller.eDrawRouted(name));
         });
-        ipcMain.on('e-update',function(e, request){
+        ipcMain.on('e-update', async (e, request) => {
             Render.feedback = null;
             request.exploded = request.uri.substring(1).split("/");
             Render.request = request;
-            var response = Render.update();
+            var response = await Render.update();
             response.uri = request.uri;
             if(Render.feedback){
                 response.feedback = Render.feedback;
             }
             e.sender.send('e-response', response);
         });
-        ipcMain.on('e-action',function(e, request){
+        ipcMain.on('e-action',async (e, request) => {
             Render.feedback = null;
             request.exploded = request.uri.substring(1).split("/");
             Render.request = request;
-            var response = Render.action();
+            var response = await Render.action();
             response.uri = request.uri;
             if(Render.feedback){
                 response.feedback = Render.feedback;
@@ -39,7 +39,7 @@ class Render{
             e.sender.send('e-response', response);
         });
     }
-    static update(){
+    static async update(){
         var eUri = Render.request.eUri ? Render.request.eUri.split("-") : [];
         var controller = this.mainController;
         for(var i=0; i < eUri.length; i++){
@@ -48,10 +48,10 @@ class Render{
             }
             var request = Render.request;
             Render.request = Render.oldRequest;
-            var oldView = controller.eAction("view");
+            var oldView = await controller.eAction("view");
             var oldRouted = controller.eRouted;
             Render.request = request;
-            var newView = controller.eAction("view");
+            var newView = await controller.eAction("view");
             if(JSON.stringify(newView) != JSON.stringify(oldView) || !Render.request.eUri){
                 var view = controller.eView(newView);
                 view.target = controller.eUri;
@@ -59,7 +59,7 @@ class Render{
                 return view;
             }
             var routed = controller.eRouted;
-            controller.eAction("router");
+            await controller.eAction("router");
             var oldController = controller.eGetRouted(eUri[i]);
             if(!oldController){
                 return controller.eView(newView);
@@ -67,7 +67,7 @@ class Render{
             for(var name in routed){
                 if(JSON.stringify(routed[name]) != JSON.stringify(controller.eRouted[name])){
                     var targetController = controller.eGetRouted(name);
-                    var targetView = targetController.eAction("view");
+                    var targetView = await targetController.eAction("view");
                     var view = targetController.eView(targetView);
                     view.target = targetController.eUri;
                     Render.oldRequest = Render.request;
@@ -86,16 +86,16 @@ class Render{
         }
         Render.stack.clear();
         Render.mainController.eInit();
-        var view = Render.mainController.eAction("view");
+        var view = await Render.mainController.eAction("view");
         return Render.mainController.eView(view);
     }
     
-    static action(){
+    static async action(){
         var controller = Render.getDirect(Render.mainController);
         if(typeof controller != "object"){
             return Render.error(controller);
         }
-        var view = controller.eAction(Render.request.action);
+        var view = await controller.eAction(Render.request.action);
         if(typeof view == "number"){
             return Render.error(view, controller);
         }
@@ -187,7 +187,6 @@ class Render{
     }
     
     static filePreprocessor(content, variables){
-        console.log(variables);
         if(typeof content == "string"){
             content = content.replace(/<e:for (.+?) : (.+?) ?>([^]*)<\/e:for>/g, function(match, valueField, dataField, innerContent){;
                 var result = "";
