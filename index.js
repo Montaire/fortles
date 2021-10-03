@@ -1,7 +1,6 @@
 module.exports = {
     Controller: require("./core/Controller.js"),
-    Render:     require("./core/Render.js"),
-    Html:       require("./core/Html.js"),
-    Auth:       require("./core/Auth.js"),
-    Filter:     require("./core/Filter.js")
+    Request: require("./core/Request.js"),
+    Response: require("./core/Response.js"),
+    Application: require("./core/Application.js")
 };

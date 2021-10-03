@@ -1,10 +1,17 @@
-const [,, ...args] = process.args;
+#!/usr/bin/env node
+const {Application} = require("essentials");
+
+const [,, ...args] = process.argv;
+
 
 console.log(args);
 
 if(args[0] == 'server'){
-    const Server = require('./platform/Server');
-    port = args[1] || 8080;
+    const {ServerPlatform} = require('essentials/platform');
+    const port = args[1] || 8080;
+    var platform = new ServerPlatform(port);
     console.info('Server is started on port ' + port);
-    Server.run(port);
 }
+
+const application = new Application(platform);
+application.run();
