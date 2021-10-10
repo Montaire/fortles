@@ -1,7 +1,5 @@
+const Request = require("./Request");
 const {HtmlRenderEngine} = require("essentials/core/render");
-const {Request, Response} = require("essentials");
-const { Request } = require("globalthis/implementation");
-
 class Application{
 
     /**
@@ -27,12 +25,14 @@ class Application{
     dispatch(request, response){
         let engine = this.getRenderEngine(request);
         switch(request.getType()){
-            case Request.Type.FULL_VIEW:
+            case Request.Type.FULL:
                 engine.beforeDispatch(request, response);
                 engine.dispatch(this.mainController, request, response);
                 engine.afterDispatch(request, response);
                 break;
         }
+        console.log(request.getType());
+        response.end();
     }
 
     /**

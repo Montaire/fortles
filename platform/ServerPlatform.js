@@ -1,13 +1,15 @@
 const http = require('http');
 const {Request, Response} = require('essentials');
+const Platform = require('essentials/platform/Platform');
 
-class ServerPlatform{
+class ServerPlatform extends Platform{
 
     /**
      * Port of the server
      * @param {number} port 
      */
     constructor(port){
+        super();
         this.port = port;
     }
 
@@ -24,10 +26,11 @@ class ServerPlatform{
 
 class ServerRequest extends Request{
     /**
-     * @param {http.ServerResponse} request 
+     * @param {http.ServerRequest} request 
      */
     constructor(request){
-
+        super();
+        this.httpRequest = request;
     }
 }
 
@@ -36,11 +39,16 @@ class ServerResponse extends Response{
      * @param {http.ServerResponse} response 
      */
     constructor(response){
-        this.response = response;
+        super();
+        this.httpResponse = response;
     }
 
     write(content){
-        this.response.write(content);
+        this.httpResponse.write(content);
+    }
+
+    end(){
+        this.httpResponse.end();
     }
 }
 

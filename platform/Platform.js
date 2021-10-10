@@ -5,3 +5,5 @@ class Platform{
      */
     run(application){}
 }
+
+module.exports = Platform;

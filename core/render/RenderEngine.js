@@ -2,26 +2,36 @@ class RenderEngine{
 
     /**
      * 
-     * @param {essentials.Application} application 
+     * @param {import("essentials").Application} application 
      */        
     constructor(application){
         this.application = application
     }
 
     /**
-     * 
-     * @param {essentials.Controller} controller 
-     * @param {essentials.Request} request 
-     * @param {essentials.Response} response 
+     * Renders the whole tree from the given controller.
+     * @param {import("essentials").Controller} controller 
+     * @param {import("essentials").Request} request 
+     * @param {import("essentials").Response} response 
      */
     dispatch(controller, request, response){
         
     }
 
+    /**
+     * 
+     * @param {import("essentials").Request} request 
+     * @param {import("essentials").Response} response 
+     */
     beforeDispatch(request, response){
 
     }
 
+    /**
+     * 
+     * @param {import("essentials").Request} request 
+     * @param {import("essentials").Response} response 
+     */
     afterDispatch(request, response){
 
     } 

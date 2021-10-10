@@ -1,12 +1,12 @@
 class Request{
-    Type = {
+    static Type = {
         FULL: 1,
         PARTIAL: 2,
         ACTION: 3
     }
     
     getType(){
-        return this.Type.FULL
+        return Request.Type.FULL
     }
 
     getMime(){

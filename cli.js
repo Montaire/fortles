@@ -3,9 +3,6 @@ const {Application} = require("essentials");
 
 const [,, ...args] = process.argv;
 
-
-console.log(args);
-
 if(args[0] == 'server'){
     const {ServerPlatform} = require('essentials/platform');
     const port = args[1] || 8080;
