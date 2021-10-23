@@ -17,6 +17,7 @@ class TemplateShard extends Shard{
     }
 
     constructor(parent){
+        super();
         this.parant = parent;
         this.shards = [];
     }

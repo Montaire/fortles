@@ -6,10 +6,10 @@ class HtmlRenderEngine extends RenderEngine{
     constructor(application){
         super(application);
         this.templates = new TemplateFactory(application);
-        this.templates.build('/template');
+        this.templates.build('/view');
     }
 
-    dispatch(request, response){
+    dispatch(controller, request, response){
         let template = this.templates.get(response.getTemplateName());
         if(!template){
             throw new Error('Template can not be found "' + response.getTemplateName()+ '"');

@@ -1,6 +1,6 @@
 const http = require('http');
-const {Request, Response} = require('essentials');
-const Platform = require('essentials/platform/Platform');
+const {Request, Response} = require('../');
+const Platform = require('../platform/Platform');
 
 class ServerPlatform extends Platform{
 

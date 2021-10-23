@@ -1,5 +1,5 @@
 const Request = require("./Request");
-const {HtmlRenderEngine} = require("essentials/core/render");
+const {HtmlRenderEngine} = require("./render");
 class Application{
 
     /**
