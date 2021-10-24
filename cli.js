@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-const {Application} = require("essentials");
+import Application from "./core/Application.js";
+import ServerPlatform from "./platform/ServerPlatform.js";
 
 const [,, ...args] = process.argv;
 
 if(args[0] == 'server'){
-    const {ServerPlatform} = require('essentials/platform');
     const port = args[1] || 8080;
     var platform = new ServerPlatform(port);
     console.info('Server is started on port ' + port);

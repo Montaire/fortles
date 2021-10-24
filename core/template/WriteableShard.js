@@ -1,10 +1,12 @@
+import Shard from "./Shard.js";
 /**
- * Simple shader, which meant to be bult from the outside.
+ * Simple shader, which meant to be built from the outside.
  */
-class WriteableShard extends Shard {
+export default class WriteableShard extends Shard {
 
     /**
      * Write method will append to this.
+     * @type {string}
      */
     content = '';
 
@@ -37,6 +39,12 @@ class WriteableShard extends Shard {
     isEmpty() {
         return this.content.length == 0;
     }
-}
 
-module.exports = WriteableShard;
+    /**
+     * @param {import("../render/RenderEngine.js").RenderEngine} engine 
+     * @param {import("../Response.js").Response} response 
+     */
+     render(engine, response) {
+        engine.write(content);
+    }
+}

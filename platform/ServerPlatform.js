@@ -1,8 +1,9 @@
-const http = require('http');
-const {Request, Response} = require('../');
-const Platform = require('../platform/Platform');
+import http from "http";
+import Request from "../core/Request.js";
+import Response from "../core/Response.js";
+import Platform from "./Platform.js";
 
-class ServerPlatform extends Platform{
+export default class ServerPlatform extends Platform{
 
     /**
      * Port of the server
@@ -51,5 +52,3 @@ class ServerResponse extends Response{
         this.httpResponse.end();
     }
 }
-
-module.exports = ServerPlatform;

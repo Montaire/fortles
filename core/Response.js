@@ -1,19 +1,35 @@
-const { Writable } = require("readable-stream");
+import { Writable } from "readable-stream";
 
-class Response extends Writable{
+/**
+ * Response
+ * @extends Writable
+ */
+export default class Response extends Writable{
     #controller;
+    #template = 'Main';
 
     /**
-     * @param {require("essentials/core/Controller").Controller} controller 
+     * Creates a new response for the given controller
+     * @param {import("./Controller.js")} controller
      */
     constructor(controller){
         super();
-        this.controller = controller;
+        this.#controller = controller;
     }
 
+    /**
+     * Gets the name of the template
+     * @returns {string}
+     */
     getTemplateName(){
-        return 'Main';
+        return this.#template;
+    }
+
+    /**
+     * Sets the name of the template
+     * @param {string} template 
+     */
+    setTemplateName(template){
+        this.#template = template;
     }
 }
-
-module.exports = Response;

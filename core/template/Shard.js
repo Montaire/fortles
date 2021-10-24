@@ -1,4 +1,4 @@
-class Shard{
+export default class Shard{
     /**
      * 
      * @param {require("essentials/core/render/RenderEngine").RenderEngine} engine 
@@ -9,5 +9,3 @@ class Shard{
         throw Error('Not implemented');        
     }
 }
-
-module.exports = Shard;

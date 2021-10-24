@@ -1,4 +1,4 @@
-class RenderEngine{
+export default class RenderEngine{
 
     /**
      * 
@@ -36,5 +36,3 @@ class RenderEngine{
 
     } 
 }
-
-module.exports = RenderEngine;

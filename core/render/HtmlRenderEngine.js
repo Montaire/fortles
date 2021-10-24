@@ -1,7 +1,7 @@
-const RenderEngine = require("essentials/core/render/RenderEngine");
-const TemplateFactory = require("essentials/core/template/TemplateFactory");
+import RenderEngine from "./RenderEngine.js";
+import TemplateFactory from "../template/TemplateFactory.js";
 
-class HtmlRenderEngine extends RenderEngine{
+export default class HtmlRenderEngine extends RenderEngine{
 
     constructor(application){
         super(application);
@@ -25,5 +25,3 @@ class HtmlRenderEngine extends RenderEngine{
         response.write('</html>');
     }
 }
-
-module.exports = HtmlRenderEngine;

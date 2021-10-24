@@ -1,18 +1,16 @@
-const TemplateShard = require("essentials/core/template/TemplateShard");
+import TemplateShard from "./TemplateShard.js";
+import SyncFileReadableStream from "../../utility/SyncFileReadableStream.js";
 
-class Template extends TemplateShard{
-    construct(path, name, application){
-        if(typeof path == String){
-            reader = FileSystem.reader(path);
-        }
+export default class Template extends TemplateShard{
+    constructor(path, name, application){
+        super(null);
+        let reader = new SyncFileReadableStream(path);
         this.name = name;
         this.application = application;
-        prepare(reader);
+        this.prepare(reader);
     }
 
     getName(){
         return this.name;
     }
 }
-
-module.exports = Template;

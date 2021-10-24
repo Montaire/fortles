@@ -1,4 +1,2 @@
-module.exports = {
-    Platform: require("./Platform.js"),
-    ServerPlatform: require("./ServerPlatform.js"),
-};
+export {Platform} from "./Platform"
+export {ServerPlatform} from "./ServerPlatform"

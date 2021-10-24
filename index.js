@@ -1,7 +1,5 @@
-module.exports = {
-    Controller: require("./core/Controller.js"),
-    Request: require("./core/Request.js"),
-    Response: require("./core/Response.js"),
-    Application: require("./core/Application.js"),
-    Error: require("./core/Error.js")
-};
+export {default as Controller} from "./core/Controller.js";
+export {default as Request} from "./core/Request.js";
+export {default as Response} from "./core/Response.js";
+export {default as Application} from "./core/Application.js";
+export {default as Error} from "./core/Error.js";

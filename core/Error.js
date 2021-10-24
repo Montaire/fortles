@@ -1,7 +1,3 @@
-class NotFoundError extends Error{
+export default class NotFoundError extends Error{
     code = 404;
-}
-
-module.exports = {
-    NotFoundError
 }

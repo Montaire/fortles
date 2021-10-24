@@ -1,14 +1,15 @@
-const Template = require("essentials/core/template/Template");
+import Template from "./Template.js";
+import fs from "fs"
 
-class TemplateFactory{
+export default class TemplateFactory{
 
-    controller(application){
+    constructor(application){
         this.application = application;
     }
 
     build(rootFolder){
         this.templates = {
-            'Main': new Template('./view/Main.html')
+            "Main": new Template("./view/Main.html")
         }
     }
 
@@ -16,5 +17,3 @@ class TemplateFactory{
         return this.templates[name];
     }
 }
-
-module.exports = TemplateFactory;

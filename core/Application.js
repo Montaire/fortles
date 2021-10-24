@@ -1,13 +1,23 @@
-const Request = require("./Request");
-const {HtmlRenderEngine} = require("./render");
-class Application{
+import Request from "./Request.js";
+import HtmlRenderEngine from "./render/HtmlRenderEngine.js";
+
+export default class Application{
 
     /**
-     * @param {Platform} platform 
+     * Creates a new application for the given platform
+     * @param {import("./platform/Platform.js").Platform} platform 
      */
     constructor(platform){
         this.platform = platform;
-        this.mainController = require(process.cwd() + '/controller/MainController');
+        try{
+            this.mainController = import('../../../controller/MainController.js');
+        }catch(error){
+            if(error.code == 'MODULE_NOT_FOUND'){
+                throw new Error('You have to create a MainController class in your controller directory as your entry point.');
+            }else{
+                throw error;
+            }
+        }
         this.renderEngines = {
             'text/html': new HtmlRenderEngine()
         }
@@ -20,7 +30,7 @@ class Application{
     /**
      * This function should be called form the Platform
      * @param {Request} request 
-     * @param {Response} response 
+     * @param {import("./Response.js").Response} response 
      */
     dispatch(request, response){
         let engine = this.getRenderEngine(request);
@@ -31,7 +41,6 @@ class Application{
                 engine.afterDispatch(request, response);
                 break;
         }
-        console.log(request.getType());
         response.end();
     }
 
@@ -43,4 +52,3 @@ class Application{
         return this.renderEngines[request.getMime()];
     }
 }
-module.exports = Application;

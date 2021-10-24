@@ -1,5 +1,4 @@
-class Controller{
-
+export default class Controller{
+    action(request, response){}
+    view(request, response){}
 }
-
-module.exports = Controller;

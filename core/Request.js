@@ -1,4 +1,4 @@
-class Request{
+export default class Request{
     static Type = {
         FULL: 1,
         PARTIAL: 2,
@@ -13,4 +13,3 @@ class Request{
         return 'text/html';
     }
 }
-module.exports = Request;

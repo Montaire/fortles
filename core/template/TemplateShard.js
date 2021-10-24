@@ -1,6 +1,7 @@
-const Shard = require("essentials/core/template/Shard");
+import Shard from "./Shard.js";
+import WriteableShard from "./WriteableShard.js";
 
-class TemplateShard extends Shard{
+export default class TemplateShard extends Shard{
     static States = {
         TEXT_START: 1,
         TEXT: 2,
@@ -22,28 +23,28 @@ class TemplateShard extends Shard{
         this.shards = [];
     }
     /**
-     * @param {FileSystem} reader 
+     * @param {ReadableStream} reader 
      * @returns 
      */
     prepare(reader){
-        shard = new TextWriteableShard();
-        state = TemplateShard.States.TEXT_START;
+        let shard = new WriteableShard();
+        let state = TemplateShard.States.TEXT_START;
         let c;
-        while ((c = reader.read()) != -1) {
+        while ((c = reader.read(1)) !== null) {
             switch (state) {
                 case TemplateShard.States.TEXT_START:
-                    state = States.TEXT;
-                    shard = new TextWriteableShard();
+                    state = TemplateShard.States.TEXT;
+                    shard = new WriteableShard();
                 case TemplateShard.States.TEXT:
                     switch (c) {
                         case '{':
-                            state = States.EVAL_START;
+                            state = TemplateShard.States.EVAL_START;
                             break;
                         case '<':
-                            state = States.CONTROL_START;
+                            state = TemplateShard.States.CONTROL_START;
                             break;
                         case '_':
-                            state = States.LOCALIZATION_START;
+                            state = TemplateShard.States.LOCALIZATION_START;
                             break;
                         default:
                             shard.write(c);
@@ -59,7 +60,7 @@ class TemplateShard extends Shard{
                             shard = new EvalWriteableShard();
                             break;
                         default:
-                            state = States.TEXT;
+                            state = TemplateShard.States.TEXT;
                             shard.write('{');
                             shard.write(c);
                             break;
@@ -111,7 +112,7 @@ class TemplateShard extends Shard{
                             this.append(shard);
                             prepareControl(reader);
                             state = TemplateShard.States.TEXT_START;
-                            shard = new TextWriteableShard();
+                            shard = new WriteableShard();
                             break;
                         default:
                             state = TemplateShard.States.TEXT;
@@ -144,7 +145,7 @@ class TemplateShard extends Shard{
                             }
                             break;
                         default:
-                            state = States.TEXT;
+                            state = TemplateShard.States.TEXT;
                             shard.write('<');
                             shard.write('/');
                             shard.write('e');
@@ -191,7 +192,7 @@ class TemplateShard extends Shard{
                     break;
             }
         }
-        this.this.append(shard);
+        this.append(shard);
     }
 
     append(shard){
@@ -235,10 +236,33 @@ class TemplateShard extends Shard{
     }
 
     /**
+     * Checkis wether the current statmenet ended. Overwrite, if something must
+     * be added after the shard ending.
+     *
+     * @param {stream.Readable} reader The input stream, dont touch it.
+     * @param {import("./Shard")} shard The current shard, you can touch it.
+     * @return {boolean} Returns true if the shard is ended.
+     */
+     end(reader, shard){
+        int i = 0;
+        for (char n : shardName.toCharArray()) {
+            int c = reader.read();
+            if (c == -1 || n != (char) c) {
+                shard.write(shardName.substring(0, i));
+                return false;
+            }
+            i++;
+        }
+        let c = reader.read();
+        //If we have the closing tag return true, the current block is ended
+        return c == '>';
+    }
+
+    /**
      * Renders all the embedded shards
-     * @param {require("essentials/core/render/RenderEngine").RenderEngine} engine 
-     * @param {require("essentials").Request} request 
-     * @param {require("essentials").Response} response 
+     * @param {import("../render/RenderEngine.js")} engine 
+     * @param {import("../Request.js")} request 
+     * @param {import("../Response.js")} response 
      */
     render(engine, request, response){
         for(let shard of this.shards){
@@ -246,5 +270,3 @@ class TemplateShard extends Shard{
         }
     }
 }
-
-module.exports = TemplateShard;
