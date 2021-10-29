@@ -9,7 +9,7 @@ import { Readable } from "stream";
  export default class SyncFileReadableStream extends Readable{
     #buffer;
     #fd;
-    constructor(path, options){
+    constructor(path, options?){
         super(options);
         this.#buffer = Buffer.alloc(1);
         this.#fd = fs.openSync(path);

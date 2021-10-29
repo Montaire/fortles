@@ -4,6 +4,8 @@ const {ipcMain, app} = require('electron');
 const Auth = require("./Auth.js");
 
 class Render{
+	public mainController: any;
+
     static dispatch(main){
         Render.mainController = main;
         ipcMain.on('e-get-main', async (e) => {
@@ -214,7 +216,7 @@ class Render{
         return content;
     }
     
-    static replaceVariables(string, variables, string_literal){
+    static replaceVariables(string, variables, string_literal?){
         return string.replace(/\$([a-zA-Z._]+)/g,function(match, name){
             var path = name.split(".");
             var result = variables;
@@ -244,7 +246,7 @@ class Render{
         });
     }
     
-    static error(number, data){
+    static error(number, data?){
         var result = {status: number};
         if(!data){
             

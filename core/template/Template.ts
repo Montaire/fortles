@@ -1,8 +1,12 @@
-import {TemplateShard} from "./index.js";
+//import {TemplateShard} from "./index.js";
 import SyncFileReadableStream from "../../utility/SyncFileReadableStream.js";
 
-export default class Template extends TemplateShard{
-    constructor(path, name, application){
+export default class Template /*extends TemplateShard*/{
+	public name: any;
+	public application: any;
+	public prepare: any;
+
+    constructor(path, name?, application?){
         super(null);
         let reader = new SyncFileReadableStream(path);
         this.name = name;

@@ -26,7 +26,7 @@ class Html{
         });
     }
     
-    static attributes(attributes){
+    static attributes(attributes?){
         if(!attributes){
             return "";
         }
@@ -49,7 +49,7 @@ class Html{
         return "<a onclick='return essentials.back()'"+Html.attributes(attributes)+" href=''>"+content+"</a>";
     }
     
-    static auth(action, content, unAuth){
+    static auth(action, content, unAuth?){
         var controller = Html.stack.top();
         // console.log(controller);
         if(controller["_"+action] && controller["_"+action].AUTH !== undefined && !controller["_"+action].AUTH){

@@ -1,7 +1,8 @@
 import {TemplateShard} from "../index.js";
 
-export default class ControlShard extends TemplateShard {
-
+export default class ControlShard /*extends TemplateShard*/ {
+	public shardName: any;
+	public prepare: any;
     attributes = {};
 
     static States = {

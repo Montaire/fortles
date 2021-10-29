@@ -2,8 +2,9 @@ import RenderEngine from "./RenderEngine.js";
 import TemplateFactory from "../template/TemplateFactory.js";
 
 export default class HtmlRenderEngine extends RenderEngine{
+	public templates: any;
 
-    constructor(application){
+    constructor(application?){
         super(application);
         this.templates = new TemplateFactory(application);
         this.templates.build('/view');

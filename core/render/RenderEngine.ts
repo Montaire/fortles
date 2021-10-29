@@ -1,4 +1,5 @@
 export default class RenderEngine{
+	public application: any;
 
     /**
      * 

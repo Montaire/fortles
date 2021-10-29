@@ -1,4 +1,11 @@
 class Uri{
+	public extension: any;
+	public action: any;
+	public eUri: any;
+	public route: any;
+	public exploded: any;
+	public referer: any;
+
     constructor(){
         var request = "";
         var end;

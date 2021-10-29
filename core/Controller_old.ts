@@ -3,6 +3,10 @@ const Auth   = require("./Auth.js");
 const Filter   = require("./Filter.js");
 
 class Controller{
+	public eAuthGroup: any;
+	public eRouted: any;
+	public eError: any;
+	public eUri: any;
 
     async eInit(){
         if(Auth.is(this.eAuthGroup)){
@@ -158,7 +162,7 @@ class Controller{
             return this.eDefaultView(view);
         }
     }
-    eDefaultView(view){
+    eDefaultView(view?){
         return this.eResponse(view, this.constructor.name.substring(0, this.constructor.name.length - 10));
     }
     eResponse(view, content){
@@ -168,7 +172,7 @@ class Controller{
             controller: this
         };
     }
-    eFilter(name, data, input){
+    eFilter(name, data, input?){
         input = input || {FILTER:/.*/};
         if(input.FLAGS & 1){
             if(input.EMPTY && !data){

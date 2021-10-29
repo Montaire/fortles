@@ -2,7 +2,7 @@
  * Route defines the structure, and the navigation in the application.
  */
 export default class Route {
-
+	public controller: any;
     /**
      * A Block is an interchangeble element on the view.
      */

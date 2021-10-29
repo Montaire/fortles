@@ -3,6 +3,8 @@ const fs = require('fs');
 const Render = require('./Render.js');
 
 class SQLiteModel{
+	public db: any;
+
     static init(path,inits){
         if(fs.existsSync(path)){
             this.db = new sqlite3(path);

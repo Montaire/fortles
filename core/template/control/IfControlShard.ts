@@ -1,6 +1,6 @@
 import {ControlShard} from "../index.js";
 
-export default class IfControlShard extends ControlShard{
+export default class IfControlShard /*extends ControlShard*/{
     constructor(reader, parent){
         super(reader, parent, "if");
     }

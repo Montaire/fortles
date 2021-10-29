@@ -4,6 +4,7 @@ import Response from "../core/Response.js";
 import Platform from "./Platform.js";
 
 export default class ServerPlatform extends Platform{
+	public port: any;
 
     /**
      * Port of the server
@@ -26,6 +27,8 @@ export default class ServerPlatform extends Platform{
 }
 
 class ServerRequest extends Request{
+	public httpRequest: any;
+
     /**
      * @param {http.ServerRequest} request 
      */
@@ -36,6 +39,8 @@ class ServerRequest extends Request{
 }
 
 class ServerResponse extends Response{
+	public httpResponse: any;
+
     /**
      * @param {http.ServerResponse} response 
      */

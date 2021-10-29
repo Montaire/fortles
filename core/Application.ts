@@ -2,6 +2,9 @@ import Request from "./Request.js";
 import HtmlRenderEngine from "./render/HtmlRenderEngine.js";
 
 export default class Application{
+	public platform: any;
+	public mainController: any;
+	public renderEngines: any;
 
     /**
      * Creates a new application for the given platform

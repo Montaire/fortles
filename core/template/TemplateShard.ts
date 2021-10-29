@@ -1,7 +1,8 @@
 import {Shard, WriteableShard, EvalWriteableShard, BlockControlShard} from "./index.js";
 
-export default class TemplateShard extends Shard{
-
+export default class TemplateShard /*extends Shard*/{
+	public parant: any;
+	public shardName: any;
     static States = {
         TEXT_START: 1,
         TEXT: 2,
