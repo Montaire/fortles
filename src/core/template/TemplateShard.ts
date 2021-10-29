@@ -1,54 +1,51 @@
-import {Shard, WriteableShard, EvalWriteableShard, BlockControlShard} from "./index.js";
+import {Shard, WriteableShard, EvalWriteableShard, BlockControlShard} from "./";
+import SyncFileReadableStream from "../../utility/SyncFileReadableStream";
 
-export default class TemplateShard /*extends Shard*/{
-	public parant: any;
-	public shardName: any;
-    static States = {
-        TEXT_START: 1,
-        TEXT: 2,
-        EVAL_START: 3,
-        EVAL: 4,
-        EVAL_END: 5,
-        CONTROL_START: 6,
-        CONTROL: 7,
-        CONTROL_STOP_START: 8,
-        CONTROL_STOP: 9,
-        LOCALIZATON_START: 10,
-        LOCALIZATON: 11,
-        LOCALIZATON_END: 12,
-    }
+export const enum TemplateShardStates{
+    TEXT_START,
+    TEXT,
+    EVAL_START,
+    EVAL,
+    EVAL_END,
+    CONTROL_START,
+    CONTROL,
+    CONTROL_STOP_START,
+    CONTROL_STOP,
+    LOCALIZATION_START,
+    LOCALIZATION,
+    LOCALIZATION_END,
+}
 
-    /** @type {Shard[]} */
-    shards = [];
+export default class TemplateShard extends Shard{
+	protected parant: Shard;
+	protected shardName: string
+    protected shards: Shard[] = [];
 
     constructor(parent){
         super();
         this.parant = parent;
         this.shards = [];
     }
-    /**
-     * @param {ReadableStream} reader 
-     * @returns 
-     */
-    prepare(reader){
+
+    prepare(reader: SyncFileReadableStream){
         let shard = new WriteableShard();
-        let state = TemplateShard.States.TEXT_START;
+        let state = TemplateShardStates.TEXT_START;
         let c;
-        while ((c = reader.read(1)) !== null) {
+        while ((c = reader.read()) !== null) {
             switch (state) {
-                case TemplateShard.States.TEXT_START:
-                    state = TemplateShard.States.TEXT;
+                case TemplateShardStates.TEXT_START:
+                    state = TemplateShardStates.TEXT;
                     shard = new WriteableShard();
-                case TemplateShard.States.TEXT:
+                case TemplateShardStates.TEXT:
                     switch (c) {
                         case '{':
-                            state = TemplateShard.States.EVAL_START;
+                            state = TemplateShardStates.EVAL_START;
                             break;
                         case '<':
-                            state = TemplateShard.States.CONTROL_START;
+                            state = TemplateShardStates.CONTROL_START;
                             break;
                         case '_':
-                            state = TemplateShard.States.LOCALIZATION_START;
+                            state = TemplateShardStates.LOCALIZATION_START;
                             break;
                         default:
                             shard.write(c);
@@ -56,83 +53,83 @@ export default class TemplateShard /*extends Shard*/{
                     }
                     ;
                     break;
-                case TemplateShard.States.EVAL_START:
+                case TemplateShardStates.EVAL_START:
                     switch (c) {
                         case '{':
                             this.append(shard);
-                            state = TemplateShard.States.EVAL;
+                            state = TemplateShardStates.EVAL;
                             shard = new EvalWriteableShard();
                             break;
                         default:
-                            state = TemplateShard.States.TEXT;
+                            state = TemplateShardStates.TEXT;
                             shard.write('{');
                             shard.write(c);
                             break;
                     }
                     break;
-                case TemplateShard.States.EVAL:
+                case TemplateShardStates.EVAL:
                     switch (c) {
                         case '}':
-                            state = TemplateShard.States.EVAL_END;
+                            state = TemplateShardStates.EVAL_END;
                             break;
                         default:
                             shard.write(c);
                             break;
                     }
                     break;
-                case TemplateShard.States.EVAL_END:
+                case TemplateShardStates.EVAL_END:
                     switch (c) {
                         case '}':
                             this.append(shard);
-                            state = TemplateShard.States.TEXT_START;
+                            state = TemplateShardStates.TEXT_START;
                             break;
                         default:
-                            state = TemplateShard.States.EVAL;
+                            state = TemplateShardStates.EVAL;
                             shard.write('}');
                             shard.write(c);
                             break;
                     }
                     break;
-                case TemplateShard.States.CONTROL_START:
+                case TemplateShardStates.CONTROL_START:
                     switch (c) {
                         case 'e':
-                            state = TemplateShard.States.CONTROL;
+                            state = TemplateShardStates.CONTROL;
                             break;
                         case '/':
                             if (this.shardName != null) {
-                                state = TemplateShard.States.CONTROL_STOP_START;
+                                state = TemplateShardStates.CONTROL_STOP_START;
                                 break;
                             }//Falling to default if shardName is not set.
                         default:
-                            state = TemplateShard.States.TEXT;
+                            state = TemplateShardStates.TEXT;
                             shard.write('<');
                             shard.write(c);
                             break;
                     }
                     break;
-                case TemplateShard.States.CONTROL:
+                case TemplateShardStates.CONTROL:
                     switch (c) {
                         case ':':
                             this.append(shard);
                             this.prepareControl(reader);
-                            state = TemplateShard.States.TEXT_START;
+                            state = TemplateShardStates.TEXT_START;
                             shard = new WriteableShard();
                             break;
                         default:
-                            state = TemplateShard.States.TEXT;
+                            state = TemplateShardStates.TEXT;
                             shard.write('<');
                             shard.write('e');
                             shard.write(c);
                             break;
                     }
                     break;
-                case TemplateShard.States.CONTROL_STOP_START:
+                case TemplateShardStates.CONTROL_STOP_START:
                     switch (c) {
                         case 'e':
-                            state = TemplateShard.States.CONTROL_STOP;
+                            state = TemplateShardStates.CONTROL_STOP;
                             break;
                         default:
-                            state = TemplateShard.States.TEXT;
+                            state = TemplateShardStates.TEXT;
                             shard.write('<');
                             shard.write('/');
                             shard.write(c);
@@ -140,7 +137,7 @@ export default class TemplateShard /*extends Shard*/{
                     }
                     ;
                     break;
-                case TemplateShard.States.CONTROL_STOP:
+                case TemplateShardStates.CONTROL_STOP:
                     switch (c) {
                         case ':':
                             if (end(reader, shard)) {
@@ -149,7 +146,7 @@ export default class TemplateShard /*extends Shard*/{
                             }
                             break;
                         default:
-                            state = TemplateShard.States.TEXT;
+                            state = TemplateShardStates.TEXT;
                             shard.write('<');
                             shard.write('/');
                             shard.write('e');
@@ -157,38 +154,38 @@ export default class TemplateShard /*extends Shard*/{
                             break;
                     }
                     break;
-                case TemplateShard.States.LOCALIZATION_START:
+                case TemplateShardStates.LOCALIZATION_START:
                     switch (c) {
                         case '"':
                             this.append(shard);
-                            state = TemplateShard.States.LOCALIZATION;
+                            state = TemplateShardStates.LOCALIZATION;
                             shard = new LocalizationWriteableShard();
                             break;
                         default:
-                            state = TemplateShard.States.TEXT;
+                            state = TemplateShardStates.TEXT;
                             shard.write('_');
                             shard.write(c);
                             break;
                     }
                     break;
-                case TemplateShard.States.LOCALIZATION:
+                case TemplateShardStates.LOCALIZATION:
                     switch (c) {
                         case '"':
-                            state = TemplateShard.States.LOCALIZATION_END;
+                            state = TemplateShardStates.LOCALIZATION_END;
                             break;
                         default:
                             shard.write(c);
                             break;
                     }
                     break;
-                case TemplateShard.States.LOCALIZATION_END:
+                case TemplateShardStates.LOCALIZATION_END:
                     switch (c) {
                         case '_':
                             this.append(shard);
-                            state = TemplateShard.States.TEXT_START;
+                            state = TemplateShardStates.TEXT_START;
                             break;
                         default:
-                            state = TemplateShard.States.LOCALIZATION;
+                            state = TemplateShardStates.LOCALIZATION;
                             shard.write('"');
                             shard.write(c);
                             break;
