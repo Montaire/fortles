@@ -45,6 +45,6 @@ export default class WriteableShard extends Shard {
      * @param {import("../Response.js").Response} response 
      */
      render(engine, response) {
-        engine.write(content);
+        response.write(this.content);
     }
 }

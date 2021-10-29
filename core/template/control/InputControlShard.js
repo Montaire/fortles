@@ -1,9 +1,7 @@
-const ControlShard = require("essentials/core/template/control/ControlShard");
+import {ControlShard} from "../index.js";
 
-class InputControlShard extends ControlShard {
+export default class InputControlShard extends ControlShard {
     constructor(reader, parent){
         super(reader, parent, "input");
     }
 }
-
-module.exports = InputControlShard;

@@ -1,6 +1,6 @@
-const ControlShard = require("essentials/core/template/control/ControlShard");
+import {ControlShard} from "../index.js";
 
-class IfControlShard extends ControlShard{
+export default class IfControlShard extends ControlShard{
     constructor(reader, parent){
         super(reader, parent, "if");
     }

@@ -1,17 +1,17 @@
-const TemplateShard = require("essentials/core/template/TemplateShard");
+import {TemplateShard} from "../index.js";
 
-class ControlShard extends TemplateShardrd {
+export default class ControlShard extends TemplateShard {
 
     attributes = {};
 
     static States = {
-        VOID = 1,
-        ATTRIBUTE_KEY = 2,
-        ATTRIBUTE_VALUE_START = 3,
-        ATTRIBUTE_VALUE = 4,
-        CONTROL_START = 5,
-        CONTROL_END = 6,
-        ESCAPE = 7
+        VOID: 1,
+        ATTRIBUTE_KEY: 2,
+        ATTRIBUTE_VALUE_START: 3,
+        ATTRIBUTE_VALUE: 4,
+        CONTROL_START: 5,
+        CONTROL_END: 6,
+        ESCAPE: 7
     };
     
     constructor(reader, parent, name) {
@@ -27,7 +27,6 @@ class ControlShard extends TemplateShardrd {
      *
      * @param {ReadableStream} The stream to read from
      * @return {boolean} False if self closing.
-     * @throws IOException
      */
     prepareAttributes(reader) {
         let c;
@@ -96,7 +95,7 @@ class ControlShard extends TemplateShardrd {
                             break;
                         case '"':
                             state = ControlShard.States.VOID;
-                            this.attributes[key] = vale;
+                            this.attributes[key] = value;
                             break;
                         default:
                             value += c;
@@ -123,5 +122,3 @@ class ControlShard extends TemplateShardrd {
         return false;
     }
 }
-
-module.exports = ControlShard;

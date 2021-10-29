@@ -1,4 +1,4 @@
-import TemplateShard from "./TemplateShard.js";
+import {TemplateShard} from "./index.js";
 import SyncFileReadableStream from "../../utility/SyncFileReadableStream.js";
 
 export default class Template extends TemplateShard{

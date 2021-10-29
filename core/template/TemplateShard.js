@@ -1,7 +1,7 @@
-import Shard from "./Shard.js";
-import WriteableShard from "./WriteableShard.js";
+import {Shard, WriteableShard, EvalWriteableShard, BlockControlShard} from "./index.js";
 
 export default class TemplateShard extends Shard{
+
     static States = {
         TEXT_START: 1,
         TEXT: 2,
@@ -16,6 +16,9 @@ export default class TemplateShard extends Shard{
         LOCALIZATON: 11,
         LOCALIZATON_END: 12,
     }
+
+    /** @type {Shard[]} */
+    shards = [];
 
     constructor(parent){
         super();
@@ -56,7 +59,7 @@ export default class TemplateShard extends Shard{
                     switch (c) {
                         case '{':
                             this.append(shard);
-                            state = States.EVAL;
+                            state = TemplateShard.States.EVAL;
                             shard = new EvalWriteableShard();
                             break;
                         default:
@@ -95,7 +98,7 @@ export default class TemplateShard extends Shard{
                             state = TemplateShard.States.CONTROL;
                             break;
                         case '/':
-                            if (shardName != null) {
+                            if (this.shardName != null) {
                                 state = TemplateShard.States.CONTROL_STOP_START;
                                 break;
                             }//Falling to default if shardName is not set.
@@ -110,7 +113,7 @@ export default class TemplateShard extends Shard{
                     switch (c) {
                         case ':':
                             this.append(shard);
-                            prepareControl(reader);
+                            this.prepareControl(reader);
                             state = TemplateShard.States.TEXT_START;
                             shard = new WriteableShard();
                             break;
@@ -198,7 +201,7 @@ export default class TemplateShard extends Shard{
     append(shard){
         shard.ready();
         if(!shard.isEmpty()){
-            shards.add(shard);
+            this.shards.push(shard);
         }
     }
 
@@ -223,32 +226,31 @@ export default class TemplateShard extends Shard{
 
     prepareControl(reader){
         let c;
-        controlName = new StringBuilder();
+        let controlName = '';
         while ((c = reader.read()) != -1) {
             if (c != ' ' && c != '>') {
-                controlName.append(c);
+                controlName += c;
             } else {
                 break;
             }
         }
-        shard = this.shardFactory(controlName.toString(), reader);
-        shards.add(shard);
+        let shard = this.shardFactory(controlName, reader);
+        this.shards.push(shard);
     }
 
     /**
      * Checkis wether the current statmenet ended. Overwrite, if something must
      * be added after the shard ending.
      *
-     * @param {stream.Readable} reader The input stream, dont touch it.
-     * @param {import("./Shard")} shard The current shard, you can touch it.
+     * @param {ReadableStream} reader The input stream, dont touch it.
+     * @param {Shard} shard The current shard, you can touch it.
      * @return {boolean} Returns true if the shard is ended.
      */
      end(reader, shard){
-        int i = 0;
-        for (char n : shardName.toCharArray()) {
-            int c = reader.read();
-            if (c == -1 || n != (char) c) {
-                shard.write(shardName.substring(0, i));
+        for (let i in this.shardName) {
+            let c = reader.read();
+            if (c == -1 || this.shardName[i] != c) {
+                shard.write(this.shardName.substring(0, i));
                 return false;
             }
             i++;
@@ -260,9 +262,9 @@ export default class TemplateShard extends Shard{
 
     /**
      * Renders all the embedded shards
-     * @param {import("../render/RenderEngine.js")} engine 
-     * @param {import("../Request.js")} request 
-     * @param {import("../Response.js")} response 
+     * @param {import("../render/RenderEngine.js").RenderEngine} engine 
+     * @param {import("../Request.js").Request} request 
+     * @param {import("../Response.js").Response} response 
      */
     render(engine, request, response){
         for(let shard of this.shards){

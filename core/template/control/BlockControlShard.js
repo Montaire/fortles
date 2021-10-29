@@ -1,8 +1,8 @@
-const { Response } = require("essentials");
-const { NotFoundError } = require("essentials/core/Error");
-const ControlShard = require("essentials/core/template/control/ControlShard");
+import Response from "../../Response.js";
+import {NotFoundError} from "../../Error.js";
+import ControlShard from "./ControlShard.js";
 
-class BlockControlShard extends ControlShard {
+export default class BlockControlShard extends ControlShard {
 
     name = "";
 
@@ -13,11 +13,12 @@ class BlockControlShard extends ControlShard {
      */
     constructor(reader,  parent) {
         super(reader, parent, "block");
-        this.name = attributes.get("name");
+        this.name = this.attributes["name"];
     }
 
+    
     render(engine, response) {
-        let controller = response.getSoruce();
+        let controller = response.getController();
         let route = controller.getRoute();
         if (route != null) {
             routed = route.get(this.name);

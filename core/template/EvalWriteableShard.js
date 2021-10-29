@@ -1,7 +1,9 @@
-class EvalWriteableShard extends WriteableShard {
+import WriteableShard from "./WriteableShard.js";
+
+export default class EvalWriteableShard extends WriteableShard {
 
     /**
-     * @param {Function}
+     * @type {Function}
      */
     compiledScript = null;
     fieldName = null;
@@ -10,28 +12,30 @@ class EvalWriteableShard extends WriteableShard {
      * Prepares the given script
      */
     ready(){
-        if(content.length() == 0){
+        if(this.content.length == 0){
             return;
         }
-        let string = content.toString();
-        if(string.matches("[a-zA-Z0-9\\.]")){
-            this.fieldName = string;
+        if(this.content.match("[a-zA-Z0-9\\.]")){
+            this.fieldName = this.content;
         }else{
-            this.compiledScript = new Function(string);
+            this.compiledScript = new Function(content);
         }
     }
     
     /**
      * 
-     * @param {require("essentials/core/render/RenderEngine")} engine
-     * @param {require("essentials").Request} request 
-     * @param {require("essentials").Response} response 
+     * @param {import("essentials/core/render/RenderEngine")} engine
+     * @param {import("essentials").Request} request 
+     * @param {import("essentials").Response} response 
      */
-    render(engine, request, response) {
-        if(fieldName != null){
-            engine.write(response.getData()[fieldName]);
+    render(engine, response) {
+        if(this.fieldName != null){
+            let data = response.getData()[this.fieldName];
+            if(data){
+                response.write(response.getData()[this.fieldName]);
+            }
         }else{
-            engine.write(this.compiledScript.call(response.getData()));
+            response.write(this.compiledScript.call(response.getData()));
         }
     }
 }
