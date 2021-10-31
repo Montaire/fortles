@@ -1,8 +1,10 @@
-import Shard from "./Shard.js";
+import Shard from "./Shard";
+import RenderEngine from "../render/RenderEngine";
+import { Request, Response } from "../../../";
 /**
  * Simple shader, which meant to be built from the outside.
  */
-export default class WriteableShard extends Shard {
+export default class WriteableShard implements Shard {
 
     /**
      * Write method will append to this.
@@ -41,10 +43,10 @@ export default class WriteableShard extends Shard {
     }
 
     /**
-     * @param {import("../render/RenderEngine.js").RenderEngine} engine 
-     * @param {import("../Response.js").Response} response 
+     * @param engine 
+     * @param response 
      */
-     render(engine, response) {
+     render(engine: RenderEngine, request: Request, response: Response) {
         response.write(this.content);
     }
 }

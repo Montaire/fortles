@@ -1,21 +1,19 @@
+import { Application } from "../../../";
 import Template from "./Template.js";
-import fs from "fs"
 
 export default class TemplateFactory{
-	public application: any;
-	public templates: any;
+	public application: Application;
+	public templates: Map<string, Template>;
 
-    constructor(application){
+    constructor(application: Application){
         this.application = application;
     }
 
-    build(rootFolder){
-        this.templates = {
-            "Main": new Template("./view/Main.html")
-        }
+    build(rootFolder: string){
+        this.templates.set("Main", new Template("./view/Main.html"));
     }
 
-    get(name){
-        return this.templates[name];
+    get(name: string){
+        return this.templates.get(name);
     }
 }

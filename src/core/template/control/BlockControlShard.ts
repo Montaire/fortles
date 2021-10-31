@@ -1,33 +1,37 @@
-import Response from "../../Response.js";
+import {Response, Request} from "../../../../";
 import {NotFoundError} from "../../Error.js";
 import ControlShard from "./ControlShard.js";
+import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
+import { TemplateShard } from "essentials/src/core/template";
+import RenderEngine from "essentials/src/core/render/RenderEngine";
+import ChildResponse from "essentials/src/core/ChildResponse";
 
 export default class BlockControlShard extends ControlShard {
 
-    name = "";
+    protected name: string;
 
     /**
      * 
-     * @param {ReadableStream} reader 
-     * @param {require("../TemplateShard").TemplateShard} parent 
+     * @param reader
+     * @param parent 
      */
-    constructor(reader,  parent) {
+    constructor(reader: CharacterStreamReader,  parent: TemplateShard) {
         super(reader, parent, "block");
-        this.name = this.attributes["name"];
+        this.name = this.attributes.get("name");
     }
 
     
-    render(engine, response) {
+    render(engine: RenderEngine, request: Request, response: Response): void {
         let controller = response.getController();
-        let route = controller.getRoute();
+        let route = controller.getRouter().getRoute(request);
         if (route != null) {
-            routed = route.get(this.name);
+            let routed = route.get(this.name);
             if (routed != null) {
-                engine.write('<div id="e-'+routed.controller.getEUri()+'">');
-                let routedResponse = new Response(routed.controller);
-                routedResponse.setTemplateName(routed.template);
-                routed.controller.render(engine, request, routedResponse);
-                engine.write("</div>");
+                response.write('<div id="e-'+routed.getController().getEUri()+'">');
+                let routedResponse = new ChildResponse(routed.getController(), response);
+                routedResponse.setTemplateName(routed.getTemplate());
+                routed.getController().render(engine, request, routedResponse);
+                response.write("</div>");
             }
         } else {
             throw new NotFoundError("Block could not be found.");

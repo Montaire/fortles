@@ -1,5 +1,6 @@
-import http from "http";
-import Request from "../core/Request.js";
+import { Application, Controller } from "essentials";
+import * as http from "http";
+import Request, { RequestType } from "../core/Request.js";
 import Response from "../core/Response.js";
 import Platform from "./Platform.js";
 
@@ -15,26 +16,34 @@ export default class ServerPlatform extends Platform{
         this.port = port;
     }
 
-    run(application){
-        const requestListener = (request, response) => {
-            application.dispatch(new ServerRequest(request), new ServerResponse(response));
-        }
-
-        const server = http.createServer(requestListener);
+    run(application: Application){
+        const server = http.createServer(
+            (request, response) => {
+                application.dispatch(new ServerRequest(request), new ServerResponse(application.getMainController(), response));
+            }
+        );
         server.listen(this.port);
 
     }
 }
 
 class ServerRequest extends Request{
-	public httpRequest: any;
 
-    /**
-     * @param {http.ServerRequest} request 
-     */
-    constructor(request){
+	protected httpRequest: http.IncomingMessage;
+
+    constructor(request: http.IncomingMessage){
         super();
         this.httpRequest = request;
+    }
+
+    getType(): RequestType {
+        return RequestType.FULL;
+    }
+    getMime(): string {
+        throw "text/html";
+    }
+    getPath(): string {
+        return "/";
     }
 }
 
@@ -44,16 +53,16 @@ class ServerResponse extends Response{
     /**
      * @param {http.ServerResponse} response 
      */
-    constructor(response){
-        super();
+    constructor(controller: Controller, response: http.ServerResponse){
+        super(controller);
         this.httpResponse = response;
     }
 
-    write(content){
+    write(content: string): void{
         this.httpResponse.write(content);
     }
 
-    end(){
+    close(): void{
         this.httpResponse.end();
     }
 }

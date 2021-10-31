@@ -1,19 +1,24 @@
-import Request from "./Request.js";
-import HtmlRenderEngine from "./render/HtmlRenderEngine.js";
+import Request, {RequestType} from "./Request";
+import Response from "./Response";
+import HtmlRenderEngine from "./render/HtmlRenderEngine";
+import MainController from "../../../../src/controller/MainController";
+import Platform from "../platform/Platform";
+import { Controller } from "essentials";
+import RenderEngine from "essentials/src/core/render/RenderEngine";
 
 export default class Application{
-	public platform: any;
-	public mainController: any;
-	public renderEngines: any;
+	public platform: Platform;
+	public mainController: Controller;
+	public renderEngines: Map<string, RenderEngine>;
 
     /**
      * Creates a new application for the given platform
-     * @param {import("./platform/Platform.js").Platform} platform 
+     * @param platform 
      */
-    constructor(platform){
+    constructor(platform: Platform){
         this.platform = platform;
         try{
-            this.mainController = import('../../../controller/MainController.js');
+            this.mainController = new MainController;
         }catch(error){
             if(error.code == 'MODULE_NOT_FOUND'){
                 throw new Error('You have to create a MainController class in your controller directory as your entry point.');
@@ -21,12 +26,10 @@ export default class Application{
                 throw error;
             }
         }
-        this.renderEngines = {
-            'text/html': new HtmlRenderEngine()
-        }
+        this.renderEngines.set('text/html', new HtmlRenderEngine());
     }
 
-    run(){
+    run(): void{
         this.platform.run(this);
     }
 
@@ -35,23 +38,27 @@ export default class Application{
      * @param {Request} request 
      * @param {import("./Response.js").Response} response 
      */
-    dispatch(request, response){
+    dispatch(request: Request, response: Response){
         let engine = this.getRenderEngine(request);
         switch(request.getType()){
-            case Request.Type.FULL:
+            case RequestType.FULL:
                 engine.beforeDispatch(request, response);
                 engine.dispatch(this.mainController, request, response);
                 engine.afterDispatch(request, response);
                 break;
         }
-        response.end();
+        response.close();
     }
 
     /**
      * Gets the render engine from the mime type
-     * @param {Request} request 
+     * @param request 
      */
-    getRenderEngine(request){
-        return this.renderEngines[request.getMime()];
+    getRenderEngine(request: Request): RenderEngine{
+        return this.renderEngines.get(request.getMime());
+    }
+
+    getMainController(): Controller{
+        return this.mainController;
     }
 }

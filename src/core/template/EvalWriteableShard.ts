@@ -1,34 +1,36 @@
-import WriteableShard from "./WriteableShard.js";
+import RenderEngine from "essentials/src/core/render/RenderEngine";
+import WriteableShard from "./WriteableShard";
+import {Request, Response} from "../../../";
 
 export default class EvalWriteableShard extends WriteableShard {
 
     /**
      * @type {Function}
      */
-    compiledScript = null;
-    fieldName = null;
+    compiledScript: Function;
+    fieldName: string;
 
     /**
      * Prepares the given script
      */
-    ready(){
+    ready(): void{
         if(this.content.length == 0){
             return;
         }
         if(this.content.match("[a-zA-Z0-9\\.]")){
             this.fieldName = this.content;
         }else{
-            this.compiledScript = new Function(content);
+            this.compiledScript = new Function(this.content);
         }
     }
     
     /**
      * 
-     * @param {import("essentials/core/render/RenderEngine")} engine
-     * @param {import("essentials").Request} request 
-     * @param {import("essentials").Response} response 
+     * @param engine
+     * @param request 
+     * @param response 
      */
-    render(engine, response) {
+    render(engine: RenderEngine, request:Request, response:Response): void {
         if(this.fieldName != null){
             let data = response.getData()[this.fieldName];
             if(data){

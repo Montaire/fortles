@@ -6,5 +6,5 @@
       "outDir": "dist",
       "sourceMap": true,
   },
-  "exclude": ["./src/addon"]
+  "exclude": ["./src/addon", "./src/oldtrash"]
 }

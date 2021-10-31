@@ -1,5 +1,7 @@
 import {Shard, WriteableShard, EvalWriteableShard, BlockControlShard} from "./";
-import SyncFileReadableStream from "../../utility/SyncFileReadableStream";
+import {Request, Response} from '../../../';
+import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
+import RenderEngine from "essentials/src/core/render/RenderEngine";
 
 export const enum TemplateShardStates{
     TEXT_START,
@@ -16,21 +18,21 @@ export const enum TemplateShardStates{
     LOCALIZATION_END,
 }
 
-export default class TemplateShard extends Shard{
-	protected parant: Shard;
+export default class TemplateShard implements Shard{
+    
+	protected parant: TemplateShard;
 	protected shardName: string
     protected shards: Shard[] = [];
 
-    constructor(parent){
-        super();
+    constructor(parent: TemplateShard){
         this.parant = parent;
         this.shards = [];
     }
 
-    prepare(reader: SyncFileReadableStream){
+    prepare(reader: CharacterStreamReader): void {
         let shard = new WriteableShard();
         let state = TemplateShardStates.TEXT_START;
-        let c;
+        let c: string;
         while ((c = reader.read()) !== null) {
             switch (state) {
                 case TemplateShardStates.TEXT_START:
@@ -140,7 +142,7 @@ export default class TemplateShard extends Shard{
                 case TemplateShardStates.CONTROL_STOP:
                     switch (c) {
                         case ':':
-                            if (end(reader, shard)) {
+                            if (this.end(reader, shard)) {
                                 this.append(shard);
                                 return;
                             }
@@ -159,7 +161,7 @@ export default class TemplateShard extends Shard{
                         case '"':
                             this.append(shard);
                             state = TemplateShardStates.LOCALIZATION;
-                            shard = new LocalizationWriteableShard();
+                            shard = new /*TODO: Localization*/WriteableShard();
                             break;
                         default:
                             state = TemplateShardStates.TEXT;
@@ -196,18 +198,18 @@ export default class TemplateShard extends Shard{
         this.append(shard);
     }
 
-    append(shard){
+    append(shard: WriteableShard): void{
         shard.ready();
         if(!shard.isEmpty()){
             this.shards.push(shard);
         }
     }
 
-    shardFactory(name, reader){
+    shardFactory(name: string, reader: CharacterStreamReader): Shard{
         switch (name) {
             case "block":
                 return new BlockControlShard(reader, this);
-            case "for":
+            /*case "for":
                 return new ForControlShard(reader, this);
             case "form":
                 return new FormControlShard(reader, this);
@@ -216,16 +218,16 @@ export default class TemplateShard extends Shard{
             case "if":
                 return new IfControlShard(reader, this);
             case "input":
-                return new InputControlShard(reader, this);
+                return new InputControlShard(reader, this);*/
             default:
-                throw new NoClassDefFoundError("There is no 'TemplateShard' definiton for '" + name + "'");
+                throw new Error("There is no 'TemplateShard' definiton for '" + name + "'");
         }
     }
 
-    prepareControl(reader){
-        let c;
+    prepareControl(reader: CharacterStreamReader): void{
+        let c: string;
         let controlName = '';
-        while ((c = reader.read()) != -1) {
+        while ((c = reader.read()) !== null) {
             if (c != ' ' && c != '>') {
                 controlName += c;
             } else {
@@ -240,18 +242,17 @@ export default class TemplateShard extends Shard{
      * Checkis wether the current statmenet ended. Overwrite, if something must
      * be added after the shard ending.
      *
-     * @param {ReadableStream} reader The input stream, dont touch it.
-     * @param {Shard} shard The current shard, you can touch it.
-     * @return {boolean} Returns true if the shard is ended.
+     * @param reader The input stream, dont touch it.
+     * @param shard The current shard, you can touch it.
+     * @return Returns true if the shard is ended.
      */
-     end(reader, shard){
-        for (let i in this.shardName) {
+     end(reader: CharacterStreamReader, shard: WriteableShard): boolean {
+        for (let i=0; i<this.shardName.length; i++) {
             let c = reader.read();
-            if (c == -1 || this.shardName[i] != c) {
+            if (c === null || this.shardName[i] !== c) {
                 shard.write(this.shardName.substring(0, i));
                 return false;
             }
-            i++;
         }
         let c = reader.read();
         //If we have the closing tag return true, the current block is ended
@@ -260,11 +261,11 @@ export default class TemplateShard extends Shard{
 
     /**
      * Renders all the embedded shards
-     * @param {import("../render/RenderEngine.js").RenderEngine} engine 
-     * @param {import("../Request.js").Request} request 
-     * @param {import("../Response.js").Response} response 
+     * @param engine 
+     * @param request 
+     * @param response 
      */
-    render(engine, request, response){
+    render(engine: RenderEngine, request: Request, response: Response): void{
         for(let shard of this.shards){
             shard.render(engine, request, response);
         }

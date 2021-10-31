@@ -76,8 +76,8 @@ export default class Route {
      */
  export class RouteBlock{
 
-    template: string;
-    controller: Controller;
+    private template: string;
+    private controller: Controller;
     /**
      * Creates a new block.
      * @param {Controller} Controller for the block
@@ -86,5 +86,13 @@ export default class Route {
     constructor(controller: Controller,  template: string) {
         this.controller = controller;
         this.template = template;
+    }
+
+    getTemplate(): string{
+        return this.template;
+    }
+
+    getController(): Controller{
+        return this.controller;
     }
 }

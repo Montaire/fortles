@@ -1,20 +1,20 @@
-//import {TemplateShard} from "./index.js";
-import SyncFileReadableStream from "../../utility/SyncFileReadableStream.js";
+import {TemplateShard} from "./index";
+import FileCharacterStream from "essentials/src/utility/FileCharacterStreamReader";
+import { Application } from "essentials";
 
-export default class Template /*extends TemplateShard*/{
-	public name: any;
-	public application: any;
-	public prepare: any;
+export default class Template extends TemplateShard{
+	protected name: string;
+	protected application: Application;
 
-    constructor(path, name?, application?){
+    constructor(path: string, name:string = null, application: Application = null){
         super(null);
-        let reader = new SyncFileReadableStream(path);
+        let reader = new FileCharacterStream(path);
         this.name = name;
         this.application = application;
         this.prepare(reader);
     }
 
-    getName(){
+    getName(): string{
         return this.name;
     }
 }

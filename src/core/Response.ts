@@ -1,51 +1,47 @@
+import { Controller } from "essentials";
 import { Writable } from "readable-stream";
 
 /**
  * Response
- * @extends Writable
  */
-export default class Response extends Writable{
-    #controller;
-    #template = 'Main';
-    #data = {};
+export default abstract class Response{
+    protected controller: Controller;
+    protected template = 'Main';
+    protected data = {};
 
     /**
      * Creates a new response for the given controller
-     * @param {import("./Controller.js")} controller
+     * @param controller
      */
-    constructor(controller){
-        super();
-        this.#controller = controller;
+    constructor(controller: Controller){
+        this.controller = controller;
     }
+
+    abstract write(content: string): void;
+
+    abstract close(): void;
 
     /**
      * Gets the name of the template
      * @returns {string}
      */
-    getTemplateName(){
-        return this.#template;
+    getTemplateName(): string{
+        return this.template;
     }
 
     /**
      * Sets the name of the template
-     * @param {string} template 
+     * @param template 
      */
-    setTemplateName(template){
-        this.#template = template;
+    setTemplateName(template: string): void{
+        this.template = template;
     }
 
-    /**
-     * Gets the stored data
-     * @returns {Object}
-     */
-    getData(){
-        return this.#data;
+    getData(): Object{
+        return this.data;
     }
 
-    /**
-     * @returns {import("./Controller.js").default}
-     */
-    getController(){
-        return this.#controller;
+    getController(): Controller{
+        return this.controller;
     }
 }

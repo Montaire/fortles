@@ -1,21 +1,21 @@
+import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
 import {TemplateShard} from "../index.js";
 
-export default class ControlShard /*extends TemplateShard*/ {
-	public shardName: any;
-	public prepare: any;
-    attributes = {};
+export const enum ControlShardStates{
+    VOID,
+    ATTRIBUTE_KEY,
+    ATTRIBUTE_VALUE_START,
+    ATTRIBUTE_VALUE,
+    CONTROL_START,
+    CONTROL_END,
+    ESCAPE
+}
 
-    static States = {
-        VOID: 1,
-        ATTRIBUTE_KEY: 2,
-        ATTRIBUTE_VALUE_START: 3,
-        ATTRIBUTE_VALUE: 4,
-        CONTROL_START: 5,
-        CONTROL_END: 6,
-        ESCAPE: 7
-    };
+export default class ControlShard extends TemplateShard {
+	public shardName: string;
+    attributes: Map<string, string> = new Map();
     
-    constructor(reader, parent, name) {
+    constructor(reader: CharacterStreamReader, parent: TemplateShard, name: string) {
         super(parent);
         this.shardName = name;
         if (this.prepareAttributes(reader)) {
@@ -26,97 +26,97 @@ export default class ControlShard /*extends TemplateShard*/ {
     /**
      * Reads the papramters from the opening tag.
      *
-     * @param {ReadableStream} The stream to read from
-     * @return {boolean} False if self closing.
+     * @param reader The stream to read from
+     * @return False if self closing.
      */
-    prepareAttributes(reader) {
-        let c;
-        let state = ControlShard.States.VOID;
+    prepareAttributes(reader: CharacterStreamReader): boolean {
+        let c: string;
+        let state = ControlShardStates.VOID;
         let key = "";
         let value = "";
-        while ((c = reader.read()) != -1) {
+        while ((c = reader.read()) !== null) {
             switch (state) {
-                case ControlShard.States.VOID:
+                case ControlShardStates.VOID:
                     switch (c) {
                         case ' ':
                             break;
                         case '>':
-                            state = ControlShard.States.CONTROL_START;
+                            state = ControlShardStates.CONTROL_START;
                             break;
                         case '/':
-                            state = ControlShard.States.CONTROL_END;
+                            state = ControlShardStates.CONTROL_END;
                             break;
                         default:
                             key = "";
                             key += c;
-                            state = ControlShard.States.ATTRIBUTE_KEY;
+                            state = ControlShardStates.ATTRIBUTE_KEY;
                     }
                     break;
-                case ControlShard.States.ATTRIBUTE_KEY:
+                case ControlShardStates.ATTRIBUTE_KEY:
                     switch (c) {
                         case ' ':
-                            state = ControlShard.States.VOID;
-                            this.attributes[key] = null;
+                            state = ControlShardStates.VOID;
+                            this.attributes.set(key, null);
                             break;
                         case '=':
-                            state = ControlShard.States.ATTRIBUTE_VALUE_START;
+                            state = ControlShardStates.ATTRIBUTE_VALUE_START;
                             break;
                         case '>':
-                            this.attributes[key] = null;
-                            state = ControlShard.States.CONTROL_START;
+                            this.attributes.set(key, null);
+                            state = ControlShardStates.CONTROL_START;
                             break;
                         case '/':
-                            state = ControlShard.States.CONTROL_END;
+                            state = ControlShardStates.CONTROL_END;
                             break;
                         default:
                             key += c;
                     }
                     ;
                     break;
-                case ControlShard.States.ATTRIBUTE_VALUE_START:
+                case ControlShardStates.ATTRIBUTE_VALUE_START:
                     switch (c) {
                         case '"':
-                            state = ControlShard.States.ATTRIBUTE_VALUE;
+                            state = ControlShardStates.ATTRIBUTE_VALUE;
                             value = "";
                             break;
                         case '>':
-                            state = ControlShard.States.CONTROL_START;
+                            state = ControlShardStates.CONTROL_START;
                             break;
                         case '/':
-                            state = ControlShard.States.CONTROL_END;
+                            state = ControlShardStates.CONTROL_END;
                             break;
                         default:
-                            state = ControlShard.States.VOID;
+                            state = ControlShardStates.VOID;
                     }
                     break;
-                case ControlShard.States.ATTRIBUTE_VALUE:
+                case ControlShardStates.ATTRIBUTE_VALUE:
                     switch (c) {
                         case '\\':
-                            state = ControlShard.States.ESCAPE;
+                            state = ControlShardStates.ESCAPE;
                             break;
                         case '"':
-                            state = ControlShard.States.VOID;
-                            this.attributes[key] = value;
+                            state = ControlShardStates.VOID;
+                            this.attributes.set(key, value);
                             break;
                         default:
                             value += c;
                     }
                     break;
-                case ControlShard.States.ESCAPE:
-                    state = ControlShard.States.ATTRIBUTE_VALUE;
+                case ControlShardStates.ESCAPE:
+                    state = ControlShardStates.ATTRIBUTE_VALUE;
                     value += c;
                     break;
-                case ControlShard.States.CONTROL_END:
+                case ControlShardStates.CONTROL_END:
                     switch (c) {
                         case '>':
                             return false;
                         default:
-                            state = ControlShard.States.VOID;
+                            state = ControlShardStates.VOID;
                             break;
                     }
 
             }
-            if(state == ControlShard.States.CONTROL_START){
+            if(state == ControlShardStates.CONTROL_START){
                 return true;
             }
         }
