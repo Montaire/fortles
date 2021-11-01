@@ -1,4 +1,2 @@
-module.exports = {
-    RenderEngine: require("./RenderEngine.js"),
-    HtmlRenderEngine: require("./HtmlRenderEngine.js")
-};
+export {default as RenderEngine} from "./RenderEngine";
+export {default as HtmlRenderEngine} from "./HtmlRenderEngine";

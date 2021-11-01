@@ -1,4 +1,4 @@
-import { Request, Response } from "../../../";
+import { Request, Response } from "essentials/src";
 import RenderEngine from "../render/RenderEngine";
 
 export default interface Shard{

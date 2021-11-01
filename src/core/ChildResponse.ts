@@ -1,4 +1,4 @@
-import { Response, Controller } from "../../";
+import { Response, Controller } from "essentials/src";
 
 export default class ChildResponse extends Response{
 

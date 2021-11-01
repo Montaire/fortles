@@ -1,4 +1,4 @@
-import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
+import CharacterStreamReader from "./CharacterStreamReader";
 import * as fs from "fs";
 
 /**

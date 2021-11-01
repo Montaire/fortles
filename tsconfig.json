@@ -5,6 +5,7 @@
       "module": "es2020",
       "outDir": "dist",
       "sourceMap": true,
+      "rootDir": "src"
   },
-  "exclude": ["./src/addon", "./src/oldtrash"]
+  "exclude": ["./src/addon", "./src/oldtrash", "node_modules"]
 }

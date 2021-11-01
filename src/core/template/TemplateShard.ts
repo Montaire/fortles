@@ -1,7 +1,17 @@
-import {Shard, WriteableShard, EvalWriteableShard, BlockControlShard} from "./";
-import {Request, Response} from '../../../';
-import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
-import RenderEngine from "essentials/src/core/render/RenderEngine";
+import {
+    Shard, 
+    WriteableShard, 
+    EvalWriteableShard, 
+    BlockControlShard, 
+    Template, 
+    AnchorControlShard, 
+    IfControlShard, 
+    InputControlShard
+} from "./";
+import {Request, Response, Application} from 'essentials/src';
+import CharacterStreamReader from "../utility/CharacterStreamReader";
+import {RenderEngine} from "../render";
+import FormatControlShard from "essentials/src/core/template/control/FormatControlShard";
 
 export const enum TemplateShardStates{
     TEXT_START,
@@ -20,12 +30,12 @@ export const enum TemplateShardStates{
 
 export default class TemplateShard implements Shard{
     
-	protected parant: TemplateShard;
+	protected parent: TemplateShard;
 	protected shardName: string
     protected shards: Shard[] = [];
 
     constructor(parent: TemplateShard){
-        this.parant = parent;
+        this.parent = parent;
         this.shards = [];
     }
 
@@ -205,20 +215,22 @@ export default class TemplateShard implements Shard{
         }
     }
 
-    shardFactory(name: string, reader: CharacterStreamReader): Shard{
+    createControlShard(name: string, reader: CharacterStreamReader): Shard{
         switch (name) {
             case "block":
                 return new BlockControlShard(reader, this);
             /*case "for":
                 return new ForControlShard(reader, this);
             case "form":
-                return new FormControlShard(reader, this);
+                return new FormControlShard(reader, this);*/
             case "a":
                 return new AnchorControlShard(reader, this);
             case "if":
                 return new IfControlShard(reader, this);
             case "input":
-                return new InputControlShard(reader, this);*/
+                return new InputControlShard(reader, this);
+            case "f":
+                return new FormatControlShard(reader, this);
             default:
                 throw new Error("There is no 'TemplateShard' definiton for '" + name + "'");
         }
@@ -234,7 +246,7 @@ export default class TemplateShard implements Shard{
                 break;
             }
         }
-        let shard = this.shardFactory(controlName, reader);
+        let shard = this.createControlShard(controlName, reader);
         this.shards.push(shard);
     }
 
@@ -268,6 +280,45 @@ export default class TemplateShard implements Shard{
     render(engine: RenderEngine, request: Request, response: Response): void{
         for(let shard of this.shards){
             shard.render(engine, request, response);
+        }
+    }
+
+    public getParent(): TemplateShard {
+        return this.parent;
+    }
+
+    public getTemplate(): Template {
+        let shard: TemplateShard = this;
+        while (shard.getParent() != null) {
+            shard = shard.getParent();
+        }
+        if (shard instanceof Template) {
+            return shard;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the name of the whole Template.
+     *
+     * @return Name of the template
+     */
+    public getTemplateName(): string {
+        let template = this.getTemplate();
+        if (template != null) {
+            return template.getName();
+        } else {
+            return null;
+        }
+    }
+    
+    public getApplication(): Application{
+        let template = this.getTemplate();
+        if (template != null) {
+            return template.getApplication();
+        } else {
+            return null;
         }
     }
 }

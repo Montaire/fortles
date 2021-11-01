@@ -1,6 +1,6 @@
 import {TemplateShard} from "./index";
-import FileCharacterStream from "essentials/src/utility/FileCharacterStreamReader";
-import { Application } from "essentials";
+import FileCharacterStream from "../utility/FileCharacterStreamReader";
+import { Application } from "essentials/src";
 
 export default class Template extends TemplateShard{
 	protected name: string;
@@ -16,5 +16,9 @@ export default class Template extends TemplateShard{
 
     getName(): string{
         return this.name;
+    }
+
+    getApplication(): Application{
+        return this.application;
     }
 }

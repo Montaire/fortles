@@ -1,6 +1,6 @@
 import RenderEngine from "essentials/src/core/render/RenderEngine";
 import WriteableShard from "./WriteableShard";
-import {Request, Response} from "../../../";
+import {Request, Response} from "essentials/src";
 
 export default class EvalWriteableShard extends WriteableShard {
 

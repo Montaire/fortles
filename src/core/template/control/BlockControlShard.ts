@@ -1,7 +1,7 @@
-import {Response, Request} from "../../../../";
+import {Response, Request} from "essentials/src";
 import {NotFoundError} from "../../Error.js";
 import ControlShard from "./ControlShard.js";
-import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
+import CharacterStreamReader from "../../utility/CharacterStreamReader";
 import { TemplateShard } from "essentials/src/core/template";
 import RenderEngine from "essentials/src/core/render/RenderEngine";
 import ChildResponse from "essentials/src/core/ChildResponse";

@@ -27,7 +27,7 @@ export default class Route {
      * @param template Template of the block. Can be null for self.
      * @return Self for chaining functions.
      */
-    public add(block: string, controllerClass: typeof Controller = null, template: string = null) {
+    public add(block: string, controllerClass: typeof Controller = null, template: string = null): this {
         if(controllerClass){
             var controller = new controllerClass();
             controller.setEUri(this.controller.getEUri() == null ? block : this.controller.getEUri() + "-" + block);
@@ -36,6 +36,13 @@ export default class Route {
         return this;
     }
 
+    public addController(block: string, controllerClass: typeof Controller): this{
+        return this.add(block, controllerClass, null);
+    }
+
+    public addTemplate(block: string, template: string):this{
+        return this.add(block, null, template);
+    }
 
     /**
      * Returns the owner and the template name for the required view name

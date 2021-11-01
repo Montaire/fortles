@@ -1,5 +1,5 @@
-import { Controller } from "essentials";
-import { Writable } from "readable-stream";
+import { Controller } from "../";
+import { Locale } from "./localization"
 
 /**
  * Response
@@ -17,13 +17,22 @@ export default abstract class Response{
         this.controller = controller;
     }
 
+    /**
+     * Write contents to the output buffer.
+     * Buffering strategy is up to the @see Platform.
+     * @param content Content to write.
+     */
     abstract write(content: string): void;
 
+    /**
+     * Closes the ouput stream.
+     * Application will call this automatically.
+     */
     abstract close(): void;
 
     /**
      * Gets the name of the template
-     * @returns {string}
+     * @returns
      */
     getTemplateName(): string{
         return this.template;
@@ -43,5 +52,9 @@ export default abstract class Response{
 
     getController(): Controller{
         return this.controller;
+    }
+
+    getLocale(): Locale{
+        return null;
     }
 }

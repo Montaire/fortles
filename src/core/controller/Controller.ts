@@ -9,11 +9,12 @@ export default class Controller {
     protected path: string;
     protected eUri: string;
 
-    public constructor(eUri: string = null) {
-        this.eUri = eUri;
+    public constructor() {
         let className = this.constructor.name;
         this.path = className.substring(11, className.length - 10).replace(".controller.", ".");
     }
+
+    protected buildRouter(router: Router): void{}
     
     public setEUri(eUri: string): void{
         this.eUri = eUri;

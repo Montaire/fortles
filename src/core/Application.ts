@@ -1,9 +1,8 @@
 import Request, {RequestType} from "./Request";
 import Response from "./Response";
 import HtmlRenderEngine from "./render/HtmlRenderEngine";
-import MainController from "../../../../src/controller/MainController";
 import Platform from "../platform/Platform";
-import { Controller } from "essentials";
+import { Controller } from "essentials/src";
 import RenderEngine from "essentials/src/core/render/RenderEngine";
 
 export default class Application{
@@ -15,17 +14,9 @@ export default class Application{
      * Creates a new application for the given platform
      * @param platform 
      */
-    constructor(platform: Platform){
+    constructor(platform: Platform, mainController: Controller){
         this.platform = platform;
-        try{
-            this.mainController = new MainController;
-        }catch(error){
-            if(error.code == 'MODULE_NOT_FOUND'){
-                throw new Error('You have to create a MainController class in your controller directory as your entry point.');
-            }else{
-                throw error;
-            }
-        }
+        this.mainController = mainController;
         this.renderEngines.set('text/html', new HtmlRenderEngine());
     }
 

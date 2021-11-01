@@ -1,4 +1,4 @@
-import { Application } from "../../../";
+import { Application } from "essentials/src";
 import Template from "./Template.js";
 
 export default class TemplateFactory{

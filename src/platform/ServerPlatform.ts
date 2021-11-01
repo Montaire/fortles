@@ -1,17 +1,17 @@
-import { Application, Controller } from "essentials";
+import { Application, Controller } from "essentials/src";
 import * as http from "http";
 import Request, { RequestType } from "../core/Request.js";
 import Response from "../core/Response.js";
 import Platform from "./Platform.js";
 
 export default class ServerPlatform extends Platform{
-	public port: any;
+	public port: number;
 
     /**
      * Port of the server
-     * @param {number} port 
+     * @param port 
      */
-    constructor(port){
+    constructor(port: number){
         super();
         this.port = port;
     }

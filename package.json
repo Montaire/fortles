@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin":{
-    "essentials": "cli.js"
+    "essentials": "dist/cli.js"
   },
   "repository": {
     "type": "git",
@@ -18,14 +18,12 @@
     "framework",
     "mvc"
   ],
-  "author": "Barták Iván",
+  "author": "Iván Barták",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Montaire/essentials-node/issues"
   },
   "homepage": "https://github.com/Montaire/essentials-node#readme",
-  "dependencies": {
-    "readable-stream": "^3.6.0"
-  },
+  "dependencies": {},
   "type": "module"
 }
