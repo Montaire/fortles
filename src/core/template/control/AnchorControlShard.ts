@@ -1,8 +1,8 @@
-import { InvalidTemplateError } from "../../Error";
-import CharacterStreamReader from "../../utility/CharacterStreamReader";
-import { ControlShard, TemplateShard} from "../";
-import { Request, Response} from "../../../";
-import RenderEngine from "../../render/RenderEngine";
+import { InvalidTemplateError } from "../../Error.js";
+import { CharacterStreamReader } from "../../utility/index.js";
+import { ControlShard, TemplateShard } from "../index.js";
+import { Request, Response } from "../../index.js";
+import { RenderEngine } from "../../render/index.js";
 
 export default class AnchorControlShard extends ControlShard {
 

@@ -1,6 +1,6 @@
-import {TemplateShard} from "./index";
-import FileCharacterStream from "../utility/FileCharacterStreamReader";
-import { Application } from "essentials/src";
+import { TemplateShard } from "./index.js";
+import { FileCharacterStreamReader } from "../utility/index.js";
+import { Application } from "../index.js";
 
 export default class Template extends TemplateShard{
 	protected name: string;
@@ -9,7 +9,7 @@ export default class Template extends TemplateShard{
 
     constructor(path: string, name:string = null, application: Application = null){
         super(null);
-        let reader = new FileCharacterStream(path);
+        let reader = new FileCharacterStreamReader(path);
         this.name = name;
         this.path = path;
         this.application = application;

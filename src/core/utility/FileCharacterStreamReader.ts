@@ -1,4 +1,4 @@
-import CharacterStreamReader from "./CharacterStreamReader";
+import CharacterStreamReader from "./CharacterStreamReader.js";
 import * as fs from "fs";
 
 /**

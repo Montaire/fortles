@@ -6,12 +6,12 @@ import {
     Template, 
     AnchorControlShard, 
     IfControlShard, 
-    InputControlShard
-} from "./";
-import {Request, Response, Application} from 'essentials/src';
-import CharacterStreamReader from "../utility/CharacterStreamReader";
-import {RenderEngine} from "../render";
-import FormatControlShard from "essentials/src/core/template/control/FormatControlShard";
+    InputControlShard,
+    FormatControlShard
+} from "./index.js";
+import { Request, Response, Application } from '../../index.js';
+import { CharacterStreamReader } from "../utility/index.js";
+import { RenderEngine } from "../render/index.js";
 
 export const enum TemplateShardStates{
     TEXT_START,

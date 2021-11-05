@@ -1,10 +1,7 @@
-import {Response, Request} from "essentials/src";
-import {NotFoundError} from "../../Error.js";
-import ControlShard from "./ControlShard.js";
-import CharacterStreamReader from "../../utility/CharacterStreamReader";
-import { TemplateShard } from "essentials/src/core/template";
-import RenderEngine from "essentials/src/core/render/RenderEngine";
-import ChildResponse from "essentials/src/core/ChildResponse";
+import { Response, Request, ChildResponse, NotFoundError} from "../../index.js";
+import { CharacterStreamReader } from "../../utility/index.js";
+import { TemplateShard, ControlShard } from "../index.js";
+import { RenderEngine } from "../../render/index.js";
 
 export default class BlockControlShard extends ControlShard {
 

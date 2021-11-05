@@ -1,5 +1,5 @@
-import CharacterStreamReader from "../../utility/CharacterStreamReader";
-import {TemplateShard} from "../";
+import { CharacterStreamReader } from "../../utility/index.js";
+import { TemplateShard } from "../index.js";
 
 export const enum ControlShardStates{
     VOID,

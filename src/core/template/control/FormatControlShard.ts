@@ -1,8 +1,7 @@
-import { InvalidTemplateError } from "essentials/src/core/Error";
-import RenderEngine from "essentials/src/core/render/RenderEngine";
-import { ControlShard, TemplateShard, WriteableShard } from "essentials/src/core/template";
-import CharacterStreamReader from "../../utility/CharacterStreamReader";
-import {Request, Response} from 'essentials/src';
+import { RenderEngine } from "../../render/index.js";
+import { ControlShard, TemplateShard, WriteableShard } from "../index.js";
+import { CharacterStreamReader } from "../../utility/index.js";
+import {Request, Response, InvalidTemplateError} from "../../index.js";
 
 export default class FormatControlShard extends ControlShard{
 

@@ -1,6 +1,6 @@
-import Shard from "./Shard";
-import RenderEngine from "../render/RenderEngine";
-import { Request, Response } from "essentials/src";
+import { Shard } from "./index.js";
+import { RenderEngine } from "../render/index.js";
+import { Request, Response } from "../../index.js";
 /**
  * Simple shader, which meant to be built from the outside.
  */

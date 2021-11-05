@@ -1,7 +1,7 @@
-import {RenderEngine} from "../../render";
-import {CharacterStreamReader} from "../../utility";
-import {ControlShard, TemplateShard} from "../";
-import {Request, Response} from "../../../";
+import {RenderEngine} from "../../render/index.js";
+import {CharacterStreamReader} from "../../utility/index.js";
+import {ControlShard, TemplateShard} from "../index.js";
+import {Request, Response} from "../../index.js";
 
 export default class IfControlShard extends ControlShard{
     constructor(reader : CharacterStreamReader, parent: TemplateShard){

@@ -1,5 +1,5 @@
-import { Controller } from "../";
-import { Locale } from "./localization"
+import { Controller } from "../index.js";
+import { Locale } from "./localization/index.js"
 
 /**
  * Response

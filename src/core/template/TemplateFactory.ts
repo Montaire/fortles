@@ -1,5 +1,5 @@
-import { Application } from "essentials/src";
-import Template from "./Template.js";
+import { Application } from "../index.js";
+import { Template } from "./index.js";
 
 export default class TemplateFactory{
 	public application: Application;

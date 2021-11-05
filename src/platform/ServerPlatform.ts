@@ -1,4 +1,4 @@
-import { Application, Controller } from "essentials/src";
+import { Application, Controller } from "essentials/src/index.js";
 import * as http from "http";
 import Request, { RequestType } from "../core/Request.js";
 import Response from "../core/Response.js";

@@ -1,4 +1,4 @@
-import { TemplateShard } from "../core/template";
+import { TemplateShard } from "../core/template/index.js";
 
 export class NotFoundError extends Error{
     code = 404;

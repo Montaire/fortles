@@ -1,9 +1,6 @@
-import Request, {RequestType} from "./Request";
-import Response from "./Response";
-import HtmlRenderEngine from "./render/HtmlRenderEngine";
-import Platform from "../platform/Platform";
-import { Controller } from "essentials/src";
-import RenderEngine from "essentials/src/core/render/RenderEngine";
+import { Platform }from "../platform/index.js";
+import { Controller, Request, RequestType, Response } from "../index.js";
+import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 
 export default class Application{
 	public platform: Platform;

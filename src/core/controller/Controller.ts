@@ -1,7 +1,7 @@
-import Router from "../Router";
-import Response from "../Response";
-import Request from "../Request";
-import RenderEngine from "../render/RenderEngine";
+import Router from "../Router.js";
+import Response from "../Response.js";
+import Request from "../Request.js";
+import RenderEngine from "../render/RenderEngine.js";
 
 export default class Controller {
 

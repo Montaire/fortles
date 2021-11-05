@@ -1,7 +1,10 @@
-export {default as Controller} from "./core/controller/Controller";
-export {default as Router} from "./core/Router";
-export {default as Request} from "./core/Request";
-export {default as Response} from "./core/Response";
-export {default as Application} from "./core/Application";
-export {default as ServerPlatform} from "./platform/ServerPlatform";
-export {NotFoundError} from "./core/Error";
+export {
+    Controller, 
+    Application,
+    Request,
+    Response,
+    RequestType,
+    Router
+} from "./core/index.js"
+
+export { ServerPlatform } from "./platform/index.js"
