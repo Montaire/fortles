@@ -5,11 +5,13 @@ import { Application } from "essentials/src";
 export default class Template extends TemplateShard{
 	protected name: string;
 	protected application: Application;
+    protected path: string;
 
     constructor(path: string, name:string = null, application: Application = null){
         super(null);
         let reader = new FileCharacterStream(path);
         this.name = name;
+        this.path = path;
         this.application = application;
         this.prepare(reader);
     }

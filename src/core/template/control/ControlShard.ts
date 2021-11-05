@@ -1,5 +1,5 @@
-import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
-import {TemplateShard} from "../index.js";
+import CharacterStreamReader from "../../utility/CharacterStreamReader";
+import {TemplateShard} from "../";
 
 export const enum ControlShardStates{
     VOID,
@@ -12,7 +12,6 @@ export const enum ControlShardStates{
 }
 
 export default class ControlShard extends TemplateShard {
-	public shardName: string;
     attributes: Map<string, string> = new Map();
     
     constructor(reader: CharacterStreamReader, parent: TemplateShard, name: string) {

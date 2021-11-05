@@ -1,7 +1,7 @@
-import RenderEngine from "essentials/src/core/render/RenderEngine";
-import CharacterStreamReader from "essentials/src/utility/CharacterStreamReader";
+import {RenderEngine} from "../../render";
+import {CharacterStreamReader} from "../../utility";
 import {ControlShard, TemplateShard} from "../";
-import {Request, Response} from "essentials/src";
+import {Request, Response} from "../../../";
 
 export default class IfControlShard extends ControlShard{
     constructor(reader : CharacterStreamReader, parent: TemplateShard){
