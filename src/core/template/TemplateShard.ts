@@ -9,7 +9,7 @@ import {
     InputControlShard,
     FormatControlShard
 } from "./index.js";
-import { Request, Response, Application } from '../../index.js';
+import { Request, Response, Application } from '../';
 import { CharacterStreamReader } from "../utility/index.js";
 import { RenderEngine } from "../render/index.js";
 
@@ -215,22 +215,22 @@ export default class TemplateShard implements Shard{
         }
     }
 
-    createControlShard(name: string, reader: CharacterStreamReader): Shard{
+    createControlShard(name: string, reader: CharacterStreamReader, started:boolean): Shard{
         switch (name) {
             case "block":
-                return new BlockControlShard(reader, this);
+                return new BlockControlShard(reader, this, started);
             /*case "for":
                 return new ForControlShard(reader, this);
             case "form":
                 return new FormControlShard(reader, this);*/
             case "a":
-                return new AnchorControlShard(reader, this);
+                return new AnchorControlShard(reader, this, started);
             case "if":
-                return new IfControlShard(reader, this);
+                return new IfControlShard(reader, this, started);
             case "input":
-                return new InputControlShard(reader, this);
+                return new InputControlShard(reader, this, started);
             case "f":
-                return new FormatControlShard(reader, this);
+                return new FormatControlShard(reader, this, started);
             default:
                 throw new Error("There is no 'TemplateShard' definiton for '" + name + "'");
         }
@@ -239,19 +239,22 @@ export default class TemplateShard implements Shard{
     prepareControl(reader: CharacterStreamReader): void{
         let c: string;
         let controlName = '';
+        let started = false;
         while ((c = reader.read()) !== null) {
-            if (c != ' ' && c != '>') {
-                controlName += c;
-            } else {
+            if(c == '>'){
+                started = true;
+                break;
+            }else if(c == ' '){
                 break;
             }
+            controlName += c;
         }
-        let shard = this.createControlShard(controlName, reader);
+        let shard = this.createControlShard(controlName, reader, started);
         this.shards.push(shard);
     }
 
     /**
-     * Checkis wether the current statmenet ended. Overwrite, if something must
+     * Checks wether the current statmenet ended. Overwrite, if something must
      * be added after the shard ending.
      *
      * @param reader The input stream, dont touch it.
@@ -259,9 +262,9 @@ export default class TemplateShard implements Shard{
      * @return Returns true if the shard is ended.
      */
      end(reader: CharacterStreamReader, shard: WriteableShard): boolean {
-        for (let i=0; i<this.shardName.length; i++) {
-            let c = reader.read();
-            if (c === null || this.shardName[i] !== c) {
+         for (let i=0; i < this.shardName.length; i++) {
+             let c = reader.read();
+             if (c === null || this.shardName[i] !== c) {
                 shard.write(this.shardName.substring(0, i));
                 return false;
             }

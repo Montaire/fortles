@@ -1,4 +1,4 @@
-import { Application, Controller } from "essentials/src/index.js";
+import { Application, Controller } from "essentials/src/core";
 import * as http from "http";
 import Request, { RequestType } from "../core/Request.js";
 import Response from "../core/Response.js";
@@ -36,14 +36,15 @@ class ServerRequest extends Request{
         this.httpRequest = request;
     }
 
-    getType(): RequestType {
+    public getType(): RequestType {
         return RequestType.FULL;
     }
-    getMime(): string {
-        throw "text/html";
+    public getMime(): string {
+        return this.httpRequest.headers["content-type"] || "text/html";
     }
-    getPath(): string {
-        return "/";
+    public getPath(): string {
+        console.log(this.httpRequest.url);
+        return this.httpRequest.url;
     }
 }
 

@@ -1,7 +1,5 @@
-import Router from "../Router.js";
-import Response from "../Response.js";
-import Request from "../Request.js";
-import RenderEngine from "../render/RenderEngine.js";
+import { Router, Response, Request } from "./index.js";
+import { RenderEngine } from "./render/index.js";
 
 export default class Controller {
 
@@ -65,7 +63,7 @@ export default class Controller {
             }
         }
         this.view(request, response);
-        renderEngine.dispatch(this, request, response);
+        renderEngine.dispatch(request, response);
     }
 
     /**

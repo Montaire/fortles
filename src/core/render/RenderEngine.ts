@@ -1,39 +1,40 @@
+import { Application, Request, Response } from "../";
+
 export default class RenderEngine{
-	public application: any;
+	protected application: Application;
 
     /**
      * 
-     * @param {import("essentials").Application} application 
+     * @param application 
      */        
-    constructor(application){
+    constructor(application: Application){
         this.application = application
     }
 
     /**
      * Renders the whole tree from the given controller.
-     * @param {import("essentials").Controller} controller 
-     * @param {import("essentials").Request} request 
-     * @param {import("essentials").Response} response 
+     * @param request 
+     * @param response 
      */
-    dispatch(controller, request, response){
+    dispatch(request: Request, response: Response){
         
     }
 
     /**
      * 
-     * @param {import("essentials").Request} request 
-     * @param {import("essentials").Response} response 
+     * @param request 
+     * @param response 
      */
-    beforeDispatch(request, response){
+    beforeDispatch(request: Request, response: Response){
 
     }
 
     /**
      * 
-     * @param {import("essentials").Request} request 
-     * @param {import("essentials").Response} response 
+     * @param request 
+     * @param response 
      */
-    afterDispatch(request, response){
+    afterDispatch(request: Request, response: Response){
 
     } 
 }

@@ -1,3 +1,4 @@
+import { getSystemErrorName } from "util";
 import { CharacterStreamReader } from "../../utility/index.js";
 import { TemplateShard } from "../index.js";
 
@@ -11,16 +12,22 @@ export const enum ControlShardStates{
     ESCAPE
 }
 
-export default class ControlShard extends TemplateShard {
+export default abstract class ControlShard extends TemplateShard {
     attributes: Map<string, string> = new Map();
     
-    constructor(reader: CharacterStreamReader, parent: TemplateShard, name: string) {
+    constructor(reader: CharacterStreamReader, parent: TemplateShard, started: boolean) {
         super(parent);
-        this.shardName = name;
-        if (this.prepareAttributes(reader)) {
+        this.shardName = this.getName();
+        if(started){
+            this.prepare(reader);
+        }else if (this.prepareAttributes(reader)) {
             this.prepare(reader);
         }
     }
+
+    public abstract initialize(attributes:Map<string, string>, reader: CharacterStreamReader): void;
+
+    public abstract  getName(): string;
 
     /**
      * Reads the papramters from the opening tag.

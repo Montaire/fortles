@@ -5,7 +5,7 @@ import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 export default class Application{
 	public platform: Platform;
 	public mainController: Controller;
-	public renderEngines: Map<string, RenderEngine>;
+	public renderEngines: Map<string, RenderEngine> = new Map();
 
     /**
      * Creates a new application for the given platform
@@ -14,7 +14,7 @@ export default class Application{
     constructor(platform: Platform, mainController: Controller){
         this.platform = platform;
         this.mainController = mainController;
-        this.renderEngines.set('text/html', new HtmlRenderEngine());
+        this.renderEngines.set('text/html', new HtmlRenderEngine(this));
     }
 
     run(): void{
@@ -31,7 +31,7 @@ export default class Application{
         switch(request.getType()){
             case RequestType.FULL:
                 engine.beforeDispatch(request, response);
-                engine.dispatch(this.mainController, request, response);
+                engine.dispatch(request, response);
                 engine.afterDispatch(request, response);
                 break;
         }

@@ -1,6 +1,6 @@
 import { Shard } from "./index.js";
 import { RenderEngine } from "../render/index.js";
-import { Request, Response } from "../../index.js";
+import { Request, Response } from "../";
 /**
  * Simple shader, which meant to be built from the outside.
  */

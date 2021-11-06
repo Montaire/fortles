@@ -1,9 +1,9 @@
 export default abstract class Request{
 
   
-    abstract getType(): RequestType;
-    abstract getMime(): string;
-    abstract getPath(): string;
+    public abstract getType(): RequestType;
+    public abstract getMime(): string;
+    public abstract getPath(): string;
 }
 
 export const enum RequestType{

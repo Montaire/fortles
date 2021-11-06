@@ -1,16 +1,27 @@
+import { exit } from "process";
 import { Application } from "../index.js";
 import { Template } from "./index.js";
+import * as fs from "fs";
 
 export default class TemplateFactory{
 	public application: Application;
-	public templates: Map<string, Template>;
+	public templates: Map<string, Template> = new Map();
 
     constructor(application: Application){
         this.application = application;
     }
 
-    build(rootFolder: string){
-        this.templates.set("Main", new Template("./view/Main.html"));
+    build(rootFolder: string, prefix:string = null){
+        let files = fs.readdirSync(rootFolder, {withFileTypes: true});
+        for(let file of files){
+            let name = prefix + '/' + file.name;
+            if(file.isDirectory()){
+                this.build(rootFolder + '/' + file.name, name);
+            }else{
+                name = file.name.replace(/\.[^/.]+$/, "");
+                this.templates.set(name, new Template(rootFolder + "/" + file.name));
+            }
+        }
     }
 
     get(name: string){

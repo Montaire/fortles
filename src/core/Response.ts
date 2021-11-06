@@ -1,4 +1,4 @@
-import { Controller } from "../index.js";
+import { Controller } from "essentials/src/core";
 import { Locale } from "./localization/index.js"
 
 /**

@@ -1,5 +1,4 @@
-import Controller from "./controller/Controller.js";
-import Request from "./Request.js";
+import { Controller, Request } from "./"
 
 /**
  * Route defines the structure, and the navigation in the application.

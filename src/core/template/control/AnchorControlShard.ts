@@ -1,24 +1,22 @@
-import { InvalidTemplateError } from "../../Error.js";
 import { CharacterStreamReader } from "../../utility/index.js";
-import { ControlShard, TemplateShard } from "../index.js";
-import { Request, Response } from "../../index.js";
+import { ControlShard } from "../index.js";
+import { Request, Response, InvalidTemplateError } from "../../index.js";
 import { RenderEngine } from "../../render/index.js";
 
 export default class AnchorControlShard extends ControlShard {
 
     //protected translateUrl: TranslateFormat;
     protected isGo: boolean = true;
-    
-    public constructor(reader: CharacterStreamReader, parent: TemplateShard) {
-        super(reader, parent, "a");
-        let canonicalUrl = this.attributes.get("go");
+
+    public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
+        let canonicalUrl = attributes.get("go");
         
         if(canonicalUrl == null){
-            canonicalUrl = this.attributes.get("do");
+            canonicalUrl = attributes.get("do");
             this.isGo = false;
         }
         if(canonicalUrl == null){
-            throw new InvalidTemplateError("<e:a> needs a go or action attribute", this);
+            throw new InvalidTemplateError("<e:a> needs a 'go' or 'do' attribute", reader);
         }
         if(!canonicalUrl.includes(".")){
             let templatePrefix = this.getTemplateName();
@@ -27,6 +25,10 @@ export default class AnchorControlShard extends ControlShard {
         }
         canonicalUrl = canonicalUrl.substring(0, canonicalUrl.indexOf('('));
         //TODO let translateUrl = new TranslateFormat(canonicalUrl, this.getApplication().getRouteTranslator());
+    }
+
+    public getName(): string {
+        return "a";
     }
 
     public render(engine: RenderEngine, request:Request, response: Response): void{

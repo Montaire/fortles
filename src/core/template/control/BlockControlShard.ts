@@ -7,16 +7,13 @@ export default class BlockControlShard extends ControlShard {
 
     protected name: string;
 
-    /**
-     * 
-     * @param reader
-     * @param parent 
-     */
-    constructor(reader: CharacterStreamReader,  parent: TemplateShard) {
-        super(reader, parent, "block");
-        this.name = this.attributes.get("name");
+    public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
+        this.name = attributes.get("name");
     }
 
+    public getName(): string {
+        return "block";
+    }
     
     render(engine: RenderEngine, request: Request, response: Response): void {
         let controller = response.getController();

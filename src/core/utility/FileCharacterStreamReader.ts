@@ -1,4 +1,4 @@
-import CharacterStreamReader from "./CharacterStreamReader.js";
+import { CharacterStreamReader } from "./index.js";
 import * as fs from "fs";
 
 /**
@@ -6,11 +6,17 @@ import * as fs from "fs";
  * @extends Readable
  */
  export default class FileCharacterStreamReader implements CharacterStreamReader{
+
     protected buffer: Buffer;
-    fd: number;
+    protected fd: number;
+    protected line: number = 1;
+    protected path: string;
+    protected isOpen: boolean = true;
+
     constructor(path: string){
         this.buffer = Buffer.alloc(1);
         this.fd = fs.openSync(path, 'r');
+        this.path = path;
     }
 
     /**
@@ -18,11 +24,35 @@ import * as fs from "fs";
      * @returns {?string} Character or null if the file ends
      */
     read(): string | null{
-        if(fs.readSync(this.fd,this.buffer)){
-            return this.buffer.toString();
-        }else{
-            fs.close(this.fd);
+        if(!this.isOpen){
             return null;
         }
+        if(fs.readSync(this.fd,this.buffer)){
+            let c = this.buffer.toString();
+            if(c === "\n"){
+                this.line++;
+            }
+            return c;
+        }else{
+            fs.close(this.fd);
+            this.isOpen = false;
+            return null;
+        }
+    }
+
+    /**
+     * Gets the line number.
+     * @returns Line number starting from 1.
+     */
+    getLine(): number{
+        return this.line;
+    }
+
+    /**
+     * Gets the path.
+     * @returns The path of the current file.
+     */
+    getPath(): string{
+        return this.path;
     }
 }

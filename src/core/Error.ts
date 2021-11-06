@@ -1,12 +1,20 @@
 import { TemplateShard } from "../core/template/index.js";
+import * as Path from "path";
+import { CharacterStreamReader } from "./utility/index.js";
 
-export class NotFoundError extends Error{
+class HttpError extends Error{
+    protected code: number;
+}
+
+export class NotFoundError extends HttpError{
     code = 404;
 }
 
-export class InvalidTemplateError extends Error{
-    constructor(message: string, shard: TemplateShard){
+export class InvalidTemplateError extends HttpError{
+    constructor(message: string, reader: CharacterStreamReader){
         super(message);
+        this.file = Path.resolve(reader.getPath()) + ":" + reader.getLine();
     }
     code = 500;
+    file: string;
 }

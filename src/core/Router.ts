@@ -1,6 +1,4 @@
-import Route from "./Route.js";
-import Request from "./Request.js";
-import Controller from "./controller/Controller.js";
+import { Route, Controller, Request } from "./index.js" 
 
 export default class Router {
 
