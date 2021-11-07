@@ -6,8 +6,14 @@
     "outDir": "dist",
     "sourceMap": true,
     "rootDir": "src",
-    "declaration": true
+    "declaration": true,  
+    "baseUrl": "./src",
+    "paths": {
+      "@core": ["./core/index.js"],
+      "@core/render": ["./core/render/index.js"],
+      "@platform": ["./platform/index.js"]
+    }
   },
   "include": ["./src"],
-  "exclude": ["./src/addon", "./src/oldtrash", "./node_modules"]
+  "exclude": ["./src/oldtrash", "./node_modules"]
 }

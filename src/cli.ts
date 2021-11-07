@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import Application from "./core/Application.js";
-import ServerPlatform from "./platform/ServerPlatform.js";
+import ServerPlatform from "./platform/server/ServerPlatform.js";
 
 const [,, ...args] = process.argv;
 

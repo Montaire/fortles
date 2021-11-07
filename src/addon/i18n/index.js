@@ -1,4 +1,4 @@
-const NodeGettext = require('node-gettext');
+/*const NodeGettext = require('node-gettext');
 const {po} = require('gettext-parser');
 const fs = require('fs');
 const app = require('electron').app || require('electron').remote && require('electron').remote.app;
@@ -34,3 +34,4 @@ var i18n = {
 };
 i18n.nodeGettext = i18n.nodeGettext || new NodeGettext(),
 module.exports = i18n;
+*/

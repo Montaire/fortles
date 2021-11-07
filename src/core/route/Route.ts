@@ -1,4 +1,4 @@
-import { Controller, Request } from "./"
+import { Controller, Request } from "../index.js"
 
 /**
  * Route defines the structure, and the navigation in the application.
@@ -71,8 +71,12 @@ export default class Route {
         return true;
     }
     
-    getTemplate(): string {
+    public getTemplate(): string {
         return this.template;
+    }
+
+    public getName(): string {
+        return this.name;
     }
 
 }

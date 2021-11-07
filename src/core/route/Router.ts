@@ -1,9 +1,10 @@
-import { Route, Controller, Request } from "./index.js" 
+import { Route } from "./index.js" 
+import { Controller, Request } from "../index.js" 
 
 export default class Router {
 
-    routes: Route[] = [];
-    controller: Controller;
+    protected routes: Route[] = [];
+    protected controller: Controller;
 
     public constructor(controller: Controller) {
         this.controller = controller;
@@ -39,6 +40,10 @@ export default class Router {
             }
         }
         return null;
+    }
+
+    public getRoutes(): Route[]{
+        return this.routes;
     }
 
     public isEmpty(): boolean {

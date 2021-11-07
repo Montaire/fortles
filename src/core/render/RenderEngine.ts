@@ -1,6 +1,6 @@
 import { Application, Request, Response } from "../";
 
-export default class RenderEngine{
+export default abstract class RenderEngine{
 	protected application: Application;
 
     /**
@@ -16,25 +16,19 @@ export default class RenderEngine{
      * @param request 
      * @param response 
      */
-    dispatch(request: Request, response: Response){
-        
-    }
+    public abstract dispatch(request: Request, response: Response): void;
+
+    /**
+     * Fired before the response
+     * @param request 
+     * @param response 
+     */
+    public beforeDispatch(request: Request, response: Response){}
 
     /**
      * 
      * @param request 
      * @param response 
      */
-    beforeDispatch(request: Request, response: Response){
-
-    }
-
-    /**
-     * 
-     * @param request 
-     * @param response 
-     */
-    afterDispatch(request: Request, response: Response){
-
-    } 
+    public afterDispatch(request: Request, response: Response){} 
 }
