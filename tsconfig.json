@@ -10,10 +10,19 @@
     "baseUrl": "./src",
     "paths": {
       "@core": ["./core/index.js"],
+      "@addon": ["./addon/index.js"],
       "@core/render": ["./core/render/index.js"],
-      "@platform": ["./platform/index.js"]
+      "@platform": ["./platform/index.js"],
+      "@platform/server": ["./platform/server/index.js"]
     }
   },
+  "plugins": [
+    // Transform paths in output .js files
+    { "transform": "typescript-transform-paths" },
+
+    // Transform paths in output .d.ts files (Include this line if you output declarations files)
+    { "transform": "typescript-transform-paths", "afterDeclarations": true }
+  ],
   "include": ["./src"],
   "exclude": ["./src/oldtrash", "./node_modules"]
 }

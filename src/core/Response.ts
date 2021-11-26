@@ -22,7 +22,7 @@ export default abstract class Response{
      * Buffering strategy is up to the @see Platform.
      * @param content Content to write.
      */
-    abstract write(content: string): void;
+    abstract write(content: any): void;
 
     /**
      * Closes the ouput stream.

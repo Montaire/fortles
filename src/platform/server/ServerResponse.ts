@@ -12,11 +12,15 @@ export default class ServerResponse extends Response{
         this.httpResponse = response;
     }
 
-    write(content: string): void{
+    write(content: any): void{
         this.httpResponse.write(content);
     }
 
     close(): void{
         this.httpResponse.end();
+    }
+
+    public getStream(): NodeJS.WritableStream{
+        return this.httpResponse;
     }
 }

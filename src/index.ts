@@ -4,7 +4,7 @@ export {
     Request,
     Response,
     RequestType,
-    Router
+    Router,
 } from "./core/index.js"
 
 export { ServerPlatform } from "./platform/index.js"

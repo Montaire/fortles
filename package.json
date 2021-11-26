@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin":{
+  "bin": {
     "essentials": "dist/cli.js"
   },
   "repository": {
@@ -24,11 +24,14 @@
     "url": "https://github.com/Montaire/essentials-node/issues"
   },
   "homepage": "https://github.com/Montaire/essentials-node#readme",
-  "dependencies": {},
   "type": "module",
   "workspaces": [
     "core",
     "addon/*",
     "platform/*"
-  ]
+  ],
+  "devDependencies": {
+    "ts-patch": "^2.0.1",
+    "typescript-transform-paths": "^3.3.1"
+  }
 }
