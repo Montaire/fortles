@@ -1,8 +1,9 @@
 import * as http from "http";
-import { Response, Controller } from "@core";
+import * as stream from "stream"
+import { Response, Controller } from "@montaire/e-core";
 
 export default class ServerResponse extends Response{
-	public httpResponse: any;
+	public httpResponse: http.ServerResponse;
 
     /**
      * @param {http.ServerResponse} response 
@@ -20,7 +21,7 @@ export default class ServerResponse extends Response{
         this.httpResponse.end();
     }
 
-    public getStream(): NodeJS.WritableStream{
+    public getStream(): stream.Writable{
         return this.httpResponse;
     }
 }

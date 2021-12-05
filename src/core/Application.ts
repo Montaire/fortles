@@ -1,6 +1,6 @@
-import { Platform }from "@platform";
-import { Controller, Request, RequestType, Response, Middleware, Addon } from "@core";
-import { RenderEngine, HtmlRenderEngine } from "@core/render";
+import { Platform }from "@montaire/e-platform";
+import { Controller, Request, RequestType, Response, Middleware, Addon } from "@montaire/e-core";
+import { RenderEngine, HtmlRenderEngine } from "@montaire/e-core/render";
 
 /**
  * Application is the main entrnance point.

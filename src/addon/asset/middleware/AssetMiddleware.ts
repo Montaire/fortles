@@ -1,5 +1,5 @@
-import { Middleware, NotFoundError, Request, Response } from "@core";
-import { ServerResponse } from "@platform/server";
+import { Middleware, NotFoundError, Request, Response } from "@montaire/e-core";
+import { ServerResponse } from "@montaire/e-platform/server";
 import * as fs from "fs";
 
 export default class AssetMiddleware extends Middleware{

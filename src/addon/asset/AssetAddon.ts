@@ -1,4 +1,4 @@
-import { Addon, Application, Middleware } from "@core";
+import { Addon, Application, Middleware } from "@montaire/e-core";
 import AssetMiddleware from "./middleware/AssetMiddleware.js";
 
 /**

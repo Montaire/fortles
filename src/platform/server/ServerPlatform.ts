@@ -1,5 +1,5 @@
-import { Application} from "@core";
-import { Platform } from "@platform";
+import { Application} from "@montaire/e-core";
+import { Platform } from "@montaire/e-platform";
 import * as http from "http";
 import { ServerRequest, ServerResponse } from "./index.js";
 

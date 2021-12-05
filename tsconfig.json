@@ -9,11 +9,11 @@
     "declaration": true,  
     "baseUrl": "./src",
     "paths": {
-      "@core": ["./core/index.js"],
-      "@addon": ["./addon/index.js"],
-      "@core/render": ["./core/render/index.js"],
-      "@platform": ["./platform/index.js"],
-      "@platform/server": ["./platform/server/index.js"]
+      "@montaire/e-core": ["./core/index.js"],
+      "@montaire/e-addon": ["./addon/index.js"],
+      "@montaire/e-core/render": ["./core/render/index.js"],
+      "@montaire/e-platform": ["./platform/index.js"],
+      "@montaire/e-platform/server": ["./platform/server/index.js"]
     }
   },
   "plugins": [

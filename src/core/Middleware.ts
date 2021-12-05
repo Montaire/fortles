@@ -1,4 +1,4 @@
-import { Request, Response } from "@core";
+import { Request, Response } from "@montaire/e-core";
 
 /**
  * Middleware class

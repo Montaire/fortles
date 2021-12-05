@@ -1,4 +1,4 @@
-import { Addon, Application } from "@core";
+import { Addon, Application } from "@montaire/e-core";
 
 export default class I18nAddon extends Addon{
     public prepare(application: Application): void {

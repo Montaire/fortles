@@ -1,4 +1,4 @@
-import { Controller } from "essentials/src/core";
+import { Controller } from "@montaire/e-core";
 import { Locale } from "./localization/index.js"
 
 /**

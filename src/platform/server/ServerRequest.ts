@@ -1,5 +1,5 @@
 import * as http from "http";
-import {Request, RequestType} from "@core";
+import {Request, RequestType} from "@montaire/e-core";
 
 export default class ServerRequest extends Request{
 
