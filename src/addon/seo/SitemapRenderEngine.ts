@@ -1,4 +1,4 @@
-import { RenderEngine, Request, Response } from "@montaire/e-core";
+import { RenderEngine, Request, Response } from "essentials-framework";
 
 export default class SitemapRenderEngine extends RenderEngine{
     public dispatch(request: Request, response: Response): void {

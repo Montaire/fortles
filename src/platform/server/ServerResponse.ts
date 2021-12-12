@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as stream from "stream"
-import { Response, Controller } from "@montaire/e-core";
+import { Response, Controller } from "essentials-framework";
 
 export default class ServerResponse extends Response{
 	public httpResponse: http.ServerResponse;

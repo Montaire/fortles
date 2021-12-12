@@ -1,4 +1,5 @@
-import { Controller } from "@montaire/e-core";
+import { Controller } from "essentials-framework";
+import * as stream from "stream";
 import { Locale } from "./localization/index.js"
 
 /**
@@ -55,6 +56,10 @@ export default abstract class Response{
     }
 
     getLocale(): Locale{
+        return null;
+    }
+
+    getStream(): stream.Writable{
         return null;
     }
 }

@@ -1,4 +1,4 @@
-import { Application, Middleware } from "@montaire/e-core";
+import { Application, Middleware } from "essentials-framework";
 
 export default abstract class Addon{
     public getMiddlewares(): Middleware[]{

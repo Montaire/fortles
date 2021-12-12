@@ -6,5 +6,3 @@ export {
     RequestType,
     Router,
 } from "./core/index.js"
-
-export { ServerPlatform } from "./platform/index.js"

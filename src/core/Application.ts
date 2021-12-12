@@ -1,6 +1,5 @@
-import { Platform }from "@montaire/e-platform";
-import { Controller, Request, RequestType, Response, Middleware, Addon } from "@montaire/e-core";
-import { RenderEngine, HtmlRenderEngine } from "@montaire/e-core/render";
+import { Controller, Request, RequestType, Response, Middleware, Addon, Platform } from "essentials-framework";
+import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 
 /**
  * Application is the main entrnance point.
@@ -9,8 +8,8 @@ export default class Application{
 	protected platform: Platform;
 	protected mainController: Controller;
 	protected renderEngines: Map<string, RenderEngine> = new Map();
-    protected middlewareQueue: Middleware[];
-    protected addons: Addon[];
+    protected middlewareQueue: Middleware[] = [];
+    protected addons: Addon[] = [];
 
     /**
      * Creates a new application for the given platform.

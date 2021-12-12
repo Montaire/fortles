@@ -1,5 +1,5 @@
 {
-    "name": "essentials-framework",
+    "name": "@essentials-addon/asset",
     "type": "module",
     "main": "index.js"
 }

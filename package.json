@@ -1,5 +1,5 @@
 {
-  "name": "@montaire/essentials",
+  "name": "essentials",
   "version": "1.0.0",
   "description": "Lighweight framework",
   "main": "index.js",

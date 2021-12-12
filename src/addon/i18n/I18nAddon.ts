@@ -1,4 +1,4 @@
-import { Addon, Application } from "@montaire/e-core";
+import { Addon, Application } from "essentials-framework";
 
 export default class I18nAddon extends Addon{
     public prepare(application: Application): void {

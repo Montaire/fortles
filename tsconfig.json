@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "module": "ESNext",
     "outDir": "dist",
     "sourceMap": true,
@@ -9,20 +10,11 @@
     "declaration": true,  
     "baseUrl": "./src",
     "paths": {
-      "@montaire/e-core": ["./core/index.js"],
-      "@montaire/e-addon": ["./addon/index.js"],
-      "@montaire/e-core/render": ["./core/render/index.js"],
-      "@montaire/e-platform": ["./platform/index.js"],
-      "@montaire/e-platform/server": ["./platform/server/index.js"]
+      "essentials-framework": ["./core/index.js"],
+      "essentials-framework/render": ["./core/render/index.js"],
+      "@essentials-platfom/server": ["./platform/server/index.js"]
     }
   },
-  "plugins": [
-    // Transform paths in output .js files
-    { "transform": "typescript-transform-paths" },
-
-    // Transform paths in output .d.ts files (Include this line if you output declarations files)
-    { "transform": "typescript-transform-paths", "afterDeclarations": true }
-  ],
-  "include": ["./src"],
+  "include": ["./src", "./src/**/package.json"],
   "exclude": ["./src/oldtrash", "./node_modules"]
 }
