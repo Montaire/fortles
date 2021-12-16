@@ -20,6 +20,7 @@ export default class AnchorControlShard extends ControlShard {
         }
         if(!canonicalUrl.includes(".")){
             let templatePrefix = this.getTemplateName();
+            console.log(templatePrefix);
             templatePrefix = templatePrefix.substring(0, templatePrefix.lastIndexOf('.'));
             canonicalUrl = templatePrefix + "." + canonicalUrl;
         }

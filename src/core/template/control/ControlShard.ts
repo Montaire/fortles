@@ -13,7 +13,7 @@ export const enum ControlShardStates{
 }
 
 export default abstract class ControlShard extends TemplateShard {
-    attributes: Map<string, string> = new Map();
+    attributes = new Map<string, string>();
     
     constructor(reader: CharacterStreamReader, parent: TemplateShard, started: boolean) {
         super(parent);
@@ -23,6 +23,7 @@ export default abstract class ControlShard extends TemplateShard {
         }else if (this.prepareAttributes(reader)) {
             this.prepare(reader);
         }
+        this.initialize(this.attributes, reader)
     }
 
     public abstract initialize(attributes:Map<string, string>, reader: CharacterStreamReader): void;

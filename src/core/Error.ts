@@ -2,8 +2,16 @@ import { TemplateShard } from "../core/template/index.js";
 import * as Path from "path";
 import { CharacterStreamReader } from "./utility/index.js";
 
-class HttpError extends Error{
+export class HttpError extends Error{
     protected code: number;
+
+    public getCode(): number{
+        return this.code;
+    }
+
+    public getMessage(): string{
+        return this.message;
+    }
 }
 
 export class NotFoundError extends HttpError{

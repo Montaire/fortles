@@ -5,15 +5,15 @@ import { Controller, Request } from "../index.js"
  */
 export default class Route {
 
-    regexp: string;
-    path: string;
-    routeBlocks: Map<string, RouteBlock>;
-    template: string;
-    name: string;
-    controller: Controller;
+    protected path: string;
+    protected routeBlocks = new Map<string, RouteBlock>();
+    protected template: string;
+    protected name: string;
+    protected controller: Controller;
 
     constructor(name: string, template: string, controller: Controller) {
         this.name = name;
+        this.path = '/' + (name || '');
         this.template = template;
         this.controller = controller;
     }
@@ -59,16 +59,11 @@ export default class Route {
      * @param request The request to match against.
      * @return True on match.
      */
-    match(request: Request) {
-        if (this.path == null) {
+    match(request: Request): boolean {
+        if (this.path == request.getPath()) {
             return true;
         }
-        if (this.path.charAt(1) == '/') {
-            if (request.getPath().match(this.regexp)) {
-
-            }
-        }
-        return true;
+        return false;
     }
     
     public getTemplate(): string {

@@ -9,7 +9,8 @@ export default class Controller {
 
     public constructor() {
         let className = this.constructor.name;
-        this.path = className.substring(11, className.length - 10).replace(".controller.", ".");
+        this.path = className.substring(0, className.length - 10);
+        this.buildRouter(this.router);
     }
 
     protected buildRouter(router: Router): void{}

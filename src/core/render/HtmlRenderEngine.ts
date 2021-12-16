@@ -1,6 +1,6 @@
 import RenderEngine from "./RenderEngine.js";
 import TemplateFactory from "../template/TemplateFactory.js";
-import { Application, Request, Response } from "../index.js";
+import { Application, NotFoundError, Request, Response, HttpError } from "../index.js";
 
 export default class HtmlRenderEngine extends RenderEngine{
 	public templates: TemplateFactory;
@@ -8,15 +8,30 @@ export default class HtmlRenderEngine extends RenderEngine{
     constructor(application: Application){
         super(application);
         this.templates = new TemplateFactory(application);
-        this.templates.build('./template');
+        this.templates.build("./template");
     }
 
     dispatch(request: Request, response: Response){
-        let template = this.templates.get(response.getTemplateName());
-        if(!template){
-            throw new Error('Template can not be found "' + response.getTemplateName()+ '"');
+        try{
+            let route = response.getController().getRouter().getRoute(request);
+            if(!route){
+                throw new NotFoundError("Route not found");
+            }
+            let template = this.templates.get(route.getTemplate());
+            if(!template){
+                throw new Error('Template can not be found "' + response.getTemplateName()+ '"');
+            }
+            template.render(this, request, response);
+        }catch(error){
+            if(error instanceof HttpError){
+                let template = this.templates.get('error');
+                if(template){
+                    template.render(this, request, response);
+                }else{
+                    response.write(error.getCode() + ': ' + error.getMessage());
+                }
+            }
         }
-        template.render(this, request, response);
     }
     
     beforeDispatch(request: Request, response: Response){

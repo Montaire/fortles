@@ -22,7 +22,12 @@ export default class Router {
     }
     
     public createDefaultRoute(template: string = null): Route{
-        let route = new Route(null, template ? '.' + template : null, this.controller);
+        if(template){
+            template = '.' + template;
+        }else{
+            template = this.controller.getPath();
+        }
+        let route = new Route(null, template, this.controller);
         this.routes.push(route);
         return route;
     }

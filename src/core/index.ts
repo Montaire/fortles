@@ -6,6 +6,6 @@ export {default as ChildResponse} from "./ChildResponse.js"
 export {default as Application} from "./Application.js";
 export {default as Middleware} from "./Middleware.js";
 export {default as Addon} from "./Addon.js"
-export {NotFoundError, InvalidTemplateError} from "./Error.js";
+export * from "./Error.js";
 export {RenderEngine} from "./render/index.js";
 export {default as Platform} from "./Platform.js";

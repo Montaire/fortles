@@ -295,6 +295,7 @@ export default class TemplateShard implements Shard{
         while (shard.getParent() != null) {
             shard = shard.getParent();
         }
+        console.log(shard);
         if (shard instanceof Template) {
             return shard;
         } else {

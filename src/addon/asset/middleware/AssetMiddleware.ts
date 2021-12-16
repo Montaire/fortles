@@ -8,7 +8,7 @@ export default class AssetMiddleware extends Middleware{
 
     constructor(){
         super();
-        this.map.set("favico.ico", "asset/favico.ico");
+        this.map.set("/favico.ico", "/asset/favico.ico");
     }
     
     public run(request: Request, response: Response): boolean {
@@ -23,10 +23,10 @@ export default class AssetMiddleware extends Middleware{
             throw new NotFoundError("The path is invalid");
         };
         if(response.getStream()){
-            let stream = fs.createReadStream("./" + this.basePath + '/' + path);
+            let stream = fs.createReadStream("./" + this.basePath + path);
             stream.pipe(response.getStream());
         }else{
-            let data = fs.readFileSync("./" + this.basePath + '/' + path);
+            let data = fs.readFileSync("./" + this.basePath + path);
             response.write(data);
         }
 
