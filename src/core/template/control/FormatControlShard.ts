@@ -4,9 +4,13 @@ import { CharacterStreamReader } from "../../utility/index.js";
 import {Request, Response, InvalidTemplateError} from "../../index.js";
 
 export default class FormatControlShard extends ControlShard{
+
+    constructor(reader: CharacterStreamReader, parent: TemplateShard, started: boolean) {
+        super(reader, parent, started);
+    }
     
     protected text: string;
-    
+
     public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
         if(this.shards.length == 1 && this.shards[0] instanceof WriteableShard){
             let textShard = this.shards[0];
@@ -22,6 +26,7 @@ export default class FormatControlShard extends ControlShard{
     }
 
     render(renderEngine: RenderEngine, request: Request, response: Response): void{
+        console.log(this);
         response.write(this.text);
     }
 }

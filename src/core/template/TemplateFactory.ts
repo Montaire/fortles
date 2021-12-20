@@ -14,12 +14,12 @@ export default class TemplateFactory{
     build(rootFolder: string, prefix:string = null){
         let files = fs.readdirSync(rootFolder, {withFileTypes: true});
         for(let file of files){
-            let name = prefix + '/' + file.name;
+            let name = prefix ? prefix + '/' + file.name : file.name;
             if(file.isDirectory()){
                 this.build(rootFolder + '/' + file.name, name);
             }else{
-                name = file.name.replace(/\.[^/.]+$/, "");
-                this.templates.set(name, new Template(rootFolder + "/" + file.name));
+                name = name.replace(/\.[^/.]+$/, "");
+                this.templates.set(name, new Template(rootFolder + "/" + file.name, name));
             }
         }
     }

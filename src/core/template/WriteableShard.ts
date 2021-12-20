@@ -1,6 +1,6 @@
 import { Shard } from "./index.js";
 import { RenderEngine } from "../render/index.js";
-import { Request, Response } from "../";
+import { Request, Response } from "../index.js";
 /**
  * Simple shader, which meant to be built from the outside.
  */
@@ -8,20 +8,19 @@ export default class WriteableShard implements Shard {
 
     /**
      * Write method will append to this.
-     * @type {string}
      */
-    protected content: string = '';
+    protected content = '';
 
     /**
      * Appends text to the shard.
      *
-     * @param {string} text
+     * @param text
      */
     write(text: string) {
         this.content += text;
     }
 
-    toString() {
+    toString(): string{
         return this.content;
     }
 

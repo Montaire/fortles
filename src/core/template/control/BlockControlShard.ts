@@ -1,6 +1,6 @@
 import { Response, Request, ChildResponse, NotFoundError} from "../../index.js";
 import { CharacterStreamReader } from "../../utility/index.js";
-import { TemplateShard, ControlShard } from "../index.js";
+import { ControlShard } from "../index.js";
 import { RenderEngine } from "../../render/index.js";
 
 export default class BlockControlShard extends ControlShard {
@@ -15,7 +15,7 @@ export default class BlockControlShard extends ControlShard {
         return "block";
     }
     
-    render(engine: RenderEngine, request: Request, response: Response): void {
+    public render(engine: RenderEngine, request: Request, response: Response): void {
         let controller = response.getController();
         let route = controller.getRouter().getRoute(request);
         if (route != null) {

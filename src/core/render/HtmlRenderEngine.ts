@@ -30,12 +30,14 @@ export default class HtmlRenderEngine extends RenderEngine{
                 }else{
                     response.write(error.getCode() + ': ' + error.getMessage());
                 }
+            }else{
+                throw error;
             }
         }
     }
     
     beforeDispatch(request: Request, response: Response){
-        response.write('<html><header><title>Hello Essential</title></header>');
+        response.write('<!DOCTYPE html><html><header><title>Hello Essential</title></header>');
     }
 
     afterDispatch(request: Request, response: Response){
