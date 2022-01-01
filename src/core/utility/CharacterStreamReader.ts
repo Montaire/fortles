@@ -1,5 +1,5 @@
 export default interface CharacterStreamReader{
-    read(): string | null;
+    read(): string | null
     getLine(): number
     getPath(): string
 }

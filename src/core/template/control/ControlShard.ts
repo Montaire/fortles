@@ -12,6 +12,12 @@ export const enum ControlShardStates{
     ESCAPE
 }
 
+export const enum ControlShardInit{
+    ATTRIBUTES,
+    STARTED,
+    ENDED,
+}
+
 export default abstract class ControlShard extends TemplateShard {
     attributes = new Map<string, string>();
     

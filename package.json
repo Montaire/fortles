@@ -4,14 +4,15 @@
   "description": "Lighweight framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "build": "tsc"
   },
   "bin": {
     "essentials": "dist/cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Montaire/essentials-node.git"
+    "url": "git+https://github.com/Montaire/essentials.git"
   },
   "keywords": [
     "essentials",
@@ -21,9 +22,9 @@
   "author": "Iván Barták",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/Montaire/essentials-node/issues"
+    "url": "https://github.com/Montaire/essentials/issues"
   },
-  "homepage": "https://github.com/Montaire/essentials-node#readme",
+  "homepage": "https://github.com/Montaire/essentials#readme",
   "type": "module",
   "workspaces": [
     "core",
@@ -33,7 +34,11 @@
   "devDependencies": {
     "@types/expect": "^24.3.0",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.11.11"
+    "@types/node": "^16.11.11",
+    "mocha": "^8.4.0",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
   },
   "private": true
 }
