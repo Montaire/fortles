@@ -1,4 +1,4 @@
-import { Request, Response } from "essentials-framework";
+import { Request, Response } from "./index.js";
 
 /**
  * Middleware class

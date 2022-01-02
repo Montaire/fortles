@@ -1,5 +1,5 @@
 import * as http from "http";
-import {Request, RequestType} from "essentials-framework";
+import {Request, RequestType} from "@essentials-framework/core";
 
 export default class ServerRequest extends Request{
 

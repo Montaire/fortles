@@ -11,9 +11,8 @@
     "declaration": true,  
     "baseUrl": "./src",
     "paths": {
-      "essentials-framework": ["./core/index.js"],
-      "essentials-framework/render": ["./core/render/index.js"],
-      "@essentials-platfom/server": ["./platform/server/index.js"]
+      "@essentials-framework/core": ["./core/index.js"],
+      "@essentials-framework/platform.server": ["./platform/server/index.js"]
     }
   },
   "include": ["./src", "./src/**/package.json"],

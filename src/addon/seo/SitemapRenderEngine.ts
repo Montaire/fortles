@@ -1,4 +1,4 @@
-import { RenderEngine, Request, Response } from "essentials-framework";
+import { RenderEngine, Request, Response } from "@essentials-framework/core";
 
 export default class SitemapRenderEngine extends RenderEngine{
     public dispatch(request: Request, response: Response): void {

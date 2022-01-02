@@ -1,5 +1,9 @@
 {
-    "name": "@essentials-platform/server",
+    "name": "@essentials-framework/platform.server",
     "type": "module",
-    "main": "index.js"
+    "main": "index.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@essentials-framework/core": "workspace:*"
+    }
 }

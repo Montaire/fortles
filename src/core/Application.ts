@@ -1,4 +1,4 @@
-import { Controller, Request, RequestType, Response, Middleware, Addon, Platform } from "essentials-framework";
+import { Controller, Request, RequestType, Response, Middleware, Addon, Platform } from "./index.js";
 import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 
 /**

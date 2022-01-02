@@ -1,5 +1,5 @@
-import { Middleware, NotFoundError, Request, Response } from "essentials-framework";
-import { ServerResponse } from "@essentials-platfom/server";
+import { Middleware, NotFoundError, Request, Response } from "@essentials-framework/core";
+import { ServerResponse } from "@essentials-framework/platform.server";
 import * as fs from "fs";
 
 export default class AssetMiddleware extends Middleware{

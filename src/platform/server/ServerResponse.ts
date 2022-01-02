@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as stream from "stream"
-import { Response, Controller } from "essentials-framework";
+import { Response, Controller } from "@essentials-framework/core";
 
 export default class ServerResponse extends Response{
 	public httpResponse: http.ServerResponse;

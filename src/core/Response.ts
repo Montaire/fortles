@@ -1,4 +1,4 @@
-import { Controller } from "essentials-framework";
+import { Controller } from "./index.js";
 import * as stream from "stream";
 import { Locale } from "./localization/index.js"
 

@@ -1,5 +1,5 @@
-import { Application} from "essentials-framework";
-import { Platform } from "essentials-framework";
+import { Application} from "@essentials-framework/core";
+import { Platform } from "@essentials-framework/core";
 import * as http from "http";
 import { ServerRequest, ServerResponse } from "./index.js";
 

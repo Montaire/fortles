@@ -1,6 +1,6 @@
 {
   "name": "essentials",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Lighweight framework",
   "main": "index.js",
   "scripts": {

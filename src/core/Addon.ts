@@ -1,4 +1,4 @@
-import { Application, Middleware } from "essentials-framework";
+import { Application, Middleware } from "./index.js";
 
 export default abstract class Addon{
     public getMiddlewares(): Middleware[]{
