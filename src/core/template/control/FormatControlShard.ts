@@ -1,11 +1,11 @@
 import { RenderEngine } from "../../render/index.js";
-import { ControlShard, TemplateShard, WriteableShard } from "../index.js";
+import { ControlShard, TemplateShard, WriteableShard, ControlShardCursorPosition} from "../index.js";
 import { CharacterStreamReader } from "../../utility/index.js";
 import {Request, Response, InvalidTemplateError} from "../../index.js";
 
 export default class FormatControlShard extends ControlShard{
 
-    constructor(reader: CharacterStreamReader, parent: TemplateShard, started: boolean) {
+    constructor(reader: CharacterStreamReader, parent: TemplateShard, started: ControlShardCursorPosition) {
         super(reader, parent, started);
     }
     

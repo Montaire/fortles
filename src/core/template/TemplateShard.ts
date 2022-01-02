@@ -7,9 +7,10 @@ import {
     AnchorControlShard, 
     IfControlShard, 
     InputControlShard,
-    FormatControlShard
+    FormatControlShard,
+    ControlShardCursorPosition
 } from "./index.js";
-import { Request, Response, Application } from '../';
+import { Request, Response, Application } from '../index.js';
 import { CharacterStreamReader } from "../utility/index.js";
 import { RenderEngine } from "../render/index.js";
 
@@ -215,22 +216,22 @@ export default class TemplateShard implements Shard{
         }
     }
 
-    createControlShard(name: string, reader: CharacterStreamReader, started:boolean): Shard{
+    createControlShard(name: string, reader: CharacterStreamReader, cursorPosition: ControlShardCursorPosition): Shard{
         switch (name) {
             case "block":
-                return new BlockControlShard(reader, this, started);
+                return new BlockControlShard(reader, this, cursorPosition);
             /*case "for":
                 return new ForControlShard(reader, this);
             case "form":
                 return new FormControlShard(reader, this);*/
             case "a":
-                return new AnchorControlShard(reader, this, started);
+                return new AnchorControlShard(reader, this, cursorPosition);
             case "if":
-                return new IfControlShard(reader, this, started);
+                return new IfControlShard(reader, this, cursorPosition);
             case "input":
-                return new InputControlShard(reader, this, started);
+                return new InputControlShard(reader, this, cursorPosition);
             case "f":
-                return new FormatControlShard(reader, this, started);
+                return new FormatControlShard(reader, this, cursorPosition);
             default:
                 throw new Error("There is no 'TemplateShard' definiton for '" + name + "'");
         }
@@ -239,17 +240,25 @@ export default class TemplateShard implements Shard{
     prepareControl(reader: CharacterStreamReader): void{
         let c: string;
         let controlName = '';
-        let started = false;
+        let cursorPosition: ControlShardCursorPosition;
+        parser:
         while ((c = reader.read()) !== null) {
-            if(c == '>'){
-                started = true;
-                break;
-            }else if(c == ' '){
-                break;
+            switch(c){
+                case '/':
+                    cursorPosition = ControlShardCursorPosition.ENDED;
+                    continue;
+                case '>':
+                    if(!cursorPosition){
+                        cursorPosition = ControlShardCursorPosition.INSIDE;
+                    }
+                    break parser;
+                case ' ':
+                    cursorPosition = ControlShardCursorPosition.ATTRIBUTES;
+                    break parser;
             }
             controlName += c;
         }
-        let shard = this.createControlShard(controlName, reader, started);
+        let shard = this.createControlShard(controlName, reader, cursorPosition);
         this.shards.push(shard);
     }
 

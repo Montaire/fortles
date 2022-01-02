@@ -12,22 +12,34 @@ export const enum ControlShardStates{
     ESCAPE
 }
 
-export const enum ControlShardInit{
+export const enum ControlShardCursorPosition{
     ATTRIBUTES,
-    STARTED,
+    INSIDE,
     ENDED,
 }
 
 export default abstract class ControlShard extends TemplateShard {
-    attributes = new Map<string, string>();
+
+    protected attributes = new Map<string, string>();
+
+    protected processAttributes: string[] = [];
+
+    protected rawAttributes = "";
     
-    constructor(reader: CharacterStreamReader, parent: TemplateShard, started: boolean) {
+    constructor(reader: CharacterStreamReader, parent: TemplateShard, cursorPosition: ControlShardCursorPosition) {
         super(parent);
         this.shardName = this.getName();
-        if(started){
-            this.prepare(reader);
-        }else if (this.prepareAttributes(reader)) {
-            this.prepare(reader);
+        switch(cursorPosition){
+            case ControlShardCursorPosition.INSIDE:
+                this.prepare(reader);
+                break;
+            case ControlShardCursorPosition.ATTRIBUTES:
+                if (this.prepareAttributes(reader)) {
+                    this.prepare(reader);
+                }
+                break;
+            case ControlShardCursorPosition.ENDED:
+                break;
         }
         this.initialize(this.attributes, reader)
     }
@@ -47,6 +59,7 @@ export default abstract class ControlShard extends TemplateShard {
         let state = ControlShardStates.VOID;
         let key = "";
         let value = "";
+        let isSingleQuote = true;
         while ((c = reader.read()) !== null) {
             switch (state) {
                 case ControlShardStates.VOID:
@@ -90,6 +103,12 @@ export default abstract class ControlShard extends TemplateShard {
                     switch (c) {
                         case '"':
                             state = ControlShardStates.ATTRIBUTE_VALUE;
+                            isSingleQuote = false;
+                            value = "";
+                            break;
+                        case "'":
+                            state = ControlShardStates.ATTRIBUTE_VALUE;
+                            isSingleQuote = true;
                             value = "";
                             break;
                         case '>':
@@ -108,11 +127,24 @@ export default abstract class ControlShard extends TemplateShard {
                             state = ControlShardStates.ESCAPE;
                             break;
                         case '"':
-                            state = ControlShardStates.VOID;
-                            this.attributes.set(key, value);
+                            if(!isSingleQuote){
+                                state = ControlShardStates.VOID;
+                                this.setAttribute(key, value, isSingleQuote);
+                            }else{
+                                value += c;
+                            }
+                            break;
+                        case "'":
+                            if(isSingleQuote){
+                                state = ControlShardStates.VOID;
+                                this.setAttribute(key, value, isSingleQuote);
+                            }else{
+                                value += c;
+                            }
                             break;
                         default:
                             value += c;
+                            break;
                     }
                     break;
                 case ControlShardStates.ESCAPE:
@@ -134,5 +166,14 @@ export default abstract class ControlShard extends TemplateShard {
             }
         }
         return false;
+    }
+
+    protected setAttribute(name: string, value: string = null, isSingleQuote: boolean){
+        if(!this.processAttributes.length || this.processAttributes.includes(name)){
+            this.attributes.set(name, value);
+        }else{
+            let quote = isSingleQuote ? "'" : '"';
+            this.rawAttributes += name + "=" + quote + value + quote;
+        }
     }
 }

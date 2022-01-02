@@ -2,7 +2,7 @@ export {default as Shard} from "./Shard.js";
 export {default as TemplateShard} from "./TemplateShard.js";
 export {default as Template} from "./Template.js";
 export {default as TemplateFactory} from "./TemplateFactory.js";
-export {default as ControlShard} from "./control/ControlShard.js";
+export {default as ControlShard, ControlShardCursorPosition} from "./control/ControlShard.js";
 export {default as WriteableShard} from "./WriteableShard.js";
 export {default as EvalWriteableShard} from "./EvalWriteableShard.js";
 export {default as AnchorControlShard} from "./control/AnchorControlShard.js";

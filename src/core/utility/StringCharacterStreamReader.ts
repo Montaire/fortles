@@ -20,10 +20,10 @@ export default class StringCharacterStreamReader implements CharacterStreamReade
 
     }
     getLine(): number {
-        throw new Error("Method not implemented.");
+        return this.lineNumber;
     }
     getPath(): string {
-        return null;
+        return "string";
     }
 
 }

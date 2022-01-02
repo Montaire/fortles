@@ -2,6 +2,7 @@ import { exit } from "process";
 import { Application } from "../index.js";
 import { Template } from "./index.js";
 import * as fs from "fs";
+import { FileCharacterStreamReader } from "../utility/index.js";
 
 export default class TemplateFactory{
 	public application: Application;
@@ -19,7 +20,8 @@ export default class TemplateFactory{
                 this.build(rootFolder + '/' + file.name, name);
             }else{
                 name = name.replace(/\.[^/.]+$/, "");
-                this.templates.set(name, new Template(rootFolder + "/" + file.name, name));
+                let reader = new FileCharacterStreamReader(rootFolder + "/" + file.name);
+                this.templates.set(name, new Template(reader, name));
             }
         }
     }
