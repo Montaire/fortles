@@ -5,14 +5,13 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "module": "ESNext",
-    "outDir": "dist",
     "sourceMap": true,
     "rootDir": "src",
     "declaration": true,  
     "baseUrl": "./src",
     "paths": {
-      "@essentials-framework/core": ["./core/index.js"],
-      "@essentials-framework/platform.server": ["./platform/server/index.js"]
+      "@essentials-framework/core": ["./core"],
+      "@essentials-framework/platform.server": ["./platform/server"]
     }
   },
   "include": ["./src", "./src/**/package.json"],

@@ -1,8 +1,8 @@
 {
     "require": "source-map-support/register",
-    "spec": "./dist/**/test/*.test.js",
+    "spec": "./src/**/test/*.test.js",
     "watch": true,
-    "watch-files": ".dist/**/*.js",
+    "watch-files": ".src/**/*.js",
     "slow": "40",
     "timeout": "1000"
 }

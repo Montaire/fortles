@@ -8,7 +8,7 @@
     "build": "tsc"
   },
   "bin": {
-    "essentials": "dist/cli.js"
+    "essentials": "src/cli.js"
   },
   "repository": {
     "type": "git",
