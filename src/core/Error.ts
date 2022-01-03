@@ -18,11 +18,18 @@ export class NotFoundError extends HttpError{
     code = 404;
 }
 
-export class InvalidTemplateError extends HttpError{
+export class InternalServerError extends HttpError{
+    code = 500;
+}
+
+export class RuntimeError extends Error{
+
+}
+
+export class InvalidTemplateError extends InternalServerError{
     constructor(message: string, reader: CharacterStreamReader){
         super(message);
         this.file = Path.resolve(reader.getPath()) + ":" + reader.getLine();
     }
-    code = 500;
     file: string;
 }

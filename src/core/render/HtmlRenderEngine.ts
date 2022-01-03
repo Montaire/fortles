@@ -1,6 +1,9 @@
 import RenderEngine from "./RenderEngine.js";
 import TemplateFactory from "../template/TemplateFactory.js";
 import { Application, NotFoundError, Request, Response, HttpError } from "../index.js";
+import * as path from "path";
+import * as fs from "fs";
+import { RuntimeError } from "../Error.js";
 
 export default class HtmlRenderEngine extends RenderEngine{
 	public templates: TemplateFactory;
@@ -8,7 +11,11 @@ export default class HtmlRenderEngine extends RenderEngine{
     constructor(application: Application){
         super(application);
         this.templates = new TemplateFactory(application);
-        this.templates.build("./template");
+        let templatePath = path.normalize(path.dirname(process.argv[1]) + '/../template');
+        if(!fs.existsSync(templatePath)){
+            throw new RuntimeError("There is no folder with templates on the'"+templatePath+"'");
+        }
+        this.templates.build(templatePath);
     }
 
     dispatch(request: Request, response: Response){
