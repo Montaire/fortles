@@ -7,9 +7,7 @@
     "test": "mocha",
     "build": "tsc"
   },
-  "bin": {
-    "essentials": "dist/cli.js"
-  },
+  "bin": "dist/cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Montaire/essentials.git"
@@ -40,5 +38,6 @@
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   },
-  "private": true
+  "private": true,
+  "packageManager": "yarn@3.2.0-rc.10"
 }
