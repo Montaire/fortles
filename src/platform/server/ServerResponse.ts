@@ -10,8 +10,7 @@ export default class ServerResponse extends Response{
      */
     constructor(controller: Controller, response: http.ServerResponse){
         super(controller);
-        response.setHeader('Content-Type', 'text/html');
-        response.setHeader('Charset', 'utf-8');
+        response.setHeader('Content-Type', 'text/html; charset=utf-8');
         this.httpResponse = response;
     }
 

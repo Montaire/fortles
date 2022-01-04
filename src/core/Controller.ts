@@ -51,7 +51,7 @@ export default class Controller {
      * @param request
      * @param response
      */
-    public action(request: Request, response: Response) {
+    public action(request: Request, response: Response):void {
 
     }
 

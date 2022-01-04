@@ -3,7 +3,7 @@ import { CharacterStreamReader } from "./index.js"
 export default class StringCharacterStreamReader implements CharacterStreamReader{
     protected text: string;
     protected index = 0;
-    protected lineNumber = 0;
+    protected lineNumber = 1;
     constructor(text: string){
         this.text = text;
     }

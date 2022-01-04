@@ -10,6 +10,7 @@
     "rootDir": "src",
     "declaration": true,  
     "baseUrl": "./src",
+    "incremental": true,
     "paths": {
       "@essentials-framework/core": ["./core/index.js"],
       "@essentials-framework/platform.server": ["./platform/server/index.js"]
