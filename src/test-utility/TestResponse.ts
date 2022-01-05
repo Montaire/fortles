@@ -1,5 +1,4 @@
-import Controller from "../../Controller.js";
-import { Response } from "../../index.js";
+import { Controller, Response } from "../core/index.js";
 
 export default class TestResponse extends Response{
 

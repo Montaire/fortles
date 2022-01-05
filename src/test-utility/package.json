@@ -1,0 +1,6 @@
+{
+    "name": "@essentials-framework/test-utility",
+    "type": "module",
+    "main": "index.js",
+    "version": "0.1.0"
+}

@@ -1,4 +1,4 @@
-import { RenderEngine, Request, Response } from "../..";
+import { RenderEngine, Request, Response } from "../core/index.js";
 
 export default class TestRenderEngine extends RenderEngine{
     constructor(){
