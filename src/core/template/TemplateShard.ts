@@ -19,7 +19,6 @@ export const enum TemplateShardStates{
     TEXT,
     EVAL_START,
     EVAL,
-    EVAL_END,
     CONTROL_START,
     CONTROL,
     CONTROL_STOP_START,
@@ -43,6 +42,7 @@ export default class TemplateShard implements Shard{
     prepare(reader: CharacterStreamReader): void {
         let shard = new WriteableShard();
         let state = TemplateShardStates.TEXT_START;
+        let evalBraclet = 1;
         let c: string;
         while ((c = reader.read()) !== null) {
             switch (state) {
@@ -51,7 +51,7 @@ export default class TemplateShard implements Shard{
                     shard = new WriteableShard();
                 case TemplateShardStates.TEXT:
                     switch (c) {
-                        case '{':
+                        case '$':
                             state = TemplateShardStates.EVAL_START;
                             break;
                         case '<':
@@ -71,34 +71,37 @@ export default class TemplateShard implements Shard{
                         case '{':
                             this.append(shard);
                             state = TemplateShardStates.EVAL;
-                            shard = new EvalWriteableShard();
+                            shard = new EvalWriteableShard(reader.getCursorPath());
+                            evalBraclet = 1;
+                            break;
+                        case '\\': //Escape the template literal
+                            state = TemplateShardStates.TEXT;
+                            shard.write('$');
                             break;
                         default:
                             state = TemplateShardStates.TEXT;
-                            shard.write('{');
+                            shard.write('$');
                             shard.write(c);
                             break;
                     }
                     break;
                 case TemplateShardStates.EVAL:
+                    process.stdout.write(c);
                     switch (c) {
-                        case '}':
-                            state = TemplateShardStates.EVAL_END;
-                            break;
-                        default:
+                        case '{':
+                            evalBraclet++;
                             shard.write(c);
                             break;
-                    }
-                    break;
-                case TemplateShardStates.EVAL_END:
-                    switch (c) {
                         case '}':
-                            this.append(shard);
-                            state = TemplateShardStates.TEXT_START;
+                            evalBraclet--;
+                            if(!evalBraclet){
+                                this.append(shard);
+                                state = TemplateShardStates.TEXT_START;
+                            }else{
+                                shard.write(c);
+                            }
                             break;
                         default:
-                            state = TemplateShardStates.EVAL;
-                            shard.write('}');
                             shard.write(c);
                             break;
                     }
@@ -332,5 +335,13 @@ export default class TemplateShard implements Shard{
         } else {
             return null;
         }
+    }
+
+    /**
+     * Gets the children shards.
+     * @returns Array of the Shards.
+     */
+    public getShards(): Shard[]{
+        return this.shards;
     }
 }

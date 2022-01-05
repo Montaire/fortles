@@ -1,5 +1,6 @@
 import { CharacterStreamReader } from "./index.js";
 import * as fs from "fs";
+import * as Path from "path";
 
 /**
  * Stream To read a file character by caracter
@@ -10,6 +11,7 @@ import * as fs from "fs";
     protected buffer: Buffer;
     protected fd: number;
     protected line: number = 1;
+    protected cursor: number = 0;
     protected path: string;
     protected isOpen: boolean = true;
 
@@ -31,6 +33,9 @@ import * as fs from "fs";
             let c = this.buffer.toString();
             if(c === "\n"){
                 this.line++;
+                this.cursor = 0;
+            }else{
+                this.cursor++;
             }
             return c;
         }else{
@@ -48,11 +53,19 @@ import * as fs from "fs";
         return this.line;
     }
 
+    getCursor(): number{
+        return this.cursor;
+    }
+
     /**
      * Gets the path.
      * @returns The path of the current file.
      */
     getPath(): string{
         return this.path;
+    }
+
+    getCursorPath(): string {
+        return Path.resolve(this.path) + ":" + this.line + ":" + this.cursor;
     }
 }

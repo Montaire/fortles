@@ -13,14 +13,12 @@ export default class WriteableShard implements Shard {
 
     /**
      * Appends text to the shard.
-     *
-     * @param text
      */
-    write(text: string) {
+    public write(text: string) {
         this.content += text;
     }
 
-    toString(): string{
+    public toString(): string{
         return this.content;
     }
 
@@ -28,7 +26,7 @@ export default class WriteableShard implements Shard {
      * Override if there is an action needed after the shader is built. Like
      * buffering the input. The {@link this.content} should be processed.
      */
-    ready(): void {
+    public ready(): void {
 
     }
 
@@ -37,7 +35,7 @@ export default class WriteableShard implements Shard {
      * If it is empty it can be skipped while rendering.
      * @returns
      */
-    isEmpty():boolean {
+    public isEmpty():boolean {
         return this.content.length == 0;
     }
 
@@ -45,7 +43,7 @@ export default class WriteableShard implements Shard {
      * @param engine 
      * @param response 
      */
-     render(engine: RenderEngine, request: Request, response: Response) {
+    public render(engine: RenderEngine, request: Request, response: Response):void {
         response.write(this.content);
     }
 }

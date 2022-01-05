@@ -1,36 +1,45 @@
 import { RenderEngine } from "../render/index.js";
 import { WriteableShard } from "./index.js";
-import { Request, Response } from "../index.js";
+import { Request, Response, RuntimeError } from "../index.js";
 
 export default class EvalWriteableShard extends WriteableShard {
 
+    protected compiledScript: Function = null;
+    protected fieldName: string = null;
+    protected sourcePath: string;
+
     /**
-     * @type {Function}
+     * Eval shard contains runnable javascript. It is possible to use return as well.
+     * @param path The path of the template.
+     * @param line Line number of the template
      */
-    compiledScript: Function;
-    fieldName: string;
+    public constructor(path: string){
+        super();
+        this.sourcePath = path; 
+    }
 
     /**
      * Prepares the given script
      */
-    ready(): void{
+    public ready(): void{
         if(this.content.length == 0){
             return;
         }
-        if(this.content.match("[a-zA-Z0-9\\.]")){
-            this.fieldName = this.content;
-        }else{
-            this.compiledScript = new Function(this.content);
+        try{
+            if(this.content.match("^[a-zA-Z0-9\\.]+$")){
+                this.fieldName = this.content;
+            }else if(this.content.includes('return')){
+                this.compiledScript = new Function(this.content);
+            }else{
+                this.compiledScript = new Function('return ' + this.content);
+            }
+        }catch(error){
+            console.log(this.content);
+            throw new RuntimeError("Eval shard '" + this.sourcePath + "' has error: " + error);
         }
     }
     
-    /**
-     * 
-     * @param engine
-     * @param request 
-     * @param response 
-     */
-    render(engine: RenderEngine, request:Request, response:Response): void {
+    public render(engine: RenderEngine, request:Request, response:Response): void {
         if(this.fieldName != null){
             let data = response.getData()[this.fieldName];
             if(data){

@@ -1,6 +1,7 @@
 import assert from "assert";
 import { InvalidTemplateError } from "../index.js";
 import TestUtility from "../../test-utility/index.js";
+import EvalWriteableShard from "../template/EvalWriteableShard.js";
 
 describe("Template", function(){
     describe("Shard", function(){
@@ -17,7 +18,12 @@ describe("Template", function(){
         });
         describe("Eval", function(){
             it("Aretmetic exspression evalutes", function(){
+                let template = TestUtility.createTemplate("<p>${4+5}</p>");
+                assert.equal(template.getShards().length, 3, "We should have 3 shards. Whe have " + template.getShards().length);
+                assert(template.getShards()[1] instanceof EvalWriteableShard, "Eval shard not recogniesed.");
                 assert.equal(TestUtility.createAndRenderTemplate("<p>${4+5}</p>"), "<p>9</p>", "Aritmetic calculation failed");
+                assert.equal(TestUtility.createAndRenderTemplate("<p>${if(4 < 5){return 9;}}</p>"), "<p>9</p>", "Aritmetic calculation failed");
+                assert.throws(() => TestUtility.createAndRenderTemplate("<p>${if 4 < 5 {return 9;}}</p>"), /Eval.+string:1:5/, "Syntax error detected at the correct palce");
             });
         });
     });

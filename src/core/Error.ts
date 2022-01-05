@@ -1,5 +1,4 @@
 import { TemplateShard } from "../core/template/index.js";
-import * as Path from "path";
 import { CharacterStreamReader } from "./utility/index.js";
 
 export class HttpError extends Error{
@@ -29,7 +28,7 @@ export class RuntimeError extends Error{
 export class InvalidTemplateError extends InternalServerError{
     constructor(message: string, reader: CharacterStreamReader){
         super(message);
-        this.file = Path.resolve(reader.getPath()) + ":" + reader.getLine();
+        this.file = reader.getCursorPath();
     }
     file: string;
 }
