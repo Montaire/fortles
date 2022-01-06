@@ -1,4 +1,4 @@
-import { Controller, Response } from "../core/index.js";
+import { Controller, Response } from "@essentials-framework/core";
 
 export default class TestResponse extends Response{
 

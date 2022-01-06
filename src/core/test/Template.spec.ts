@@ -1,6 +1,6 @@
 import assert from "assert";
 import { InvalidTemplateError } from "../index.js";
-import TestUtility from "../../test-utility/index.js";
+import TestUtility from "@essentials-framework/test-utility";
 import EvalWriteableShard from "../template/EvalWriteableShard.js";
 
 describe("Template", function(){

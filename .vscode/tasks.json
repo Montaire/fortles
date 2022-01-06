@@ -14,5 +14,15 @@
 				"runOn": "folderOpen"
 			}
 		},
+		{
+			"type": "shell",
+			"command": "yarn",
+			"args": ["tsc"],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build",
+			"label": "Essentials: build",
+		}
 	]
 }

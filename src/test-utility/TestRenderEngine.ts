@@ -1,4 +1,4 @@
-import { RenderEngine, Request, Response } from "../core/index.js";
+import { RenderEngine, Request, Response } from "@essentials-framework/core";
 
 export default class TestRenderEngine extends RenderEngine{
     constructor(){

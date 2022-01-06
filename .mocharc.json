@@ -1,7 +1,5 @@
 {
-    "require": [
-        "source-map-support/register.js"
-    ],
+    "enable-source-maps": true,
     "spec": "./dist/**/test/*.spec.js",
     "watch-files": ".dist/**/*.js",
     "slow": "40",

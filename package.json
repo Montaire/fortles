@@ -25,10 +25,10 @@
   "homepage": "https://github.com/Montaire/essentials#readme",
   "type": "module",
   "workspaces": [
-    "core",
-    "test-utility",
-    "addon/*",
-    "platform/*"
+    "dist/core",
+    "dist/test-utility",
+    "dist/addon/*",
+    "dist/platform/*"
   ],
   "devDependencies": {
     "@types/expect": "^24.3.0",

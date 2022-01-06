@@ -1,4 +1,4 @@
-import { Request, RequestType } from "../core/index.js";
+import { Request, RequestType } from "@essentials-framework/core";
 
 export default class TestRequest extends Request{
     protected path: string;

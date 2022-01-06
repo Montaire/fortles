@@ -32,6 +32,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@essentials-framework/addon.asset@workspace:dist/addon/asset":
+  version: 0.0.0-use.local
+  resolution: "@essentials-framework/addon.asset@workspace:dist/addon/asset"
+  dependencies:
+    "@essentials-framework/core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@essentials-framework/addon.i18n@workspace:dist/addon/i18n":
+  version: 0.0.0-use.local
+  resolution: "@essentials-framework/addon.i18n@workspace:dist/addon/i18n"
+  languageName: unknown
+  linkType: soft
+
+"@essentials-framework/core@workspace:*, @essentials-framework/core@workspace:dist/core":
+  version: 0.0.0-use.local
+  resolution: "@essentials-framework/core@workspace:dist/core"
+  dependencies:
+    "@essentials-framework/test-utility": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@essentials-framework/platform.server@workspace:dist/platform/server":
+  version: 0.0.0-use.local
+  resolution: "@essentials-framework/platform.server@workspace:dist/platform/server"
+  dependencies:
+    "@essentials-framework/core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@essentials-framework/test-utility@workspace:*, @essentials-framework/test-utility@workspace:dist/test-utility":
+  version: 0.0.0-use.local
+  resolution: "@essentials-framework/test-utility@workspace:dist/test-utility"
+  dependencies:
+    "@essentials-framework/core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.2
   resolution: "@gar/promisify@npm:1.1.2"
