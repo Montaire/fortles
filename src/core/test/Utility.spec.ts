@@ -5,7 +5,7 @@ import assert from "assert";
 describe("Utility", function(){
     describe("FileCharacterStreamReader", function(){
         let reader: FileCharacterStreamReader;
-        before("Opens the given file", function(){
+        before("Opens the given file",  function(){
             reader = new FileCharacterStreamReader(path.normalize(path.resolve() + '/src/core/test/asset/SimpleText.txt'));
         });
         /* File looks like this

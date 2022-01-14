@@ -14,7 +14,6 @@ class Html{
     static async component(name, attributes){
         ipcRenderer.send("e-get-component",name);
         ipcRenderer.once('e-set-component', (event, component) => {
-            console.log(component);
             Html.stack.push(component.controller);
             if(component.eUri){
                 var id = "ec-"+component.eUri;

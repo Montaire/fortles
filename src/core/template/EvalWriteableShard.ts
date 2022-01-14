@@ -34,7 +34,6 @@ export default class EvalWriteableShard extends WriteableShard {
                 this.compiledScript = new Function('return ' + this.content);
             }
         }catch(error){
-            console.log(this.content);
             throw new RuntimeError("Eval shard '" + this.sourcePath + "' has error: " + error);
         }
     }

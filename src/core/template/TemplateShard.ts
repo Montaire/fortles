@@ -86,7 +86,6 @@ export default class TemplateShard implements Shard{
                     }
                     break;
                 case TemplateShardStates.EVAL:
-                    process.stdout.write(c);
                     switch (c) {
                         case '{':
                             evalBraclet++;

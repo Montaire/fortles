@@ -26,7 +26,6 @@ export default class FormatControlShard extends ControlShard{
     }
 
     render(renderEngine: RenderEngine, request: Request, response: Response): void{
-        console.log(this);
         response.write(this.text);
     }
 }

@@ -17,7 +17,7 @@ import * as Path from "path";
 
     constructor(path: string){
         this.buffer = Buffer.alloc(1);
-        this.fd = fs.openSync(path, 'r');
+        this.fd = fs.openSync(path, "r");
         this.path = path;
     }
 
@@ -29,7 +29,7 @@ import * as Path from "path";
         if(!this.isOpen){
             return null;
         }
-        if(fs.readSync(this.fd,this.buffer)){
+        if(fs.readSync(this.fd, this.buffer)){
             let c = this.buffer.toString();
             if(c === "\n"){
                 this.line++;

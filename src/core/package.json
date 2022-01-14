@@ -3,9 +3,6 @@
     "type": "module",
     "main": "index.js",
     "version": "0.1.0",
-    "scripts": {
-        "test": "yarn mocha"
-    },
     "devDependencies": {
         "@essentials-framework/test-utility": "workspace:*"
     }

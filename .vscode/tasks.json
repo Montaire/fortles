@@ -4,15 +4,22 @@
 		{
 			"type": "shell",
 			"command": "yarn",
-			"args": ["tsc", "--watch"],
+			"args": ["build:watch"],
 			"problemMatcher": [
 				"$tsc-watch"
 			],
 			"group": "build",
-			"label": "Essentials: tsc-watch",
+			"label": "Essentials: build:watch",
 			"runOptions": {
 				"runOn": "folderOpen"
-			}
+			},
+			"isBackground": true,
+			"presentation": {
+        	    "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
 		},
 		{
 			"type": "shell",
