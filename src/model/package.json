@@ -1,0 +1,6 @@
+{
+    "name": "@fortles/model",
+    "type": "module",
+    "main": "index.js",
+    "version": "0.1.0"
+}

@@ -18,10 +18,10 @@ export default class TestUtility{
      * Renders a template to a string.
      * @param template 
      */
-    public static renderTemplate(template: Template): string{
+    public static renderTemplate(template: Template, response: TestResponse = null): string{
         let request = new TestRequest();
-        let response = new TestResponse();
         let renderEngine = new TestRenderEngine();
+        response = response || new TestResponse();
 
         template.render(renderEngine, request, response);
 

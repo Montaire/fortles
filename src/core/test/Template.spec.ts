@@ -1,7 +1,8 @@
 import assert from "assert";
 import { InvalidTemplateError } from "../index.js";
-import TestUtility from "@essentials-framework/test-utility";
+import TestUtility, { TestResponse } from "@essentials-framework/test-utility";
 import EvalWriteableShard from "../template/EvalWriteableShard.js";
+import Controller from "../Controller.js";
 
 describe("Template", function(){
     describe("Shard", function(){
@@ -11,9 +12,11 @@ describe("Template", function(){
                 assert.throws(() => TestUtility.createTemplate("<e:a class='boo'>Hello<e:a/>"), InvalidTemplateError);
             });
             it("Anchor shard with go param", function(){
-                let template = TestUtility.createTemplate("<a></a><e:a go='party' >Test</e:a>");
-                let result = TestUtility.renderTemplate(template);
-                //assert.equal(result, '<a></a><a href="unknown" onclick="E.go(this)">Test</a>');
+                let template = TestUtility.createTemplate("<a></a><e:a go='party'>Test</e:a>");
+                let controller = new Controller();
+                controller.getRouter().createRoute("party", "party");
+                let result = TestUtility.renderTemplate(template, new TestResponse(controller));
+                assert.equal(result, '<a></a><a href="/party" onclick="E.go(this)">Test</a>');
             });
         });
         describe("Eval", function(){

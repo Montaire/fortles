@@ -11,13 +11,17 @@
     "declaration": true,  
     "baseUrl": "./src",
     "incremental": true,
+    "experimentalDecorators": true,
     "paths": {
       "@essentials-framework/core": ["./core/index.js"],
       "@essentials-framework/core/utility": ["./core/utility/index.js"],
       "@essentials-framework/core/template": ["./core/template/index.js"],
       "@essentials-framework/platform.server": ["./platform/server/index.js"],
       "@essentials-framework/test-utility": ["./test-utility/index.js"]
-    }
+    },
+    "plugins": [
+      { "transform": "./dst/model/typescript-plugin/TranspilerQueryPlugin.js", "type": "raw" }
+    ]
   },
   "include": ["./src", "./src/**/package.json"],
   "exclude": ["./src/oldtrash", "./node_modules"]

@@ -1,4 +1,5 @@
 import { Controller, Request } from "../index.js"
+//import { Type } from "../type/index.js";
 
 /**
  * Route defines the structure, and the navigation in the application.
@@ -7,6 +8,7 @@ export default class Route {
 
     protected path: string;
     protected routeBlocks = new Map<string, RouteBlock>();
+    //protected parameters = new Map<string, Type<any>>()
     protected template: string;
     protected name: string;
     protected controller: Controller;
@@ -49,7 +51,7 @@ export default class Route {
      * @param name Name of the targeted block in the view
      * @return Controller and the requred template
      */
-    get(name: string): RouteBlock {
+    getBlock(name: string): RouteBlock {
         return this.routeBlocks.get(name);
     }
 

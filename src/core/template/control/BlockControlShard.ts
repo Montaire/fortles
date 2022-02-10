@@ -19,7 +19,7 @@ export default class BlockControlShard extends ControlShard {
         let controller = response.getController();
         let route = controller.getRouter().getRoute(request);
         if (route != null) {
-            let routed = route.get(this.name);
+            let routed = route.getBlock(this.name);
             if (routed != null) {
                 response.write('<div id="e-'+routed.getController().getEUri()+'">');
                 let routedResponse = new ChildResponse(routed.getController(), response);
