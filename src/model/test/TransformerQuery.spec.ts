@@ -1,27 +1,22 @@
-import TestRequest from "../../test-utility/TestRequest.js";
-import { TranspilerQuery } from "../index.js"
+import { TranspilerQuery, query} from "../index.js"
 
 class TestEntity{
     id = 5;
 }
 
-/*class QueryObjectProxy<T extends object> extends Proxy<T>{
-    constructor(){
-        let target: T = {};
-        super(target, this);
+class TestController{
+    @query
+    view(){
+        let id = 5;
+        let query = new TranspilerQuery<TestEntity>();
+        query.where(x => x.id == id);
     }
-    handler = ProxyHandler<T>;
-}*/
-
-function deco(){
-
 }
 
 describe("TransformerQuery", function(){
     it("Where processed correctly", function(){
-        let query = new TranspilerQuery<TestEntity>();
-        var id = 5;
-        query.where(x => x.id == id);
-
+        let controller = new TestController();
+        console.log(controller.view);
+        controller.view();
     });
 });
