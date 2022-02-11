@@ -1,4 +1,4 @@
 export { default as Entity} from "./Entity.js"
-export { default as Type } from "./type/Type.js"
+export * from "./type/index.js";
 export { default as Query } from "./query/Query.js"
-export { default as TranspilerQuery, query} from "./query/TranspilerQuery.js"
+export { default as OrmQuery, orm} from "./query/OrmQuery.js"

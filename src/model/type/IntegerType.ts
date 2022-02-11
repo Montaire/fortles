@@ -1,9 +1,16 @@
 import { Type } from "./index.js";
 
+type IntegerConfig = {
+    min: number,
+    max: number
+};
+
 export default class IntegerType extends Type<number>{
     
 }
 
-export function integer(target: any, propertyKey: string, descriptor: PropertyDescriptor):void {
-    
+export function integer(config?: IntegerConfig): PropertyDecorator {
+    return function(target: Object, propertyKey: string): void{
+
+    };
 }

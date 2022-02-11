@@ -1,14 +1,14 @@
-import { TranspilerQuery, query} from "../index.js"
+import { OrmQuery, orm} from "../index.js"
 
 class TestEntity{
     id = 5;
 }
 
 class TestController{
-    @query
+    @orm
     view(){
         let id = 5;
-        let query = new TranspilerQuery<TestEntity>();
+        let query = new OrmQuery<TestEntity>();
         query.where(x => x.id == id);
     }
 }

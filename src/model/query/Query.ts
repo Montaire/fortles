@@ -1,8 +1,6 @@
 export default abstract class Query<T> implements Iterable<T>{
 
-    [Symbol.iterator](): Iterator<T, any, undefined> {
-        throw new Error("Method not implemented.");
-    }
+    abstract [Symbol.iterator](): Iterator<T, any, undefined>;
 
     abstract where(condition: (item: T) => boolean): this;
 
