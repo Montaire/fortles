@@ -1,4 +1,4 @@
-import { Controller, Response } from "@essentials-framework/core";
+import { Controller, Response } from "@fortles/core";
 
 export default class TestResponse extends Response{
 

@@ -1,9 +1,9 @@
 {
-    "name": "@essentials-framework/platform.server",
+    "name": "@fortles/platform.server",
     "type": "module",
     "main": "index.js",
     "version": "0.1.0",
     "dependencies": {
-        "@essentials-framework/core": "workspace:*"
+        "@fortles/core": "workspace:*"
     }
 }

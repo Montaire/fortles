@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as stream from "stream"
-import { Response, Controller } from "@essentials-framework/core";
+import { Response, Controller } from "@fortles/core";
 
 export default class ServerResponse extends Response{
 	public httpResponse: http.ServerResponse;

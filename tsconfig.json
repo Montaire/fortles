@@ -13,11 +13,12 @@
     "incremental": true,
     "experimentalDecorators": true,
     "paths": {
-      "@essentials-framework/core": ["./core/index.js"],
-      "@essentials-framework/core/utility": ["./core/utility/index.js"],
-      "@essentials-framework/core/template": ["./core/template/index.js"],
-      "@essentials-framework/platform.server": ["./platform/server/index.js"],
-      "@essentials-framework/test-utility": ["./test-utility/index.js"]
+      "@fortles/core": ["./core/index.js"],
+      "@fortles/core/utility": ["./core/utility/index.js"],
+      "@fortles/core/template": ["./core/template/index.js"],
+      "@fortles/platform.server": ["./platform/server/index.js"],
+      "@fortles/test-utility": ["./test-utility/index.js"],
+      "@fortles/model": ["./model/index.js"]
     },
     "plugins": [
       { "transform": "./dst/model/typescript-plugin/TranspilerQueryPlugin.js", "type": "raw" }

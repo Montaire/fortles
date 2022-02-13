@@ -1,4 +1,4 @@
-import { Addon, Application } from "@essentials-framework/core";
+import { Addon, Application } from "@fortles/core";
 import AssetMiddleware from "./middleware/AssetMiddleware.js";
 
 /**

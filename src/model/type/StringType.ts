@@ -1,21 +1,19 @@
-import { Type } from "./index.js";
-
-type IntegerConfig = {
-    min: number,
-    max: number
-};
-
-export default class StringType extends Type<number>{
-    
-}
+import { Type, EntityPropertyDecorator, TypeUtility } from "./index.js";
+import { Entity } from "../index.js";
 
 type StringTypeConfig = {
-    length: number,
-    fixed: false
+    fixed?: boolean,
+    length?: number
+};
+
+export class StringType extends Type<string, StringTypeConfig>{
+    constructor(config: StringTypeConfig = {length: 80}){
+        super(config);
+    }
 }
 
-export function string(config?: StringTypeConfig): PropertyDecorator {
-    return function(target: Object, propertyKey: string | Symbol): void{
-        this.propertyMap
+export function string(config?: StringTypeConfig): EntityPropertyDecorator {
+    return function(target: Entity, propertyKey: string | Symbol): void{
+        TypeUtility.setType(target, propertyKey, new StringType(config));
     };
 }

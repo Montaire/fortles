@@ -1,5 +1,5 @@
 import * as http from "http";
-import {Request, RequestType} from "@essentials-framework/core";
+import {Request, RequestType} from "@fortles/core";
 
 export default class ServerRequest extends Request{
 

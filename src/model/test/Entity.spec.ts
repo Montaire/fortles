@@ -1,9 +1,9 @@
 import { string, integer, primaryKey, generated, Entity } from "../index.js"
 
 class TestEntity extends Entity{
-    @integer()
     @primaryKey
     @generated
+    @integer()
     public id: number = 0;
 
     @string()

@@ -2,10 +2,18 @@ import { Type } from "./index.js";
 
 export default class Entity{
 
-    protected static typeMap = new Map<string, Type<any>>();
+    static typeMap = new Map<string, Type<any, any>>();
     protected static primaryKeys: string[] = [];
 
-    getPrimaryKey<T>(): T{
-        return null;
+    static getPrimaryKeys(): string[] | null{
+        if(!this.primaryKeys.length){
+            return null;
+        }{
+            return this.primaryKeys;
+        }
+    }
+
+    static getType(name: string): Type<any, any>{
+        return this.typeMap.get(name);
     }
 }

@@ -1,4 +1,4 @@
-import { Addon, Application } from "@essentials-framework/core";
+import { Addon, Application } from "@fortles/core";
 
 export default class I18nAddon extends Addon{
     public prepare(application: Application): void {

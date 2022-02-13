@@ -1,6 +1,6 @@
 import assert from "assert";
 import { InvalidTemplateError } from "../index.js";
-import TestUtility, { TestResponse } from "@essentials-framework/test-utility";
+import TestUtility, { TestResponse } from "@fortles/test-utility";
 import EvalWriteableShard from "../template/EvalWriteableShard.js";
 import Controller from "../Controller.js";
 

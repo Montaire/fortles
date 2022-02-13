@@ -1,9 +1,9 @@
 {
-    "name": "@essentials-framework/core",
+    "name": "@fortles/core",
     "type": "module",
     "main": "index.js",
     "version": "0.1.0",
     "devDependencies": {
-        "@essentials-framework/test-utility": "workspace:*"
+        "@fortles/test-utility": "workspace:*"
     }
 }

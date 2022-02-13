@@ -1,4 +1,4 @@
-import { RenderEngine, Request, Response } from "@essentials-framework/core";
+import { RenderEngine, Request, Response } from "@fortles/core";
 
 export default class TestRenderEngine extends RenderEngine{
     constructor(){

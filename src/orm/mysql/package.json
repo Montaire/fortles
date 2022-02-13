@@ -2,5 +2,8 @@
     "name": "@fortles/orm.mysql",
     "type": "module",
     "main": "index.js",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "dependencies": {
+        "mysql2": "^2.3.3"
+    }
 }

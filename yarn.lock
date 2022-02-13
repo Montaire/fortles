@@ -5,41 +5,25 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@essentials-framework/addon.asset@workspace:dist/addon/asset":
+"@fortles/addon.asset@workspace:dist/addon/asset":
   version: 0.0.0-use.local
-  resolution: "@essentials-framework/addon.asset@workspace:dist/addon/asset"
+  resolution: "@fortles/addon.asset@workspace:dist/addon/asset"
   dependencies:
-    "@essentials-framework/core": "workspace:*"
+    "@fortles/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@essentials-framework/addon.i18n@workspace:dist/addon/i18n":
+"@fortles/addon.i18n@workspace:dist/addon/i18n":
   version: 0.0.0-use.local
-  resolution: "@essentials-framework/addon.i18n@workspace:dist/addon/i18n"
+  resolution: "@fortles/addon.i18n@workspace:dist/addon/i18n"
   languageName: unknown
   linkType: soft
 
-"@essentials-framework/core@workspace:*, @essentials-framework/core@workspace:dist/core":
+"@fortles/core@workspace:*, @fortles/core@workspace:dist/core":
   version: 0.0.0-use.local
-  resolution: "@essentials-framework/core@workspace:dist/core"
+  resolution: "@fortles/core@workspace:dist/core"
   dependencies:
-    "@essentials-framework/test-utility": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@essentials-framework/platform.server@workspace:dist/platform/server":
-  version: 0.0.0-use.local
-  resolution: "@essentials-framework/platform.server@workspace:dist/platform/server"
-  dependencies:
-    "@essentials-framework/core": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@essentials-framework/test-utility@workspace:*, @essentials-framework/test-utility@workspace:dist/test-utility":
-  version: 0.0.0-use.local
-  resolution: "@essentials-framework/test-utility@workspace:dist/test-utility"
-  dependencies:
-    "@essentials-framework/core": "workspace:*"
+    "@fortles/test-utility": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -54,6 +38,22 @@ __metadata:
   resolution: "@fortles/orm.mysql@workspace:dist/orm/mysql"
   dependencies:
     mysql2: ^2.3.3
+  languageName: unknown
+  linkType: soft
+
+"@fortles/platform.server@workspace:dist/platform/server":
+  version: 0.0.0-use.local
+  resolution: "@fortles/platform.server@workspace:dist/platform/server"
+  dependencies:
+    "@fortles/core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fortles/test-utility@workspace:*, @fortles/test-utility@workspace:dist/test-utility":
+  version: 0.0.0-use.local
+  resolution: "@fortles/test-utility@workspace:dist/test-utility"
+  dependencies:
+    "@fortles/core": "workspace:*"
   languageName: unknown
   linkType: soft
 

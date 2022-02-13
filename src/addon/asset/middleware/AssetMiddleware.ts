@@ -1,5 +1,5 @@
-import { Middleware, NotFoundError, Request, Response } from "@essentials-framework/core";
-import { ServerResponse } from "@essentials-framework/platform.server";
+import { Middleware, NotFoundError, Request, Response } from "@fortles/core";
+import { ServerResponse } from "@fortles/platform.server";
 import * as fs from "fs";
 
 export default class AssetMiddleware extends Middleware{

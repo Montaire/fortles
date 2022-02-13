@@ -1,4 +1,4 @@
-import { Request, RequestType } from "@essentials-framework/core";
+import { Request, RequestType } from "@fortles/core";
 
 export default class TestRequest extends Request{
     protected path: string;

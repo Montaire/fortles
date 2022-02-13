@@ -1,5 +1,5 @@
 import assert from "assert";
-import { TestRequest } from "@essentials-framework/test-utility";
+import { TestRequest } from "@fortles/test-utility";
 import { Controller, Router } from "../index.js";
 
 class TestController1 extends Controller{
