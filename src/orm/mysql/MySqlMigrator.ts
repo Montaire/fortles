@@ -30,7 +30,19 @@ export default class MySqlMigrator{
     constructor(connection){
         this.connection = connection;
     }
-    async create(entityType: typeof Entity, reset:boolean = false){
+
+    async create(entityTypes: Iterable<typeof Entity>, reset:boolean = false){
+        for(const entityType of entityTypes){
+
+        }
+    }
+
+    protected createForeignKeyQuery(association: AssociationType<any>, onlyPrefix = false){
+        let target = association.getTarget();
+        let primaryKeys = target.getPrimaryKeys();
+    }
+
+    protected createTableQuery(entityType: typeof Entity, reset = false, appendForeignKeys = false): string{
         let tableName = entityType.name;
         let sql = "CREATE TABLE `" + tableName + "` (\n";
         let rows: string[] = [];
@@ -51,8 +63,10 @@ export default class MySqlMigrator{
                     }
                     for(const keyName of primaryKeys){
                         let row = "\t`" + fieldName + "`" + this.createType(target.getType(keyName));
-                        row += "REFERENCES " + target.name + "(" + keyName +")";
-                        rows.push(row);
+                        /*if(appendForeignKeys){
+                            row += "REFERENCES " + target.name + "(" + keyName +")";
+                            rows.push(row);
+                        }*/
                     }
                 }
             }else{
@@ -61,8 +75,7 @@ export default class MySqlMigrator{
         }
         sql += rows.join(",\n");
         sql += '\n);';
-        console.log(sql);
-        await this.connection.execute(sql);
+        return sql;
     }
 
     public createType(type: Type<any,any>, modifier: boolean = true): string{

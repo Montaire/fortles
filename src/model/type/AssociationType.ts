@@ -8,14 +8,22 @@ export type AssociationTypeConfig = {
 export class AssociationType<C extends AssociationTypeConfig> extends Type<Entity, C>{
 
     protected target: typeof Entity;
+    protected source: typeof Entity;
+    protected fieldName: string;
 
-    constructor(target: typeof Entity, config: C){
+    constructor(target: typeof Entity, source: typeof Entity, fieldName: string, config: C){
         super(config);
         this.target = target;
+        this.source = source;
+        this.fieldName = fieldName;
     }
 
     public getTarget(): typeof Entity{
         return this.target;
+    }
+
+    public getFieldName(): string{
+        return this.fieldName;
     }
 }
 
@@ -33,12 +41,12 @@ export class HasOneAssociationType extends OneAssociationType<AssociationTypeCon
 
 export function hasOne(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
     return (target: Entity, propertyKey:string) => {
-        TypeUtility.setType(target, propertyKey, new HasOneAssociationType(targetType, config));
+        TypeUtility.setType(target, propertyKey, new HasOneAssociationType(targetType, this, propertyKey, config));
     }
 }
 
 export function belongsTo(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
     return (target: Entity, propertyKey:string) => {
-        TypeUtility.setType(target, propertyKey, new HasOneAssociationType(targetType, config));
+        TypeUtility.setType(target, propertyKey, new HasOneAssociationType(targetType, this, propertyKey, config));
     }
 }
