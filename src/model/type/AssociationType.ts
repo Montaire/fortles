@@ -31,13 +31,13 @@ export class OneAssociationType<C> extends AssociationType<C>{}
 
 export class ManyAssociationType<C> extends AssociationType<C>{}
 
-export class BelongsToAssociationType extends OneAssociationType<AssociationTypeConfig>{
+export class BelongsToAssociationType extends OneAssociationType<AssociationTypeConfig>{}
 
-}
+export class BelongsToManyAssociationType extends OneAssociationType<AssociationTypeConfig>{}
 
-export class HasOneAssociationType extends OneAssociationType<AssociationTypeConfig>{
+export class HasOneAssociationType extends OneAssociationType<AssociationTypeConfig>{}
 
-}
+export class HasManyAssociationType extends OneAssociationType<AssociationTypeConfig>{}
 
 export function hasOne(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
     return (target: Entity, propertyKey:string) => {

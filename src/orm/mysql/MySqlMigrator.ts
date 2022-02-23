@@ -1,4 +1,4 @@
-import { Entity, IntegerType, StringType, Type, AssociationType, OneAssociationType, HasOneAssociationType } from "@fortles/model";
+import { Entity, IntegerType, StringType, Type, AssociationType, OneAssociationType, HasOneAssociationType, HasManyAssociationType } from "@fortles/model";
 import { Encoding } from "crypto";
 
 type MySqlMigratorConfig = {
@@ -31,15 +31,30 @@ export default class MySqlMigrator{
         this.connection = connection;
     }
 
-    async create(entityTypes: Iterable<typeof Entity>, reset:boolean = false){
+    async create(entityTypes: Iterable<typeof Entity> | typeof Entity[], reset:boolean = false){
+        //Build tasks
         for(const entityType of entityTypes){
-
+            
         }
+        //Create tables
+
+        //Create techincal tables
+
+        //Create foreign keys
     }
 
-    protected createForeignKeyQuery(association: AssociationType<any>, onlyPrefix = false){
+    protected createForeignKeyQuery(association: AssociationType<any>){
         let target = association.getTarget();
         let primaryKeys = target.getPrimaryKeys();
+
+        if(association instanceof HasOneAssociationType){
+
+        }
+
+        if(association instanceof HasManyAssociationType){
+
+        }
+    
     }
 
     protected createTableQuery(entityType: typeof Entity, reset = false, appendForeignKeys = false): string{
@@ -62,15 +77,15 @@ export default class MySqlMigrator{
                         primaryKeys = ["id"];
                     }
                     for(const keyName of primaryKeys){
-                        let row = "\t`" + fieldName + "`" + this.createType(target.getType(keyName));
-                        /*if(appendForeignKeys){
+                        let row = "\t`" + fieldName + "`" + this.createPrimitiveType(target.getType(keyName));
+                        if(appendForeignKeys){
                             row += "REFERENCES " + target.name + "(" + keyName +")";
                             rows.push(row);
-                        }*/
+                        }
                     }
                 }
             }else{
-                rows.push("\t`" + fieldName + "`" + this.createType(type));
+                rows.push("\t`" + fieldName + "`" + this.createPrimitiveType(type));
             }
         }
         sql += rows.join(",\n");
@@ -78,7 +93,7 @@ export default class MySqlMigrator{
         return sql;
     }
 
-    public createType(type: Type<any,any>, modifier: boolean = true): string{
+    protected createPrimitiveType(type: Type<any,any>, modifier: boolean = true): string{
         let result = "";
 
         if(type instanceof IntegerType){
@@ -116,4 +131,23 @@ export default class MySqlMigrator{
         }
         return result;
     }
+}
+
+class TaskResolver<T extends Task<K>, K>{
+    add(task: T){
+
+    }
+
+    run(){
+
+    }
+
+    buildDependacyGraph(){
+
+    }
+}
+
+class Task<T>{
+    depends 
+    run(){}
 }

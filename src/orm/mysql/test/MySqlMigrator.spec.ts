@@ -16,7 +16,7 @@ describe("Orm.MySql", function(){
         it("Can create table", function(){
             let connection = new TestConnection();
             let migrator = new MySqlMigrator(connection);
-            migrator.create(TestEntity);
+            migrator.create([TestEntity]);
         });
     });
 });
