@@ -1,4 +1,4 @@
-import { Request, RequestType } from "@fortles/core";
+import { Locale, Request, RequestType } from "@fortles/core";
 
 export default class TestRequest extends Request{
     protected path: string;
@@ -18,6 +18,9 @@ export default class TestRequest extends Request{
     }
     public getPath(): string {
         return this.path;
+    }
+    public getLocale(): Locale {
+        return new Locale();
     }
 
 }

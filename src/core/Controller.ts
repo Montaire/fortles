@@ -1,3 +1,4 @@
+import Entity from "../model/Entity.js";
 import { Router, Response, Request } from "./index.js";
 import { RenderEngine } from "./render/index.js";
 
@@ -74,5 +75,18 @@ export default class Controller {
      */
     public getEUri(): string {
         return this.eUri;
+    }
+}
+
+export class ModelAwareController<E extends typeof Entity>{
+    
+    protected model: E;
+
+    constructor(model: E){
+        this.model = model;
+    }
+
+    public getModel(): E{
+        return this.model;
     }
 }

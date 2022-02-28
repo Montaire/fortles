@@ -1,7 +1,7 @@
 import { Entity, IntegerType, StringType, Type, AssociationType, OneAssociationType, HasOneAssociationType, HasManyAssociationType } from "@fortles/model";
 import { Encoding } from "crypto";
 
-type MySqlMigratorConfig = {
+export type MySqlMigratorConfig = {
     charLength?: number,
     encoding?: Encoding,
     defaultPrimaryKey?: {
@@ -22,7 +22,6 @@ export default class MySqlMigrator{
             type: "INT UNSIGNED",
             modifier: "AUTO_INCREMENT PRIMARY KEY"
         }
-
     };
 
     protected rowSize: number;
@@ -33,6 +32,7 @@ export default class MySqlMigrator{
 
     async create(entityTypes: Iterable<typeof Entity> | typeof Entity[], reset:boolean = false){
         //Build tasks
+        let taskRunner = new TaskRunner();
         for(const entityType of entityTypes){
             
         }
@@ -133,7 +133,7 @@ export default class MySqlMigrator{
     }
 }
 
-class TaskResolver<T extends Task<K>, K>{
+class TaskRunner<T extends Task<K>, K>{
     add(task: T){
 
     }

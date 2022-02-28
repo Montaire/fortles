@@ -9,7 +9,7 @@ export default class FormatControlShard extends ControlShard{
         super(reader, parent, started);
     }
     
-    protected text: string;
+    protected text = "";
 
     public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
         if(this.shards.length == 1 && this.shards[0] instanceof WriteableShard){

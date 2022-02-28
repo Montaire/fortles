@@ -1,9 +1,9 @@
-import RenderEngine from "./RenderEngine.js";
-import TemplateFactory from "../template/TemplateFactory.js";
-import { Application, NotFoundError, Request, Response, HttpError } from "../index.js";
-import * as path from "path";
 import * as fs from "fs";
+import * as path from "path";
 import { RuntimeError } from "../Error.js";
+import { Application, HttpError, NotFoundError, Request, Response } from "../index.js";
+import TemplateFactory from "../template/TemplateFactory.js";
+import RenderEngine from "./RenderEngine.js";
 
 export default class HtmlRenderEngine extends RenderEngine{
 	public templates: TemplateFactory;

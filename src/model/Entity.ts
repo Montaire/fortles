@@ -16,4 +16,8 @@ export default class Entity{
     static getType(name: string): Type<any, any>{
         return this.typeMap.get(name);
     }
+
+    static hasType(name: string): boolean{
+        return this.typeMap.has(name);
+    }
 }

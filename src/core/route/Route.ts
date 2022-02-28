@@ -1,3 +1,6 @@
+import { Type } from "@fortles/model";
+import { ModelAwareController } from "../Controller.js";
+import { RuntimeError } from "../Error.js";
 import { Controller, Request } from "../index.js"
 //import { Type } from "../type/index.js";
 
@@ -8,7 +11,7 @@ export default class Route {
 
     protected path: string;
     protected routeBlocks = new Map<string, RouteBlock>();
-    //protected parameters = new Map<string, Type<any>>()
+    protected parameters = new Map<string, Type<any, any>>()
     protected template: string;
     protected name: string;
     protected controller: Controller;
@@ -43,6 +46,23 @@ export default class Route {
 
     public addTemplate(block: string, template: string):this{
         return this.add(block, null, template);
+    }
+
+    /**
+     * Adds a parameter to the route
+     * @param name Name of the parameter
+     * @param type type of the parameter. This field is not required, if the entity has this parameter.
+     * @returns self
+     */
+    public addParameter(name: string, type: Type<any, any> = null){
+        if(type == null && this.controller instanceof ModelAwareController && this.controller.getModel().hasType(name)){
+            type = this.controller.getModel().getType(name);
+        }
+        if(type == null){
+            throw new RuntimeError("Type can be only null, if connected entity has a property with the same name");
+        }
+        this.parameters.set(name, type);
+        return this;
     }
 
     /**

@@ -9,7 +9,7 @@
 				"$tsc-watch"
 			],
 			"group": "build",
-			"label": "Essentials: build:watch",
+			"label": "Fortles: build:watch",
 			"runOptions": {
 				"runOn": "folderOpen"
 			},
@@ -29,7 +29,7 @@
 				"$tsc"
 			],
 			"group": "build",
-			"label": "Essentials: build",
+			"label": "Fortles: build",
 		}
 	]
 }
