@@ -1,4 +1,5 @@
 import { Controller, Request, RequestType, Response, Middleware, Addon, Platform } from "./index.js";
+import Locale from "./localization/Locale.js";
 import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 
 /**
@@ -94,5 +95,13 @@ export default class Application{
         }
         this.middlewareQueue.push(middleware);
         return this;
+    }
+
+    static getLocale(code: string): Locale|null{
+        return null;
+    }
+
+    static getDefaultLocale(){
+        return null;
     }
 }

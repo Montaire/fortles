@@ -1,5 +1,5 @@
 import * as http from "http";
-import {Request, RequestType, Locale} from "@fortles/core";
+import {Request, RequestType, Locale, Application} from "@fortles/core";
 
 export default class ServerRequest extends Request{
 
@@ -40,9 +40,16 @@ export default class ServerRequest extends Request{
         return locale;
     }
 
-    public getBestLocale(): Locale|null{
+    public getClosestLocale(): Locale|null{
         let header = this.httpRequest.headers["accept-language"];
-        let matches = header.matchAll(/[a-z]{2}|\*);q=(0.\d+/);
+        let matches = header.matchAll(/([a-z]{2}|\*);q=(0.\d+)/);
+        for(const match of matches){
+            let locale = Application.getLocale(match[1]);
+            if(locale){
+                return locale;
+            }
+        }
+        return Application.getDefaultLocale();
     }
     
 }
