@@ -5,20 +5,41 @@ import * as fs from "fs";
 import { FileCharacterStreamReader } from "../utility/index.js";
 
 export default class TemplateFactory{
-	public templates: Map<string, Template> = new Map();
 
-    public build(rootFolder: string, prefix:string = null){
+	protected templates: Map<string, Template> = new Map();
+
+    protected roots: {path: string, prefix:string}[] = [];
+
+    public build(path: string, prefix:string = null){
+        this.roots.push({
+            path: path,
+            prefix: prefix
+        });
+        this.transverseFolder(path, prefix, this.createTemplate);
+    }
+
+    public transverse(callback: (name: string, path: string) => void){
+        for(const {path, prefix} of this.roots){
+            this.transverseFolder(path, prefix, callback);
+        }
+    }
+
+    public transverseFolder(rootFolder: string, prefix:string = null, callback: (name: string, path: string) => void){
         let files = fs.readdirSync(rootFolder, {withFileTypes: true});
         for(let file of files){
             let name = prefix ? prefix + '/' + file.name : file.name;
             if(file.isDirectory()){
-                this.build(rootFolder + '/' + file.name, name);
+                this.transverseFolder(rootFolder + '/' + file.name, name, callback);
             }else{
                 name = name.replace(/\.[^/.]+$/, "");
-                let reader = new FileCharacterStreamReader(rootFolder + "/" + file.name);
-                this.set(name, new Template(reader, name));
+                callback(name, rootFolder + "/" + file.name);
             }
         }
+    }
+
+    public createTemplate(name:string, path:string){
+        let reader = new FileCharacterStreamReader(path);
+        this.set(name, new Template(reader, name));
     }
 
     public get(name: string): Template{

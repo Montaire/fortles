@@ -2,12 +2,12 @@ import { Middleware, NotFoundError, Request, Response } from "@fortles/core";
 import { ServerResponse } from "@fortles/platform.server";
 import * as fs from "fs";
 
-export default class AssetMiddleware extends Middleware{
+export default class AssetMiddleware implements Middleware{
+
     protected basePath: string = "/asset";
     protected map: Map<string, string> = new Map<string, string>();
 
     constructor(){
-        super();
         this.map.set("/favico.ico", this.basePath + "/favico.ico");
     }
     
@@ -32,5 +32,9 @@ export default class AssetMiddleware extends Middleware{
         }
 
         return false;
+    }
+
+    public getPriority(): number {
+        return 100;
     }
 }

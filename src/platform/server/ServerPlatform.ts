@@ -1,6 +1,7 @@
 import { Application} from "@fortles/core";
 import { Platform } from "@fortles/core";
 import * as http from "http";
+import * as http2 from "http2";
 import { ServerRequest, ServerResponse } from "./index.js";
 
 export default class ServerPlatform extends Platform{

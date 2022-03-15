@@ -1,0 +1,10 @@
+{
+    "name": "@fortles/addon.hot-reload",
+    "type": "module",
+    "main": "HotReloadAddon.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@fortles/core": "workspace:*",
+        "@fortles/platform.server": "workspace:*"
+    }
+}

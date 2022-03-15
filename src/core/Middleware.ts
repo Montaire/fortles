@@ -3,16 +3,14 @@ import { Request, Response } from "./index.js";
 /**
  * Middleware class
  */
-export default abstract class Middleware {
+export default interface Middleware {
     /**
      * 
      * @param request Request from the application
      * @param response Response to the application
      * @returns Wether the Middleware stack should continue, or just close the response
      */
-    public abstract run(request: Request, response: Response): boolean
+    run(request: Request, response: Response): boolean
 
-    public getPriority(): number{
-        return 100;
-    }
+    getPriority(): number;
 }

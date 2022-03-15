@@ -4,6 +4,7 @@ import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 
 /**
  * Application is the main entrnance point.
+ * It can be decorated with addons.
  */
 export default class Application{
 	protected platform: Platform;
@@ -34,7 +35,7 @@ export default class Application{
      * @param request 
      * @param response 
      */
-    dispatch(request: Request, response: Response): void{
+    public dispatch(request: Request, response: Response): void{
         // run middlewares
         for(let middleware of this.middlewareQueue){
             if(!middleware.run(request, response)){
@@ -56,15 +57,24 @@ export default class Application{
      * Gets the render engine from the mime type
      * @param request 
      */
-    getRenderEngine(request: Request): RenderEngine{
+    public getRenderEngine(request: Request): RenderEngine{
         return this.renderEngines.get(request.getMime());
+    }
+
+    /**
+     * Returns the whole map of the render engines.
+     * Engines can be added or remved here.
+     * @returns Map of the render engines
+     */
+    public getRenderEngines(): Map<string, RenderEngine>{
+        return this.renderEngines;
     }
 
     /**
      * Gets the main controller of the applcation.
      * @returns The main controller.
      */
-    getMainController(): Controller{
+    public getMainController(): Controller{
         return this.mainController;
     }
 

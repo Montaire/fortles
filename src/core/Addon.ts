@@ -1,8 +1,6 @@
+import AddonGroup from "./AddonGroup.js";
 import { Application, Middleware } from "./index.js";
 
-export default abstract class Addon{
-    public getMiddlewares(): Middleware[]{
-        return [];
-    }
-    public abstract prepare(application: Application): void;
+export default interface Addon<T extends AddonGroup = AddonGroup>{
+    prepare(application: Application): void;
 }

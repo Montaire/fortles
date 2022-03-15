@@ -5,7 +5,17 @@ import { Application, HttpError, NotFoundError, Request, Response } from "../ind
 import TemplateFactory from "../template/TemplateFactory.js";
 import RenderEngine, { TemplateRenderEngine } from "./RenderEngine.js";
 
+export enum HtmlRenderEngineContentPlace{
+    HEADER,
+    BFEORE_CONTENT,
+    AFTER_CONTENT
+}
+
 export default class HtmlRenderEngine extends TemplateRenderEngine{
+
+    header: string = null;
+    afterConetent: string = null;
+    beforeContent: string = null;
 
     constructor(){
         super();
@@ -16,7 +26,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         this.templates.build(templatePath);
     }
 
-    dispatch(request: Request, response: Response){
+    public dispatch(request: Request, response: Response){
         try{
             let route = response.getController().getRouter().getRoute(request);
             if(!route){
@@ -41,16 +51,44 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         }
     }
     
-    beforeDispatch(request: Request, response: Response){
+    public beforeDispatch(request: Request, response: Response){
         response.write("<!DOCTYPE html><html><header>");
-        let header = this.templates.get("header");
-        if(header){
-            header.render(this, request, response);
+        let headerTemplate = this.templates.get("header");
+        if(headerTemplate){
+            headerTemplate.render(this, request, response);
         }
-        response.write("</header>");
+        if(this.header){
+            response.write(this.header);
+        }
+        response.write("</header><body>");
+        if(this.beforeContent){
+            response.write(this.beforeContent);
+        }
+
     }
 
-    afterDispatch(request: Request, response: Response){
-        response.write('</html>');
+    public afterDispatch(request: Request, response: Response){
+        if(this.afterConetent){
+            response.write(this.afterConetent);
+        }
+        response.write('</body></html>');
+    }
+
+    public addScriptFile(path: string, place: HtmlRenderEngineContentPlace): void{
+        this.addContent('<script src="'+path+'" ></script>', place);
+    }
+
+    public addContent(content: string, place: HtmlRenderEngineContentPlace): void{
+        switch (place){
+            case HtmlRenderEngineContentPlace.HEADER:
+                this.header += content;
+                break;
+            case HtmlRenderEngineContentPlace.BFEORE_CONTENT:
+                this.beforeContent += content;
+                break;
+            case HtmlRenderEngineContentPlace.AFTER_CONTENT:
+                this.afterConetent += content;
+                break;
+        }
     }
 }

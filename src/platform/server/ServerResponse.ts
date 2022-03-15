@@ -25,4 +25,8 @@ export default class ServerResponse extends Response{
     public getStream(): stream.Writable{
         return this.httpResponse;
     }
+
+    public getOriginal(): http.ServerResponse{
+        return this.httpResponse;
+    }
 }

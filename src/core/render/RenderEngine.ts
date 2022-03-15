@@ -32,4 +32,8 @@ export abstract class TemplateRenderEngine extends RenderEngine{
     public getTemplate(name: string): Template{
         return this.templates.get(name);
     }
+
+    public getTemplateFactory(): TemplateFactory{
+        return this.templates;
+    }
 }
