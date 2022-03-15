@@ -6,7 +6,7 @@ export default class Controller {
 
     protected router: Router = new Router(this);
     protected path: string;
-    protected eUri: string;
+    protected blockPath: string;
 
     public constructor() {
         let className = this.constructor.name;
@@ -15,10 +15,6 @@ export default class Controller {
     }
 
     protected buildRouter(router: Router): void{}
-    
-    public setEUri(eUri: string): void{
-        this.eUri = eUri;
-    }
 
     /**
      * Gets the Router.
@@ -68,13 +64,16 @@ export default class Controller {
         renderEngine.dispatch(request, response);
     }
 
+    public setBlockPath(path: string): void{
+        this.blockPath = path;
+    }
+
     /**
-     * Returns the position in the tree in an uri form.
-     *
-     * @return The e-uri;
+     * Returns the position in the tree.
+     * @return The path.
      */
-    public getEUri(): string {
-        return this.eUri;
+    public getBlockPath(): string {
+        return this.blockPath;
     }
 }
 

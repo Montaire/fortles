@@ -15,11 +15,11 @@ describe("Router", function(){
 
     before("Build Routes", function(){
         router.createDefaultRoute("defaultTemplate")
-            .addController("block1", Controller)
+            .addController("block1", new Controller())
             .addTemplate("block2", "template2");
         
         router.createRoute("route1", "template1")
-            .addController("block1", TestController1)
+            .addController("block1", new TestController1())
             .addTemplate("block2", "template3");
     });
 

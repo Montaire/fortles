@@ -19,7 +19,7 @@ export default class Application{
     constructor(platform: Platform, mainController: Controller){
         this.platform = platform;
         this.mainController = mainController;
-        this.renderEngines.set('text/html', new HtmlRenderEngine(this));
+        this.renderEngines.set('text/html', new HtmlRenderEngine());
     }
 
     /**

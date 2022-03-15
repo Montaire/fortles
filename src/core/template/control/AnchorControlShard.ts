@@ -9,11 +9,11 @@ export default class AnchorControlShard extends ControlShard {
     protected isGo: boolean = true;
     protected url: string;
 
-    public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
-        let canonicalUrl = attributes.get("go");
+    public initialize(reader: CharacterStreamReader): void {
+        let canonicalUrl = this.attributes.get("go");
         
         if(canonicalUrl == null){
-            canonicalUrl = attributes.get("do");
+            canonicalUrl = this.attributes.get("do");
             this.isGo = false;
         }
         if(canonicalUrl == null){

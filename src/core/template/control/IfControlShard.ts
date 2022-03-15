@@ -4,7 +4,7 @@ import {ControlShard, TemplateShard} from "../index.js";
 import {Request, Response} from "../../index.js";
 
 export default class IfControlShard extends ControlShard{
-    public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
+    public initialize(reader: CharacterStreamReader): void {
         
     }
     public getName(): string {

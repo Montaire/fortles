@@ -5,7 +5,7 @@ import { RenderEngine } from "../../render/index.js";
 import { Request, Response } from "../../index.js";
 
 export default class InputControlShard extends ControlShard {
-    public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
+    public initialize(reader: CharacterStreamReader): void {
         if(this.shards.length > 0){
             throw new InvalidTemplateError("e:input cant have inner html.", reader);
         }

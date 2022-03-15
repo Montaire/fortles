@@ -11,7 +11,7 @@ export default class FormatControlShard extends ControlShard{
     
     protected text = "";
 
-    public initialize(attributes: Map<string, string>, reader: CharacterStreamReader): void {
+    public initialize(reader: CharacterStreamReader): void {
         if(this.shards.length == 1 && this.shards[0] instanceof WriteableShard){
             let textShard = this.shards[0];
             this.text = textShard.toString();

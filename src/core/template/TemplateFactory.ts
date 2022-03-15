@@ -5,14 +5,9 @@ import * as fs from "fs";
 import { FileCharacterStreamReader } from "../utility/index.js";
 
 export default class TemplateFactory{
-	public application: Application;
 	public templates: Map<string, Template> = new Map();
 
-    constructor(application: Application){
-        this.application = application;
-    }
-
-    build(rootFolder: string, prefix:string = null){
+    public build(rootFolder: string, prefix:string = null){
         let files = fs.readdirSync(rootFolder, {withFileTypes: true});
         for(let file of files){
             let name = prefix ? prefix + '/' + file.name : file.name;
@@ -21,12 +16,16 @@ export default class TemplateFactory{
             }else{
                 name = name.replace(/\.[^/.]+$/, "");
                 let reader = new FileCharacterStreamReader(rootFolder + "/" + file.name);
-                this.templates.set(name, new Template(reader, name));
+                this.set(name, new Template(reader, name));
             }
         }
     }
 
-    get(name: string){
+    public get(name: string): Template{
         return this.templates.get(name);
+    }
+
+    public set(name: string, template: Template): void{
+        this.templates.set(name, template);
     }
 }

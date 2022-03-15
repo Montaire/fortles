@@ -41,10 +41,9 @@ export default abstract class ControlShard extends TemplateShard {
             case ControlShardCursorPosition.ENDED:
                 break;
         }
-        this.initialize(this.attributes, reader)
     }
 
-    public abstract initialize(attributes:Map<string, string>, reader: CharacterStreamReader): void;
+    public abstract initialize(reader: CharacterStreamReader): void;
 
     public abstract  getName(): string;
 

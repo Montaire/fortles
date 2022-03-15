@@ -13,6 +13,7 @@ import {
 import { Request, Response, Application } from '../index.js';
 import { CharacterStreamReader } from "../utility/index.js";
 import { RenderEngine } from "../render/index.js";
+import ControlShard from "./control/ControlShard.js";
 
 export const enum TemplateShardStates{
     TEXT_START,
@@ -33,6 +34,7 @@ export default class TemplateShard implements Shard{
 	protected parent: TemplateShard;
 	protected shardName: string
     protected shards: Shard[] = [];
+    protected namespace = 'f';
 
     constructor(parent: TemplateShard){
         this.parent = parent;
@@ -107,7 +109,7 @@ export default class TemplateShard implements Shard{
                     break;
                 case TemplateShardStates.CONTROL_START:
                     switch (c) {
-                        case 'e':
+                        case this.namespace:
                             state = TemplateShardStates.CONTROL;
                             break;
                         case '/':
@@ -133,14 +135,14 @@ export default class TemplateShard implements Shard{
                         default:
                             state = TemplateShardStates.TEXT;
                             shard.write('<');
-                            shard.write('e');
+                            shard.write(this.namespace);
                             shard.write(c);
                             break;
                     }
                     break;
                 case TemplateShardStates.CONTROL_STOP_START:
                     switch (c) {
-                        case 'e':
+                        case this.namespace:
                             state = TemplateShardStates.CONTROL_STOP;
                             break;
                         default:
@@ -164,7 +166,7 @@ export default class TemplateShard implements Shard{
                             state = TemplateShardStates.TEXT;
                             shard.write('<');
                             shard.write('/');
-                            shard.write('e');
+                            shard.write(this.namespace);
                             shard.write(c);
                             break;
                     }
@@ -219,24 +221,33 @@ export default class TemplateShard implements Shard{
     }
 
     createControlShard(name: string, reader: CharacterStreamReader, cursorPosition: ControlShardCursorPosition): Shard{
+        let shard: ControlShard;
         switch (name) {
             case "block":
-                return new BlockControlShard(reader, this, cursorPosition);
+                shard = new BlockControlShard(reader, this, cursorPosition);
+                break;
             /*case "for":
                 return new ForControlShard(reader, this);
             case "form":
                 return new FormControlShard(reader, this);*/
             case "a":
-                return new AnchorControlShard(reader, this, cursorPosition);
+                shard = new AnchorControlShard(reader, this, cursorPosition);
+                break;
             case "if":
-                return new IfControlShard(reader, this, cursorPosition);
+                shard = new IfControlShard(reader, this, cursorPosition);
+                break;
             case "input":
-                return new InputControlShard(reader, this, cursorPosition);
+                shard = new InputControlShard(reader, this, cursorPosition);
+                break;
             case "f":
-                return new FormatControlShard(reader, this, cursorPosition);
+                shard = new FormatControlShard(reader, this, cursorPosition);
+                break;
             default:
                 throw new Error("There is no 'TemplateShard' definiton for '" + name + "'");
         }
+        shard.initialize(reader);
+        return shard;
+        
     }
 
     prepareControl(reader: CharacterStreamReader): void{

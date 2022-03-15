@@ -27,25 +27,26 @@ export default class Route {
      * Adds a Block with an attached Controller with default template.
      * Use this to inject dependency trough the contructor of the Controller.
      * @param block Name of the targeted block in the view.
-     * @param controllerClass Controller definition attached to the block. Can be empty
+     * @param controller The attached controller to the block.
      * @param template Template of the block. Can be null for self.
      * @return Self for chaining functions.
      */
-    public add(block: string, controllerClass: typeof Controller = null, template: string = null): this {
-        if(controllerClass){
-            var controller = new controllerClass();
-            controller.setEUri(this.controller.getEUri() == null ? block : this.controller.getEUri() + "-" + block);
-        }
+    public addController(block: string, controller: Controller, template: string = null): this{
+        controller.setBlockPath(this.controller.getBlockPath() == null ? block : (this.controller.getBlockPath() + "-" + block));
         this.routeBlocks.set(block, new RouteBlock(controller, template || this.template));
         return this;
     }
 
-    public addController(block: string, controllerClass: typeof Controller): this{
-        return this.add(block, controllerClass, null);
-    }
-
+    /**
+     * Adds a Block to the current Controller.
+     * Use this to inject dependency trough the contructor of the Controller.
+     * @param block Name of the targeted block in the view.
+     * @param template Template of the block. Can be null for self.
+     * @return Self for chaining functions.
+     */
     public addTemplate(block: string, template: string):this{
-        return this.add(block, null, template);
+        this.routeBlocks.set(block, new RouteBlock(null, template || this.template));
+        return this;
     }
 
     /**

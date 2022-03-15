@@ -1,15 +1,7 @@
 import { Application, Request, Response } from "../";
+import { Template, TemplateFactory } from "../template/index.js";
 
 export default abstract class RenderEngine{
-	protected application: Application;
-
-    /**
-     * 
-     * @param application 
-     */        
-    constructor(application: Application){
-        this.application = application
-    }
 
     /**
      * Renders the whole tree from the given controller.
@@ -31,4 +23,13 @@ export default abstract class RenderEngine{
      * @param response 
      */
     public afterDispatch(request: Request, response: Response){} 
+}
+
+export abstract class TemplateRenderEngine extends RenderEngine{
+
+    protected templates = new TemplateFactory();
+
+    public getTemplate(name: string): Template{
+        return this.templates.get(name);
+    }
 }

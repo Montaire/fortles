@@ -3,14 +3,12 @@ import * as path from "path";
 import { RuntimeError } from "../Error.js";
 import { Application, HttpError, NotFoundError, Request, Response } from "../index.js";
 import TemplateFactory from "../template/TemplateFactory.js";
-import RenderEngine from "./RenderEngine.js";
+import RenderEngine, { TemplateRenderEngine } from "./RenderEngine.js";
 
-export default class HtmlRenderEngine extends RenderEngine{
-	public templates: TemplateFactory;
+export default class HtmlRenderEngine extends TemplateRenderEngine{
 
-    constructor(application: Application){
-        super(application);
-        this.templates = new TemplateFactory(application);
+    constructor(){
+        super();
         let templatePath = path.normalize(path.dirname(process.argv[1]) + '/../template');
         if(!fs.existsSync(templatePath)){
             throw new RuntimeError("There is no folder with templates on the'"+templatePath+"'");
@@ -44,7 +42,12 @@ export default class HtmlRenderEngine extends RenderEngine{
     }
     
     beforeDispatch(request: Request, response: Response){
-        response.write('<!DOCTYPE html><html><header><title>Hello Essential</title></header>');
+        response.write("<!DOCTYPE html><html><header>");
+        let header = this.templates.get("header");
+        if(header){
+            header.render(this, request, response);
+        }
+        response.write("</header>");
     }
 
     afterDispatch(request: Request, response: Response){
