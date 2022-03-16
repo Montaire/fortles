@@ -1,8 +1,15 @@
-import { TemplateRenderEngine } from "../core/render/RenderEngine.js";
+import { RenderEngineContentPlace, TemplateRenderEngine } from "../core/render/RenderEngine.js";
 import {  RenderEngine, Request, Response } from "@fortles/core";
 import { Template, TemplateFactory } from "../core/template/index.js";
 
 export default class TestRenderEngine extends TemplateRenderEngine{
+    public addStyleAsset(path: string, place?: RenderEngineContentPlace): void {
+        throw new Error("Method not implemented.");
+    }
+    
+    public addScriptAsset(path: string, place?: RenderEngineContentPlace): void {
+        throw new Error("Method not implemented.");
+    }
 
     public dispatch(request: Request, response: Response): void {
         let route = response.getController().getRouter().getRoute(request);

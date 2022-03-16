@@ -15,7 +15,7 @@ export default class TemplateFactory{
             path: path,
             prefix: prefix
         });
-        this.transverseFolder(path, prefix, this.createTemplate);
+        this.transverseFolder(path, prefix, this.createTemplate.bind(this));
     }
 
     public transverse(callback: (name: string, path: string) => void){

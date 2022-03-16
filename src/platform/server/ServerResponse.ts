@@ -29,4 +29,8 @@ export default class ServerResponse extends Response{
     public getOriginal(): http.ServerResponse{
         return this.httpResponse;
     }
+
+    public setMime(mime: string): void {
+        this.httpResponse.setHeader('Content-Type', mime);
+    }
 }

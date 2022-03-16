@@ -1,0 +1,10 @@
+{
+    "name": "@fortles/addon.bootstrap",
+    "type": "module",
+    "main": "BootstrapAddon.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@fortles/core": "workspace:*",
+        "bootstrap": "^5.1.3"
+    }
+}

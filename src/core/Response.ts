@@ -62,4 +62,8 @@ export default abstract class Response{
     getStream(): stream.Writable{
         return null;
     }
+
+    setMime(mime: string): void{
+
+    }
 }

@@ -25,7 +25,18 @@ export default abstract class RenderEngine{
     public afterDispatch(request: Request, response: Response){} 
 }
 
-export abstract class TemplateRenderEngine extends RenderEngine{
+export enum RenderEngineContentPlace{
+    HEADER,
+    BFEORE_CONTENT,
+    AFTER_CONTENT
+}
+
+export abstract class ContentAvareRenderEngine extends RenderEngine{
+    public abstract addScriptAsset(path: string, place? : RenderEngineContentPlace): void;
+    public abstract addStyleAsset(path: string, place? : RenderEngineContentPlace): void;
+}
+
+export abstract class TemplateRenderEngine extends ContentAvareRenderEngine{
 
     protected templates = new TemplateFactory();
 

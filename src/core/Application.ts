@@ -1,6 +1,10 @@
+import * as url from "url";
+import Path from "path";
+import AssetHandler from "./AssetHandler.js";
 import { Controller, Request, RequestType, Response, Middleware, Addon, Platform } from "./index.js";
 import Locale from "./localization/Locale.js";
 import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
+import { ContentAvareRenderEngine } from "./render/RenderEngine.js";
 
 /**
  * Application is the main entrnance point.
@@ -12,6 +16,7 @@ export default class Application{
 	protected renderEngines: Map<string, RenderEngine> = new Map();
     protected middlewareQueue: Middleware[] = [];
     protected addons: Addon[] = [];
+    protected assetHandler = new AssetHandler();
 
     /**
      * Creates a new application for the given platform.
@@ -21,6 +26,7 @@ export default class Application{
         this.platform = platform;
         this.mainController = mainController;
         this.renderEngines.set('text/html', new HtmlRenderEngine());
+        this.addMiddleware(this.assetHandler);
     }
 
     /**
@@ -105,6 +111,39 @@ export default class Application{
         }
         this.middlewareQueue.push(middleware);
         return this;
+    }
+
+    /**
+     * Adds an asset.
+     * @param path Path of the asset.
+     * @param baseUrl Base url of the asset. import.meta.url, if its a file from the same location where this function is called.
+     */
+    public addAsset(path: string, mime: string,  baseUrl: string = null){
+        let basePath = "";
+        if(baseUrl){
+            basePath = Path.dirname(url.fileURLToPath(baseUrl));
+        }
+        this.assetHandler.add(path, Path.normalize(basePath+path), mime);
+    }
+
+    public addScriptAsset(path: string, baseUrl: string = null){
+        for(const engine of this.renderEngines.values()){
+            if(engine instanceof ContentAvareRenderEngine){
+                engine.addScriptAsset(path);
+            }
+        }
+        this.addAsset(path, "text/javascript", baseUrl);
+        this.addAsset(path + ".map", "application/json", baseUrl);
+    }
+
+    public addStyleAsset(path: string, baseUrl: string = null){
+        for(const engine of this.renderEngines.values()){
+            if(engine instanceof ContentAvareRenderEngine){
+                engine.addStyleAsset(path);
+            }
+        }
+        this.addAsset(path, "text/css", baseUrl);
+        this.addAsset(path + ".map", "application/json", baseUrl);
     }
 
     static getLocale(code: string): Locale|null{

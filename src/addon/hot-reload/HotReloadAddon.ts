@@ -1,20 +1,22 @@
 import { Addon, Application, Middleware, Request, Response } from "@fortles/core";
-import { ServerResponse } from "@fortles/platform.server";
+import { ServerRequest, ServerResponse } from "@fortles/platform.server";
 import fs from "fs";
 import * as http from "http";
+import Path from "path";
 import { HtmlRenderEngine } from "../../core/render";
 
-export class HotReloadAddon implements Addon, Middleware{
+export default class HotReloadAddon implements Addon, Middleware{
 
     protected clients: http.ServerResponse[] = [];
 
     public prepare(application: Application): void {
         application.addMiddleware(this);
         this.watch(application);
+        application.addScriptAsset("/asset/event-source.js", import.meta.url);;
     }
 
     public run(request: Request, response: Response): boolean {
-        if(request.getPath() == "/dev" && response instanceof ServerResponse){
+        if(request.getPath() == "/fortles/event-source" && response instanceof ServerResponse && request instanceof ServerRequest){
             let originalResponse = response.getOriginal();
             //Create event stream
             originalResponse.writeHead(200, {
@@ -23,6 +25,9 @@ export class HotReloadAddon implements Addon, Middleware{
                 "Connection": "keep-alive"
             });
             this.clients.push(originalResponse);
+            request.getOriginal().on('close', () => {
+                this.clients = this.clients.filter(x => x === originalResponse);
+            });
             return false;
         }
         return true;
@@ -34,10 +39,9 @@ export class HotReloadAddon implements Addon, Middleware{
         factory.transverse((name, path) => {
             fs.watch(path, (eventType, fileName) => {
                 factory.createTemplate(name, path);
-                this.clients = this.clients.filter(client => {
-                    client.write("reload\n");
-                    return !client.writableEnded;
-                });
+                for(const client of this.clients){
+                    client.write("event:hot-reload\ndata:reloado\n\n");
+                }
             });
         });
     }

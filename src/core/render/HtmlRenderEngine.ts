@@ -3,13 +3,7 @@ import * as path from "path";
 import { RuntimeError } from "../Error.js";
 import { Application, HttpError, NotFoundError, Request, Response } from "../index.js";
 import TemplateFactory from "../template/TemplateFactory.js";
-import RenderEngine, { TemplateRenderEngine } from "./RenderEngine.js";
-
-export enum HtmlRenderEngineContentPlace{
-    HEADER,
-    BFEORE_CONTENT,
-    AFTER_CONTENT
-}
+import RenderEngine, { RenderEngineContentPlace as ContentPlace, TemplateRenderEngine } from "./RenderEngine.js";
 
 export default class HtmlRenderEngine extends TemplateRenderEngine{
 
@@ -74,19 +68,23 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         response.write('</body></html>');
     }
 
-    public addScriptFile(path: string, place: HtmlRenderEngineContentPlace): void{
+    public addScriptAsset(path: string, place = ContentPlace.AFTER_CONTENT): void{
         this.addContent('<script src="'+path+'" ></script>', place);
     }
 
-    public addContent(content: string, place: HtmlRenderEngineContentPlace): void{
+    public addStyleAsset(path: string, place = ContentPlace.HEADER): void{
+        this.addContent('<link rel="stylesheet" href="' + path + '">', place);
+    }
+
+    public addContent(content: string, place: ContentPlace): void{
         switch (place){
-            case HtmlRenderEngineContentPlace.HEADER:
+            case ContentPlace.HEADER:
                 this.header += content;
                 break;
-            case HtmlRenderEngineContentPlace.BFEORE_CONTENT:
+            case ContentPlace.BFEORE_CONTENT:
                 this.beforeContent += content;
                 break;
-            case HtmlRenderEngineContentPlace.AFTER_CONTENT:
+            case ContentPlace.AFTER_CONTENT:
                 this.afterConetent += content;
                 break;
         }

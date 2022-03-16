@@ -51,5 +51,9 @@ export default class ServerRequest extends Request{
         }
         return Application.getDefaultLocale();
     }
+
+    public getOriginal(): http.IncomingMessage{
+        return this.httpRequest;
+    }
     
 }
