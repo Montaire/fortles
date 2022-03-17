@@ -10,7 +10,7 @@
     "rootDir": "src",
     "declaration": true,  
     "baseUrl": "./src",
-    "incremental": true,
+    //"incremental": true,
     "experimentalDecorators": true,
     "paths": {
       "@fortles/core": ["./core/index.js"],
