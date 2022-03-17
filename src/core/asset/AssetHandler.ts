@@ -1,4 +1,4 @@
-import { Middleware, NotFoundError, Request, Response } from "./index.js";
+import { Middleware, NotFoundError, Request, Response, Asset } from "../index.js";
 import * as fs from "fs";
 import Path from "path";
 
@@ -16,7 +16,7 @@ export default class AssetHandler implements Middleware{
         let mime: string = null;
         if(this.map.has(path)){
             let asset = this.map.get(path);
-            path = asset.path;
+            path = asset.source;
             mime = asset.mime;
         }else if(!path.startsWith(this.basePath)){
             //If not an asset run foreward
@@ -53,16 +53,7 @@ export default class AssetHandler implements Middleware{
         return 100;
     }
 
-    public add(url: string, path:string, mime: string){
-        this.map.set(url, new Asset(path, mime));
-    }
-}
-
-class Asset{
-    path: string;
-    mime: string;
-    constructor(path: string = null, mime: string = null){
-        this.path = path;
-        this.mime = mime;
+    public add(asset: Asset){
+        this.map.set(asset.url, asset);
     }
 }

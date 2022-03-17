@@ -1,7 +1,7 @@
 import * as url from "url";
 import Path from "path";
-import AssetHandler from "./AssetHandler.js";
-import { Controller, Request, RequestType, Response, Middleware, Addon, Platform } from "./index.js";
+import AssetHandler from "./asset/AssetHandler.js";
+import { Controller, Request, RequestType, Response, Middleware, Addon, Platform, Asset } from "./index.js";
 import Locale from "./localization/Locale.js";
 import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 import { ContentAvareRenderEngine } from "./render/RenderEngine.js";
@@ -115,35 +115,15 @@ export default class Application{
 
     /**
      * Adds an asset.
-     * @param path Path of the asset.
-     * @param baseUrl Base url of the asset. import.meta.url, if its a file from the same location where this function is called.
      */
-    public addAsset(path: string, mime: string,  baseUrl: string = null){
-        let basePath = "";
-        if(baseUrl){
-            basePath = Path.dirname(url.fileURLToPath(baseUrl));
-        }
-        this.assetHandler.add(path, Path.normalize(basePath+path), mime);
-    }
-
-    public addScriptAsset(path: string, baseUrl: string = null){
+    public addAsset(asset: Asset): this{
+        this.assetHandler.add(asset);
         for(const engine of this.renderEngines.values()){
             if(engine instanceof ContentAvareRenderEngine){
-                engine.addScriptAsset(path);
+                engine.addAsset(asset);
             }
         }
-        this.addAsset(path, "text/javascript", baseUrl);
-        this.addAsset(path + ".map", "application/json", baseUrl);
-    }
-
-    public addStyleAsset(url: string, baseUrl: string = null){
-        for(const engine of this.renderEngines.values()){
-            if(engine instanceof ContentAvareRenderEngine){
-                engine.addStyleAsset(url);
-            }
-        }
-        this.addAsset(url, "text/css", baseUrl);
-        this.addAsset(url + ".map", "application/json", baseUrl);
+        return this;
     }
 
     static getLocale(code: string): Locale|null{

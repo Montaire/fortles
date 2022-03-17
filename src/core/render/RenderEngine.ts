@@ -1,4 +1,4 @@
-import { Application, Request, Response } from "../";
+import { Application, Asset, Request, Response } from "../index.js";
 import { Template, TemplateFactory } from "../template/index.js";
 
 export default abstract class RenderEngine{
@@ -32,8 +32,7 @@ export enum RenderEngineContentPlace{
 }
 
 export abstract class ContentAvareRenderEngine extends RenderEngine{
-    public abstract addScriptAsset(path: string, place? : RenderEngineContentPlace): void;
-    public abstract addStyleAsset(path: string, place? : RenderEngineContentPlace): void;
+    public abstract addAsset(asset: Asset): void;
 }
 
 export abstract class TemplateRenderEngine extends ContentAvareRenderEngine{

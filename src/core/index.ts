@@ -10,3 +10,4 @@ export * from "./Error.js";
 export {RenderEngine} from "./render/index.js";
 export {default as Platform} from "./Platform.js";
 export * from "./localization/index.js"
+export * from "./asset/index.js"

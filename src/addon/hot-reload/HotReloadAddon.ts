@@ -1,4 +1,4 @@
-import { Addon, Application, Middleware, Request, Response } from "@fortles/core";
+import { Addon, Application, Middleware, Request, Response, ScriptAsset } from "@fortles/core";
 import { ServerRequest, ServerResponse } from "@fortles/platform.server";
 import fs from "fs";
 import * as http from "http";
@@ -9,10 +9,11 @@ export default class HotReloadAddon implements Addon, Middleware{
 
     protected clients: http.ServerResponse[] = [];
 
-    public prepare(application: Application): void {
+    public async prepare(application: Application): Promise<void> {
         application.addMiddleware(this);
         this.watch(application);
-        application.addScriptAsset("/asset/event-source.js", import.meta.url);;
+        let asset = new ScriptAsset(await import.meta.resolve("./asset/event-source.js"));
+        application.addAsset(asset);
     }
 
     public run(request: Request, response: Response): boolean {

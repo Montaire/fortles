@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import { Asset, ScriptAsset, StyleAsset } from "../asset/Asset.js";
 import { RuntimeError } from "../Error.js";
 import { Application, HttpError, NotFoundError, Request, Response } from "../index.js";
 import TemplateFactory from "../template/TemplateFactory.js";
@@ -68,12 +69,13 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         response.write('</body></html>');
     }
 
-    public addScriptAsset(path: string, place = ContentPlace.AFTER_CONTENT): void{
-        this.addContent('<script src="'+path+'" ></script>', place);
-    }
-
-    public addStyleAsset(path: string, place = ContentPlace.HEADER): void{
-        this.addContent('<link rel="stylesheet" href="' + path + '">', place);
+    public addAsset(asset: Asset): void {
+        if(asset instanceof ScriptAsset){
+            this.addContent('<script src="' + asset.url + '" ></script>', asset.place);
+        }
+        if(asset instanceof StyleAsset){
+            this.addContent('<link rel="stylesheet" href="' + asset.url + '">', asset.place);
+        }
     }
 
     public addContent(content: string, place: ContentPlace): void{
