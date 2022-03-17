@@ -136,14 +136,14 @@ export default class Application{
         this.addAsset(path + ".map", "application/json", baseUrl);
     }
 
-    public addStyleAsset(path: string, baseUrl: string = null){
+    public addStyleAsset(url: string, baseUrl: string = null){
         for(const engine of this.renderEngines.values()){
             if(engine instanceof ContentAvareRenderEngine){
-                engine.addStyleAsset(path);
+                engine.addStyleAsset(url);
             }
         }
-        this.addAsset(path, "text/css", baseUrl);
-        this.addAsset(path + ".map", "application/json", baseUrl);
+        this.addAsset(url, "text/css", baseUrl);
+        this.addAsset(url + ".map", "application/json", baseUrl);
     }
 
     static getLocale(code: string): Locale|null{
