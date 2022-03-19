@@ -12,5 +12,9 @@ export default interface Middleware {
      */
     run(request: Request, response: Response): boolean
 
+    /**
+     * The order of the middlewares.
+     * @returns The first used priority is 100
+     */
     getPriority(): number;
 }
