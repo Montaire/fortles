@@ -1,12 +1,15 @@
 import { Middleware, Request, Response } from "../index.js";
 import Service from "./Service.js";
+import ServiceContainer from "./ServiceContainer.js";
 
-export default class ServiceManager extends Service implements Middleware{
+export default class ServiceManager extends ServiceContainer implements Middleware{
+
+    protected serviceMap = new Map<string, Service>();
 
     public run(request: Request, response: Response): boolean {
         //Check direct match;
         let path = request.getPath();
-        if(this.directPathMap.has(path)){
+        if(this.fullPathMap.has(path)){
             return true;
         }
         let pos = path.indexOf('/');
@@ -30,29 +33,25 @@ export default class ServiceManager extends Service implements Middleware{
      * @param service The service to be added.
      * @returns If the service is already added, return the added instance.
      */
-
     public add(service: Service): Service{
-        if(this.serviceMap.has(typeof service)){
-            return this.serviceMap.get(typeof service);
-        }
-        this.serviceMap.set(typeof service, service);
-        for(const path of service.getDirectPaths()){
-            this.directPathMap.set(path, service);
-        }
-        let container = service.getContainer();
-        if(container == null){
-            for(const path of service.getPartialPaths()){
-                this.partialPathMap.set(path, service);
-            }
-        }else{
-            container.add(service);
+        let container = service.createContainer();
+        if(container != null){
             //Recursively add all container.
-            this.add(service.getContainer());
+            container = this.add(container) as ServiceContainer;
+            container.add(service);
         }
+        //initialize service after the structure is built.
+        this.serviceMap.set(typeof service, service);
+        service.initialize();
         return service;
     }
 
-    public get<T extends Service>(serviceType: new() => T): T{
+    /**
+     * This method will return the Service object.
+     * @param serviceType The static identifier of the service
+     * @returns The service if loaded othervise null.
+     */
+    public get<T extends Service>(serviceType: new() => T): T | null{
         return this.serviceMap.get(serviceType.name) as T;
     }
 }
