@@ -1,16 +1,27 @@
-import ServiceManager from "./ServiceManager";
-import { Request, Response } from "../index.js";
-import ServiceContainer from "./ServiceContainer";
+import { Request, Response, Application, app, ServiceContainer, DefaultServiceContainer } from "../index.js";
 
 export type RequestEventListener = (request: Request, response: Response) => void
 
-export default class Service{
+export type ServiceType<T extends Service = Service> = new() => T;
+
+export default class Service<SC extends ServiceContainer = DefaultServiceContainer>{
 
     private fullPathListenerMap = new Map<string, RequestEventListener|null>();
     private partialPathListenerMap = new Map<string, RequestEventListener|null>();
-    protected container: ServiceContainer;
+    protected container: SC;
 
-    public initialize(): void{
+    constructor(){
+        this.container = app.registerService(null);
+        app.getServiceManager();
+        this.prepare(app);
+    }
+
+    /**
+     * Do preparation logic here.
+     * This function is called, after the Service is mounted. 
+     * The containers is avaialble at this moment.
+     */
+    public prepare(application: Application): void{
 
     }
 
@@ -19,15 +30,7 @@ export default class Service{
      * @param request Received request.
      * @param response Response to write.
      */
-    public onRequest(request: Request, response: Response): void{}
-    
-    /**
-     * If the container does not exists of the service already, this function will be called.
-     * @returns The new service.
-     */
-    public createContainer(): ServiceContainer{
-        return new ServiceContainer();
-    }
+    public onRequest(request: Request, response: Response, path: string|null, partialPath: string|null): void{}
 
     /**
      * Listen on a full path (without the query part) of the incoming requests.
@@ -52,6 +55,17 @@ export default class Service{
         if(this.container){
             this.container.listenOnFullPath(path);
         }
+    }
+
+    /**
+     * @returns The parent container.
+     */
+    public getContainer(): SC|null{
+        return this.container;
+    }
+
+    protected getContainerType(): new() => SC {
+        return DefaultServiceContainer as new() => SC;
     }
 
 }

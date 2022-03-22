@@ -4,7 +4,7 @@ import { Template, TemplateFactory } from "../core/template/index.js";
 
 export default class TestRenderEngine extends TemplateRenderEngine{
     
-    public addAsset(asset: Asset): void {
+    public addAssetToContent(asset: Asset): void {
         throw new Error("Method not implemented.");
     }
 

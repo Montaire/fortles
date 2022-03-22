@@ -1,10 +1,9 @@
 {
-    "name": "@fortles/addon.hot-reload",
+    "name": "@fortles/addon.event-source",
     "type": "module",
-    "main": "HotReloadAddon.js",
+    "main": "EventSourceService.js",
     "version": "0.1.0",
     "dependencies": {
-        "@fortles/addon.event-source": "workspace:*",
         "@fortles/core": "workspace:*",
         "@fortles/platform.server": "workspace:*"
     }

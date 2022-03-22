@@ -1,18 +1,14 @@
-import { Asset } from "./index.js";
-import Service from "../service/Service";
-import { Request, Response } from "../../index.js";
-import { app, ContentAvareRenderEngine, NotFoundError } from "../index.js";
+import { app, ContentAvareRenderEngine, NotFoundError,  Request, Response, ServiceContainer, Service, Asset } from "../index.js";
 import Path from "path";
 import fs from "fs";
-import ServiceContainer from "../service/ServiceContainer.js";
 
 export default class AssetService extends Service{
+    
+    protected map = new Map<string, Asset>();
 
     public prepare(): void {
         this.listenOnPartialPath("asset");
     }
-
-    protected map = new Map<string, Asset>();
 
     public onRequest(request: Request, response: Response): void {
         let mime: string = null;

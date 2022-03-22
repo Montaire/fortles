@@ -1,22 +1,19 @@
-import * as url from "url";
-import Path from "path";
-import AssetHandler from "./asset/AssetHandler.js";
-import { Controller, Request, RequestType, Response, Middleware, Addon, Platform, Asset } from "./index.js";
+import { Controller, Request, RequestType, Response, Middleware, Addon, Platform, Asset, ServiceManager, Service, ServiceType } from "./index.js";
 import Locale from "./localization/Locale.js";
 import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
-import { ContentAvareRenderEngine } from "./render/RenderEngine.js";
 
 /**
  * Application is the main entrnance point.
  * It can be decorated with addons.
  */
-export default class Application{
+export class Application{
 	protected platform: Platform;
 	protected mainController: Controller;
 	protected renderEngines: Map<string, RenderEngine> = new Map();
     protected middlewareQueue: Middleware[] = [];
-    protected addons: Addon[] = [];
-    protected assetHandler = new AssetHandler();
+    protected addons = new Map<new() => Addon, Addon>();
+    protected serviceManager = new ServiceManager();
+    protected static instance: Application;
 
     /**
      * Creates a new application for the given platform.
@@ -26,7 +23,8 @@ export default class Application{
         this.platform = platform;
         this.mainController = mainController;
         this.renderEngines.set('text/html', new HtmlRenderEngine());
-        this.addMiddleware(this.assetHandler);
+        this.addMiddleware(this.serviceManager);
+        Application.instance = this;
     }
 
     /**
@@ -89,10 +87,51 @@ export default class Application{
      * @param addon Instance of the addon.
      * @returns Self for chaining functions.
      */
-    public addAddon(addon: Addon): this{
+    /*public addAddon(addon: Addon): this{
         this.addons.push(addon);
-        addon.prepare(this);
+        addon.prepareAddon(this);
         return this;
+    }*/
+
+    /**
+     * Adds an addon to the Application.
+     * @param addon Instance of the addon.
+     * @returns Self for chaining functions.
+     */
+     public registerAddon(addonType: new() => Addon): this{
+        if(!this.addons.has(addonType)){
+            let addon = new addonType();
+            addon.prepareAddon(this);
+            this.addons.set(addonType, addon);
+        }
+        return this;
+    }
+
+    /**
+     * Gets a service.
+     * @see {@link ServiceManager}
+     * @returns An instance of the Service, or null if not loaded or not exists.
+     */
+    public getService<T extends Service>(serviceType: ServiceType<T>): T | null{
+        return this.serviceManager.get(serviceType) as T;
+    }
+
+    /**
+     * Registers a new service, if it is exists already just return it.
+     * @param serviceType
+     * @returns 
+     */
+    public registerService<T extends Service>(serviceType: ServiceType<T>): T{
+        return this.serviceManager.register(serviceType);
+    }
+
+    public addService(service: Service): this{
+        this.serviceManager.add(service);
+        return this;
+    }
+
+    public getServiceManager(): ServiceManager{
+        return this.serviceManager;
     }
 
     /**
@@ -113,19 +152,6 @@ export default class Application{
         return this;
     }
 
-    /**
-     * Adds an asset.
-     */
-    public addAsset(asset: Asset): this{
-        this.assetHandler.add(asset);
-        for(const engine of this.renderEngines.values()){
-            if(engine instanceof ContentAvareRenderEngine){
-                engine.addAsset(asset);
-            }
-        }
-        return this;
-    }
-
     static getLocale(code: string): Locale|null{
         return null;
     }
@@ -133,4 +159,10 @@ export default class Application{
     static getDefaultLocale(){
         return null;
     }
+
+    static getInstance(): Application{
+        return this.instance;
+    }
 }
+
+export default Application.getInstance();

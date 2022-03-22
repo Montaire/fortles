@@ -1,2 +1,2 @@
 export * from "./Asset.js";
-export { default as AssetHandler } from "./AssetHandler.js"
+export { default as AssetService } from "./AssetService.js"

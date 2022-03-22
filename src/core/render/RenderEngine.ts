@@ -1,7 +1,7 @@
 import { Application, Asset, Request, Response } from "../index.js";
 import { Template, TemplateFactory } from "../template/index.js";
 
-export default abstract class RenderEngine{
+export abstract class RenderEngine{
 
     /**
      * Renders the whole tree from the given controller.
@@ -32,7 +32,7 @@ export enum RenderEngineContentPlace{
 }
 
 export abstract class ContentAvareRenderEngine extends RenderEngine{
-    public abstract addAsset(asset: Asset): void;
+    public abstract addAssetToContent(asset: Asset): void;
 }
 
 export abstract class TemplateRenderEngine extends ContentAvareRenderEngine{

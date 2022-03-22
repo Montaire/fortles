@@ -1,8 +1,5 @@
-import ServiceContainer from "./ServiceContainer";
+import { ServiceContainer } from "../index.js";
+
 
 export default class DefaultServiceContainer extends ServiceContainer{
-    constructor(){
-        super();
-        this.listenOnPartialPath("service");
-    }
 }

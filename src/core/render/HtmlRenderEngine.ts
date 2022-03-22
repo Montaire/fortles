@@ -69,12 +69,12 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         response.write('</body></html>');
     }
 
-    public addAsset(asset: Asset): void {
+    public addAssetToContent(asset: Asset): void {
         if(asset instanceof ScriptAsset){
-            this.addContent('<script src="' + asset.url + '" ></script>', asset.place);
+            this.addContent('<script src="' + asset.path + '" ></script>', asset.place);
         }
         if(asset instanceof StyleAsset){
-            this.addContent('<link rel="stylesheet" href="' + asset.url + '">', asset.place);
+            this.addContent('<link rel="stylesheet" href="' + asset.path + '">', asset.place);
         }
     }
 

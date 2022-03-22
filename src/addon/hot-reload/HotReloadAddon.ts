@@ -1,50 +1,35 @@
-import { Addon, Application, Middleware, Request, Response, ScriptAsset } from "@fortles/core";
-import { ServerRequest, ServerResponse } from "@fortles/platform.server";
+import { Addon, Application, AssetService, Middleware, Request, Response, ScriptAsset, Service, HtmlRenderEngine } from "@fortles/core";
+import EventSourceService from "@fortles/addon.event-source";
 import fs from "fs";
 import * as http from "http";
-import Path from "path";
-import { HtmlRenderEngine } from "../../core/render";
 
-export default class HotReloadAddon implements Addon, Middleware{
+export default class HotReloadAddon extends Service<EventSourceService> implements Addon{
 
     protected clients: http.ServerResponse[] = [];
 
-    public async prepare(application: Application): Promise<void> {
-        application.addMiddleware(this);
-        this.watch(application);
+    public async prepareAddon(application: Application): Promise<void> {
+        application.addService(this);
         let asset = new ScriptAsset(await import.meta.resolve("./asset/event-source.js"));
-        application.addAsset(asset);
+        application.getService(AssetService).add(asset);
+        
     }
 
-    public run(request: Request, response: Response): boolean {
-        if(request.getPath() == "/fortles/event-source" && response instanceof ServerResponse && request instanceof ServerRequest){
-            let originalResponse = response.getOriginal();
-            //Create event stream
-            originalResponse.writeHead(200, {
-                "Content-Type": "text/event-stream",
-                "Cache-Control": "no-cache",
-                "Connection": "keep-alive"
-            });
-            this.clients.push(originalResponse);
-            request.getOriginal().on('close', () => {
-                this.clients = this.clients.filter(x => x === originalResponse);
-            });
-            return false;
-        }
-        return true;
+    public prepare(application: Application): void {
+        this.watchTemplateFolder(application);
     }
 
-    public watch(application: Application, prefix:string = null){
+    public watchTemplateFolder(application: Application, prefix:string = null){
         let engine = application.getRenderEngines().get("text/html") as HtmlRenderEngine;
         let factory = engine.getTemplateFactory();
         factory.transverse((name, path) => {
             fs.watch(path, (eventType, fileName) => {
-                factory.createTemplate(name, path);
-                for(const client of this.clients){
-                    client.write("event:hot-reload\ndata:reloado\n\n");
-                }
+                this.container.send("hot-reload", "");
             });
         });
+    }
+
+    public reload(blockPath: string = ""){
+        this.container.send("hot-reload", blockPath);
     }
 
     public getPriority(): number {
