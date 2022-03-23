@@ -1,4 +1,4 @@
-import { Application} from "@fortles/core";
+import { Application, Asset, AssetService, HttpError} from "@fortles/core";
 import { Platform } from "@fortles/core";
 import * as http from "http";
 import * as http2 from "http2";
@@ -17,9 +17,20 @@ export default class ServerPlatform extends Platform{
     }
 
     run(application: Application){
+        application.getService(AssetService).add(new Asset("./asset/favicon.ico", "favicon.ico", "image/x-icon", true));
         const server = http.createServer(
             (request, response) => {
-                application.dispatch(new ServerRequest(request), new ServerResponse(application.getMainController(), response));
+                try{
+                    application.dispatch(new ServerRequest(request), new ServerResponse(application.getMainController(), response));
+                }catch(error){
+                    if(error instanceof HttpError){
+                        response.statusCode = error.getCode();
+                        response.statusMessage = error.getMessage();
+                        response.end();
+                    }else{
+                        throw error;
+                    }
+                }
             }
         );
         server.listen(this.port);

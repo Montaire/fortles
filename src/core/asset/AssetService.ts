@@ -1,12 +1,15 @@
-import { app, ContentAvareRenderEngine, NotFoundError,  Request, Response, ServiceContainer, Service, Asset } from "../index.js";
+import { app, ContentAvareRenderEngine, NotFoundError,  Request, Response, ServiceContainer, Service, Asset, Application } from "../index.js";
 import Path from "path";
 import fs from "fs";
+import DefaultServiceContainer from "../service/DefaultServiceContainer.js";
 
 export default class AssetService extends Service{
     
     protected map = new Map<string, Asset>();
+    protected application: Application;
 
-    public prepare(): void {
+    public prepare(applcation: Application): void {
+        this.application = applcation;
         this.listenOnPartialPath("asset");
     }
 
@@ -18,19 +21,23 @@ export default class AssetService extends Service{
             path = asset.source;
             mime = asset.mime;
         }else{
+            path = "." + path;
             mime = this.resolveMime(Path.extname(path));
         }
         if(path.search("..")){
             throw new NotFoundError("The path is invalid");
         };
+        if(!fs.existsSync(path)){
+            throw new NotFoundError("File not found");
+        }
         if(mime){
             response.setMime(mime);
         }
-        if(response.getStream()){
-            let stream = fs.createReadStream("./" + path);
+        if(response.getStream()){ 
+            let stream = fs.createReadStream(path);
             stream.pipe(response.getStream());
         }else{
-            let data = fs.readFileSync("./" + path);
+            let data = fs.readFileSync(path);
             response.write(data);
         }
     }
@@ -52,17 +59,18 @@ export default class AssetService extends Service{
         this.map.set(asset.path, asset);
         //subscribe with the custom path
         if(asset.useRoot){
-            this.listenOnFullPath(asset.path);
+            this.listenOnFullPath(asset.path, asset.useRoot);
         }
         //add to the corresponding render engines.
-        for(const engine of app.getRenderEngines().values()){
+        for(const engine of this.application.getRenderEngines().values()){
             if(engine instanceof ContentAvareRenderEngine){
                 engine.addAssetToContent(asset);
             }
         }
         return this;
     }
-    public createContainer(): ServiceContainer {
+    
+    public getContainerType(): new () => DefaultServiceContainer {
         return null;
     }
-}1
+}

@@ -1,5 +1,6 @@
 import { RenderEngineContentPlace } from "../index.js";
 import Path from "path";
+import * as url from "url";
 
 export class Asset{
     source: string;
@@ -13,9 +14,13 @@ export class Asset{
      * @param mime Mime of the file.
      */
     constructor(source: string, path:string = null, mime: string = null, useRoot = false){
+        if(source.startsWith("file:")){
+            source = url.fileURLToPath(source);
+        }
         this.source = source;
         this.path = (useRoot ? "/" : "/asset/") + path;
         this.mime = mime;
+        this.useRoot = useRoot;
     }
 }
 
@@ -25,7 +30,7 @@ export class SourceAsset extends Asset{
 }
 
 export class ScriptAsset extends SourceAsset{
-    constructor(source:string, path:string = null, place = RenderEngineContentPlace.AFTER_CONTENT, hasMap = true){
+    constructor(source:string, path:string = null, hasMap = true, place = RenderEngineContentPlace.AFTER_CONTENT){
         if(!path){
             path = "script/" + Path.basename(source);
         }
@@ -36,7 +41,7 @@ export class ScriptAsset extends SourceAsset{
 }
 
 export class StyleAsset extends SourceAsset{
-    constructor(source:string, path:string = null, place = RenderEngineContentPlace.HEADER, hasMap = true){
+    constructor(source:string, path:string = null, hasMap = true, place = RenderEngineContentPlace.HEADER){
         if(!path){
             path = "style/" + Path.basename(source);
         }

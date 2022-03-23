@@ -2,9 +2,8 @@ import * as fs from "fs";
 import * as path from "path";
 import { Asset, ScriptAsset, StyleAsset } from "../asset/Asset.js";
 import { RuntimeError } from "../Error.js";
-import { Application, HttpError, NotFoundError, Request, Response } from "../index.js";
-import TemplateFactory from "../template/TemplateFactory.js";
-import RenderEngine, { RenderEngineContentPlace as ContentPlace, TemplateRenderEngine } from "./RenderEngine.js";
+import { Application, AssetService, HttpError, NotFoundError, Request, Response } from "../index.js";
+import { RenderEngineContentPlace as ContentPlace, TemplateRenderEngine } from "./RenderEngine.js";
 
 export default class HtmlRenderEngine extends TemplateRenderEngine{
 
@@ -12,8 +11,9 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
     afterConetent: string = null;
     beforeContent: string = null;
 
-    constructor(){
+    constructor(application: Application){
         super();
+        application.registerService(AssetService);
         let templatePath = path.normalize(path.dirname(process.argv[1]) + '/../template');
         if(!fs.existsSync(templatePath)){
             throw new RuntimeError("There is no folder with templates on the'"+templatePath+"'");

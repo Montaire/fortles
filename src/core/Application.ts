@@ -1,6 +1,5 @@
-import { Controller, Request, RequestType, Response, Middleware, Addon, Platform, Asset, ServiceManager, Service, ServiceType } from "./index.js";
+import { Controller, Request, RequestType, Response, Middleware, Addon, Platform, ServiceManager, Service, ServiceType, RenderEngine, HtmlRenderEngine } from "./index.js";
 import Locale from "./localization/Locale.js";
-import { RenderEngine, HtmlRenderEngine } from "./render/index.js";
 
 /**
  * Application is the main entrnance point.
@@ -12,7 +11,7 @@ export class Application{
 	protected renderEngines: Map<string, RenderEngine> = new Map();
     protected middlewareQueue: Middleware[] = [];
     protected addons = new Map<new() => Addon, Addon>();
-    protected serviceManager = new ServiceManager();
+    protected serviceManager: ServiceManager;
     protected static instance: Application;
 
     /**
@@ -20,11 +19,13 @@ export class Application{
      * @param platform 
      */
     constructor(platform: Platform, mainController: Controller){
+        Application.instance = this;
         this.platform = platform;
         this.mainController = mainController;
-        this.renderEngines.set('text/html', new HtmlRenderEngine());
+        this.serviceManager = new ServiceManager(this);
         this.addMiddleware(this.serviceManager);
-        Application.instance = this;
+        //Regtister render engines
+        this.renderEngines.set('text/html', new HtmlRenderEngine(this));
     }
 
     /**
@@ -101,6 +102,9 @@ export class Application{
      public registerAddon(addonType: new() => Addon): this{
         if(!this.addons.has(addonType)){
             let addon = new addonType();
+            if(addon instanceof Service){
+                addon = this.registerService<any>(addonType);
+            }
             addon.prepareAddon(this);
             this.addons.set(addonType, addon);
         }
@@ -123,11 +127,6 @@ export class Application{
      */
     public registerService<T extends Service>(serviceType: ServiceType<T>): T{
         return this.serviceManager.register(serviceType);
-    }
-
-    public addService(service: Service): this{
-        this.serviceManager.add(service);
-        return this;
     }
 
     public getServiceManager(): ServiceManager{

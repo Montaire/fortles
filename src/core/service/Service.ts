@@ -1,20 +1,12 @@
 import { Request, Response, Application, app, ServiceContainer, DefaultServiceContainer } from "../index.js";
 
-export type RequestEventListener = (request: Request, response: Response) => void
+export type RequestEventListener = (request: Request, response: Response, path: string, partialPath: string|null) => void
 
 export type ServiceType<T extends Service = Service> = new() => T;
 
-export default class Service<SC extends ServiceContainer = DefaultServiceContainer>{
+export default class Service<SC extends ServiceContainer<any> | null = DefaultServiceContainer>{
 
-    private fullPathListenerMap = new Map<string, RequestEventListener|null>();
-    private partialPathListenerMap = new Map<string, RequestEventListener|null>();
     protected container: SC;
-
-    constructor(){
-        this.container = app.registerService(null);
-        app.getServiceManager();
-        this.prepare(app);
-    }
 
     /**
      * Do preparation logic here.
@@ -30,17 +22,17 @@ export default class Service<SC extends ServiceContainer = DefaultServiceContain
      * @param request Received request.
      * @param response Response to write.
      */
-    public onRequest(request: Request, response: Response, path: string|null, partialPath: string|null): void{}
+    public onRequest(request: Request, response: Response, path: string, partialPath: string|null): void{}
 
     /**
      * Listen on a full path (without the query part) of the incoming requests.
      * The {@link onRequest} method will triggered if no listener specified.
      * @param path Full path without the leading '/'.
-     * @param useContainersPath Includes the container's partial path as well.
+     * @param useRoot Not includes the container's partial path.
      * @param listener This function will be called on request. Default `null`.
      */
-    protected listenOnFullPath(path: string, useContainersPath: boolean = true, listener: RequestEventListener = null): void{
-        this.fullPathListenerMap.set(path, listener);
+    protected listenOnFullPath(path: string, useRoot: boolean = false): void{
+        this.container.listenOnFullPath(path, useRoot, this);
     }
 
     /**
@@ -51,10 +43,8 @@ export default class Service<SC extends ServiceContainer = DefaultServiceContain
      * @param path Path neither with the leading '/', nor with parts that has been already consumed by other {@link ServiceContainer}s.
      * @param listener This function will be called on request. Default `null`.
      */
-    protected listenOnPartialPath(path: string, listener: RequestEventListener = null): void{
-        if(this.container){
-            this.container.listenOnFullPath(path);
-        }
+    protected listenOnPartialPath(path: string): void{
+        this.container.listenOnPartialPath(path, this);
     }
 
     /**
@@ -64,7 +54,11 @@ export default class Service<SC extends ServiceContainer = DefaultServiceContain
         return this.container;
     }
 
-    protected getContainerType(): new() => SC {
+    public setContainer(container: SC){
+        this.container = container;
+    }
+
+    public getContainerType(): new() => SC | null{
         return DefaultServiceContainer as new() => SC;
     }
 

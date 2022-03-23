@@ -7,7 +7,6 @@ export default class EventSourceService extends ServiceContainer implements Addo
     protected clients: http.ServerResponse[] = [];
 
     prepareAddon(application: Application): void {
-        application.addService(this);
     }
 
     public async prepare(application: Application): Promise<void> {

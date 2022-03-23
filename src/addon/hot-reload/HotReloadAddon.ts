@@ -8,8 +8,7 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
     protected clients: http.ServerResponse[] = [];
 
     public async prepareAddon(application: Application): Promise<void> {
-        application.addService(this);
-        let asset = new ScriptAsset(await import.meta.resolve("./asset/event-source.js"));
+        let asset = new ScriptAsset(await import.meta.resolve("./asset/hot-reload.js"));
         application.getService(AssetService).add(asset);
         
     }
