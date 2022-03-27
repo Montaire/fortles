@@ -7,9 +7,9 @@ import { RenderEngineContentPlace as ContentPlace, TemplateRenderEngine } from "
 
 export default class HtmlRenderEngine extends TemplateRenderEngine{
 
-    header: string = null;
-    afterConetent: string = null;
-    beforeContent: string = null;
+    header: string = "";
+    afterConetent: string = "";
+    beforeContent: string = "";
 
     constructor(application: Application){
         super();

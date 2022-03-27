@@ -1,6 +1,4 @@
-import EventHandler from "../event/EventHandler.js";
-import { Request, Response, Service, RequestEventListener } from "../index.js";
-import ServiceManager from "./ServiceManager.js";
+import { Request, Response, Service, ServiceManager } from "../index.js";
 
 /**
  * A service contaner can hold multiple services, and runs the shared code.s
@@ -11,13 +9,18 @@ export default class ServiceContainer<SC extends ServiceContainer<any> | null = 
     protected partialPathMap = new Map<string, Service>();
 
     public onRequest(request: Request, response: Response, path: string, partialPath: string): void {
-        if(partialPath && this.partialPathMap.has(partialPath)){
-            let service = this.partialPathMap.get(partialPath);
-            service.onRequest(request, response, path, partialPath);
-        }
         if(path && this.fullPathMap.has(path)){
             let service = this.fullPathMap.get(path);
             service.onRequest(request, response, path, path);
+            return;
+        }
+        let pos = path.indexOf('/', 1);
+        if(pos != -1){
+            let partialPath = path.substring(1, pos);
+            if(this.partialPathMap.has(partialPath)){
+                let service = this.partialPathMap.get(partialPath);
+                service.onRequest(request, response, path.substring(pos + 1), partialPath);
+            }
         }
     }
 
@@ -33,18 +36,18 @@ export default class ServiceContainer<SC extends ServiceContainer<any> | null = 
         return this.partialPathMap.keys();
     }
 
-    public getContainerType(): new() => SC | null {
-        return null;
-    }
-
     public listenOnPartialPath(path: string, target: Service = null): void {
-        this.partialPathMap.set(path, target);
+        if(target || !this.container){
+            this.partialPathMap.set(path, target);
+        }else{
+            this.container.listenOnPartialPath(path, this);
+        }
     }
 
     public listenOnFullPath(path: string, useRoot: boolean = false, target: Service = null): void {
-        if(useRoot && this.container){
+        if((useRoot || !target) && this.container){
             //If container has parent, send the listener to the root ServiceManager
-            this.container.listenOnFullPath(path, useRoot, target);
+            this.container.listenOnFullPath(path, useRoot, target || this);
         }else{
             this.fullPathMap.set(path, target);
         }

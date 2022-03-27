@@ -4,7 +4,7 @@ export type RequestEventListener = (request: Request, response: Response, path: 
 
 export type ServiceType<T extends Service = Service> = new() => T;
 
-export default class Service<SC extends ServiceContainer<any> | null = DefaultServiceContainer>{
+export default class Service<SC extends ServiceContainer<any> | null = ServiceContainer>{
 
     protected container: SC;
 
@@ -59,7 +59,7 @@ export default class Service<SC extends ServiceContainer<any> | null = DefaultSe
     }
 
     public getContainerType(): new() => SC | null{
-        return DefaultServiceContainer as new() => SC;
+        return DefaultServiceContainer as any;
     }
 
 }

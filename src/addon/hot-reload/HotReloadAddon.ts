@@ -8,9 +8,9 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
     protected clients: http.ServerResponse[] = [];
 
     public async prepareAddon(application: Application): Promise<void> {
+        application.registerAddon(EventSourceService);
         let asset = new ScriptAsset(await import.meta.resolve("./asset/hot-reload.js"));
         application.getService(AssetService).add(asset);
-        
     }
 
     public prepare(application: Application): void {
@@ -22,6 +22,7 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
         let factory = engine.getTemplateFactory();
         factory.transverse((name, path) => {
             fs.watch(path, (eventType, fileName) => {
+                factory.createTemplate(name, path);
                 this.container.send("hot-reload", "");
             });
         });
@@ -35,5 +36,8 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
         return 101;
     }
 
+    public getContainerType(): new () => EventSourceService {
+        return EventSourceService;
+    }
 
 }

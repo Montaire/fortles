@@ -26,12 +26,12 @@
   "homepage": "https://github.com/Montaire/essentials#readme",
   "type": "module",
   "workspaces": [
-    "dist/core",
-    "dist/test-utility",
-    "dist/addon/*",
-    "dist/platform/*",
-    "dist/model",
-    "dist/orm/*"
+    "src/core",
+    "src/test-utility",
+    "src/addon/*",
+    "src/platform/*",
+    "src/model",
+    "src/orm/*"
   ],
   "devDependencies": {
     "@types/mocha": "^9.1.0",

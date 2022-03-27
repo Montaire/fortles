@@ -26,7 +26,7 @@ export default class ServiceManager extends ServiceContainer<null> implements Mi
             let partialPath = path.substring(1, pos);
             if(this.partialPathMap.has(partialPath)){
                 let service = this.partialPathMap.get(partialPath);
-                service.onRequest(request, response, path.substring(pos), partialPath);
+                service.onRequest(request, response, path.substring(pos + 1), partialPath);
                 return false;
             }
         }
@@ -44,7 +44,7 @@ export default class ServiceManager extends ServiceContainer<null> implements Mi
             let service = new serviceType();
             let containerType = service.getContainerType();
             if(containerType){
-                let container = this.register<any>(containerType);
+                let container = this.register(containerType);
                 service.setContainer(container);
             }else{
                 service.setContainer(this);
@@ -54,24 +54,6 @@ export default class ServiceManager extends ServiceContainer<null> implements Mi
             return service;
         }
     }
-
-    /**
-     * Adds a new service, if it is not added already.
-     * @param service The service to be added.
-     * @returns If the service is already added, return the added instance.
-     */
-    /*public add(service: Service): Service{
-        let container = service.createContainer();
-        if(container != null){
-            //Recursively add all container.
-            container = this.add(container) as ServiceContainer;
-            container.add(service);
-        }
-        //initialize service after the structure is built.
-        this.serviceMap.set(typeof service, service);
-        service.prepare(app);
-        return service;
-    }*/
 
     /**
      * This method will return the Service object.
