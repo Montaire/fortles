@@ -54,6 +54,9 @@ export class Application{
                 engine.dispatch(request, response);
                 engine.afterDispatch(request, response);
                 break;
+            case RequestType.PARTIAL:
+                
+                break;
         }
         response.close();
     }

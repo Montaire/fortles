@@ -1,6 +1,3 @@
-class Fortles{
-    static eventSource: EventSource;
-};
 if(window.EventSource) {
     Fortles.eventSource = new EventSource("/fortles/event-source");
 } else {
