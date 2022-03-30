@@ -55,10 +55,30 @@ export class Application{
                 engine.afterDispatch(request, response);
                 break;
             case RequestType.PARTIAL:
-                
+                let controller = this.findChange(request);
                 break;
         }
         response.close();
+    }
+
+    public findChange(request: Request): Controller | null{
+        let oldRequest = request;
+        let newRoute;
+        let oldRoute;
+        let newController = this.mainController;
+        let oldController = this.mainController;
+        for(const name of request.getBlockPath()){
+            newRoute = newController.getRouter().getRoute(request);
+            oldRoute = oldController.getRouter().getRoute(oldRequest);
+            if(newRoute != oldRoute){
+                return newController;
+            }
+            let newBlock = newRoute.getBlock(name);
+            let oldBlock = oldRoute.getBlock(name);
+            newController = newBlock.getController();
+            oldController = oldBlock.getController();
+        }
+        return null;
     }
 
     /**

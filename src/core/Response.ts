@@ -66,4 +66,8 @@ export default abstract class Response{
     setMime(mime: string): void{
 
     }
+
+    setBlockPath(path: string){
+        
+    }
 }
