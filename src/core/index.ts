@@ -12,3 +12,5 @@ export * from "./service/index.js";
 export * from "./asset/index.js";
 export * from "./render/index.js";
 export * from "./localization/index.js";
+export * from "./utility/index.js"
+export * from "./template/index.js"

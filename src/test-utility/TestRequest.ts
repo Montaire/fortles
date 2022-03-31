@@ -4,6 +4,9 @@ export default class TestRequest extends Request{
     protected path: string;
     protected type: RequestType;
     protected mime: string;
+    protected referer: string;
+    protected blockPath: string;
+
     constructor(path:string = '/', type:RequestType = RequestType.FULL, mime:string = 'text/html'){
         super();
         this.path = path;
@@ -22,5 +25,11 @@ export default class TestRequest extends Request{
     public getLocale(): Locale {
         return new Locale();
     }
-
+    public getReferer(): string {
+        return this.referer;
+    }
+    public getBlockPath(): string {
+        return this.blockPath;
+    }
+    
 }

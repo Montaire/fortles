@@ -5,15 +5,18 @@ import {
     BlockControlShard, 
     Template, 
     AnchorControlShard, 
+    ButtonControlShard,
     IfControlShard, 
     InputControlShard,
     FormatControlShard,
-    ControlShardCursorPosition
-} from "./index.js";
-import { Request, Response, Application } from '../index.js';
-import { CharacterStreamReader } from "../utility/index.js";
-import { RenderEngine } from "../render/index.js";
-import ControlShard from "./control/ControlShard.js";
+    ControlShardCursorPosition,
+    Request, 
+    Response, 
+    Application,
+    CharacterStreamReader,
+    RenderEngine,
+    ControlShard
+} from "../index.js";
 
 export const enum TemplateShardStates{
     TEXT_START,
@@ -232,6 +235,9 @@ export default class TemplateShard implements Shard{
                 return new FormControlShard(reader, this);*/
             case "a":
                 shard = new AnchorControlShard(reader, this, cursorPosition);
+                break;
+            case "button":
+                shard = new ButtonControlShard(reader, this, cursorPosition);
                 break;
             case "if":
                 shard = new IfControlShard(reader, this, cursorPosition);

@@ -52,6 +52,14 @@ export default class ServerRequest extends Request{
         return Application.getDefaultLocale();
     }
 
+    getReferer(): string {
+        return this.httpRequest.headers.referer;
+    }
+    
+    getBlockPath(): string {
+        return this.httpRequest.headers["fortles-path"] as string;
+    }
+
     public getOriginal(): http.IncomingMessage{
         return this.httpRequest;
     }

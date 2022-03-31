@@ -1,7 +1,9 @@
-export default class Platform{
+import { Application } from "./index.js";
+
+export default abstract class Platform{
     /**
      * Override this in the paltform
-     * @param {essentials.Application} application 
+     * @param application 
      */
-    run(application){}
+    public abstract run(application: Application): void
 }

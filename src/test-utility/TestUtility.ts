@@ -1,6 +1,5 @@
-import { Template } from "../core/template/index.js";
-import { StringCharacterStreamReader } from "../core/utility/index.js";
-import { TestRenderEngine, TestRequest, TestResponse } from "./index.js";
+import { Application, Controller, StringCharacterStreamReader, Template } from "@fortles/core";
+import { TestPlatform, TestRenderEngine, TestRequest, TestResponse } from "@fortles/test-utility";
 
 export default class TestUtility{
 
@@ -9,9 +8,9 @@ export default class TestUtility{
      * @param content 
      * @returns 
      */
-    public static createTemplate(content: string): Template{
+    public static createTemplate(content: string, name = "test"): Template{
         let reader = new StringCharacterStreamReader(content);
-        return new Template(reader, "test");
+        return new Template(reader, name);
     }
 
     /**
@@ -35,5 +34,30 @@ export default class TestUtility{
      */
     public static createAndRenderTemplate(content: string): string{
         return this.renderTemplate(this.createTemplate(content));
+    }
+
+    public static createApplication(mainController: Controller = null, templates: Template[] = []): Application{
+        let platform = new TestPlatform();
+
+        if(!mainController){
+            mainController = new Controller();
+        }
+        let application = new Application(platform, mainController);
+        let engine = new TestRenderEngine();
+
+        application.getRenderEngines().set("application/test", engine);
+
+        for(const template of templates){
+            engine.setTemplate(template.getName(), template);
+        }
+
+        return application;
+    }
+    
+    public static simulateRequest(request: TestRequest, mainController: Controller = null, templates: Template[] = []): TestResponse{
+        let application = TestUtility.createApplication(mainController, templates);
+        let response = new TestResponse(application.getMainController());
+        application.dispatch(request, response);
+        return response;
     }
 }

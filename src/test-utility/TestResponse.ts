@@ -2,14 +2,14 @@ import { Controller, Response } from "@fortles/core";
 
 export default class TestResponse extends Response{
 
-    protected content = '';
+    protected body = '';
 
     constructor(controller = new Controller()){
         super(controller);
     }
 
     write(content: any): void {
-        this.content += content;
+        this.body += content;
     }
 
     close(): void {
@@ -17,7 +17,11 @@ export default class TestResponse extends Response{
     }
 
     public toString(){
-        return this.content;
+        return this.body;
+    }
+
+    public getBody(){
+        return this.body;
     }
 
 }

@@ -10,3 +10,4 @@ export {default as BlockControlShard} from "./control/BlockControlShard.js";
 export {default as FormatControlShard} from "./control/FormatControlShard.js";
 export {default as IfControlShard} from "./control/IfControlShard.js";
 export {default as InputControlShard} from "./control/InputControlShard.js";
+export {default as ButtonControlShard} from "./control/ButtonControlShard.js";

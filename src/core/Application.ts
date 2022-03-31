@@ -174,6 +174,10 @@ export class Application{
         return this;
     }
 
+    public getPlatform(): Platform{
+        return this.platform;
+    }
+
     static getLocale(code: string): Locale|null{
         return null;
     }
