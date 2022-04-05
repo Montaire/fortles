@@ -1,6 +1,5 @@
 import Entity from "../model/Entity.js";
-import { Router, Response, Request } from "./index.js";
-import { RenderEngine } from "./render/index.js";
+import { Router, Response, Request, RenderEngine } from "./index.js";
 
 export default class Controller {
 

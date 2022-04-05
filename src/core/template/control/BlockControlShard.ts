@@ -7,6 +7,7 @@ export default class BlockControlShard extends ControlShard {
 
     /** Name of the current block */
     protected name: string;
+    protected openingTag: string;
 
     public initialize(reader: CharacterStreamReader): void {
         this.name = this.attributes.get("name");
@@ -21,11 +22,16 @@ export default class BlockControlShard extends ControlShard {
     
     public render(engine: TemplateRenderEngine, request: Request, response: Response): void {
         let controller = response.getController();
-        let route = controller.getRouter().getRoute(request);
+        let router = controller.getRouter();
+        let route = router.getRoute(request);
         if (route != null) {
-            let routed = route.getBlock(this.name);
+            let routed = route.getBlock(this.name) || router.getDefaultRoute().getBlock(this.name);
             if (routed != null) {
-                response.write('<div id="f-block-' + controller.getBlockPath() + '-' + this.name + '">');
+                let blockPath = controller.getBlockPath();
+                if(blockPath){
+                    blockPath += '-'
+                }
+                response.write('<div id="f-block-' + (blockPath ? blockPath + '-' : '') + this.name + '">');
                 if(routed.getController()){
                     let routedResponse = new ChildResponse(routed.getController(), response);
                     routedResponse.setTemplateName(routed.getTemplate());

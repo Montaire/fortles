@@ -2,7 +2,9 @@ import { Controller, Response } from "@fortles/core";
 
 export default class TestResponse extends Response{
 
-    protected body = '';
+    public body = '';
+    public target: string = null;
+    public blockPath: string = null;
 
     constructor(controller = new Controller()){
         super(controller);
@@ -24,4 +26,7 @@ export default class TestResponse extends Response{
         return this.body;
     }
 
+    public setBlockPath(path: string): void {
+        this.blockPath = path;
+    }
 }

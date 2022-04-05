@@ -17,7 +17,7 @@ export default class AnchorControlShard extends ControlShard {
             templatePrefix = templatePrefix.substring(0, templatePrefix.lastIndexOf('.'));
             canonicalUrl = templatePrefix + "." + canonicalUrl;
         }
-        this.url = canonicalUrl.substring(0, canonicalUrl.indexOf('('));
+        this.url = canonicalUrl.substring(0, canonicalUrl.indexOf('(')).replace(".", "/");
     }
 
     public getName(): string {

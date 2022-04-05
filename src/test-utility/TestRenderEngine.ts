@@ -1,6 +1,4 @@
-import { RenderEngineContentPlace, TemplateRenderEngine } from "../core/render/RenderEngine.js";
-import {  Asset, RenderEngine, Request, Response } from "@fortles/core";
-import { Template, TemplateFactory } from "../core/template/index.js";
+import {  Asset, TemplateRenderEngine, Request, Response, Template, NotFoundError } from "@fortles/core";
 
 export default class TestRenderEngine extends TemplateRenderEngine{
     
@@ -9,13 +7,20 @@ export default class TestRenderEngine extends TemplateRenderEngine{
     }
 
     public dispatch(request: Request, response: Response): void {
-        let route = response.getController().getRouter().getRoute(request);
+        let router = response.getController().getRouter();
+        let route = router.getRoute(request);
+        if(!route){
+            throw new NotFoundError("Route not found!");
+        }
         let template = this.templates.get(route.getTemplate());
+        if(!template){
+            throw new NotFoundError("'" + route.getTemplate() + "' template not found!");
+        }
         template.render(this, request, response);
     }
 
-    public setTemplate(name: string, template: Template): void{
-        this.templates.set(name, template);
+    public setTemplate(template: Template): void{
+        this.templates.set(template);
     }
 
 }

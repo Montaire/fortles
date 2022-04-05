@@ -39,14 +39,14 @@ export default class TemplateFactory{
 
     public createTemplate(name:string, path:string){
         let reader = new FileCharacterStreamReader(path);
-        this.set(name, new Template(reader, name));
+        this.set(new Template(reader, name));
     }
 
     public get(name: string): Template{
         return this.templates.get(name);
     }
 
-    public set(name: string, template: Template): void{
-        this.templates.set(name, template);
+    public set(template: Template): void{
+        this.templates.set(template.getName(), template);
     }
 }

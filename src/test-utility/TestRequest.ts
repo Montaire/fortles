@@ -1,13 +1,13 @@
 import { Locale, Request, RequestType } from "@fortles/core";
 
 export default class TestRequest extends Request{
-    protected path: string;
-    protected type: RequestType;
-    protected mime: string;
-    protected referer: string;
-    protected blockPath: string;
+    public path: string;
+    public type: RequestType;
+    public mime: string;
+    public referer: string;
+    public blockPath: string;
 
-    constructor(path:string = '/', type:RequestType = RequestType.FULL, mime:string = 'text/html'){
+    constructor(path:string = "/", type:RequestType = RequestType.FULL, mime:string = "text/html"){
         super();
         this.path = path;
         this.type = type;

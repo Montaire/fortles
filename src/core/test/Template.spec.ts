@@ -1,22 +1,20 @@
-import assert from "assert";
-import { InvalidTemplateError } from "../index.js";
+import { InvalidTemplateError, EvalWriteableShard, Controller } from "@fortles/core";
 import TestUtility, { TestRenderEngine, TestRequest, TestResponse } from "@fortles/test-utility";
-import EvalWriteableShard from "../template/EvalWriteableShard.js";
-import Controller from "../Controller.js";
+import assert from "assert";
 
 describe("Template", function(){
     describe("Shard", function(){
         describe("Anchor", function(){
-            it("Anchor shard without go/do param is not valid", function(){
+            it("Anchor shard without href param is not valid", function(){
                 assert.throws(() => TestUtility.createTemplate("<a></a><f:a/>"), InvalidTemplateError);
                 assert.throws(() => TestUtility.createTemplate("<f:a class='boo'>Hello<f:a/>"), InvalidTemplateError);
             });
-            it("Anchor shard with go param", function(){
-                let template = TestUtility.createTemplate("<a></a><f:a go='party'>Test</f:a>");
+            it("Anchor shard with href param", function(){
+                let template = TestUtility.createTemplate("<a></a><f:a href='party()'>Test</f:a>");
                 let controller = new Controller();
                 controller.getRouter().createRoute("party", "party");
                 let result = TestUtility.renderTemplate(template, new TestResponse(controller));
-                assert.equal(result, '<a></a><a href="/party" onclick="E.go(this)">Test</a>');
+                assert.equal(result, '<a></a><a href="/party" onclick="Fortles.go(this)">Test</a>');
             });
         });
         describe("Eval", function(){
@@ -31,27 +29,29 @@ describe("Template", function(){
         });
         describe("Block", function(){
             it("Renders the routed blocks properly", function(){
-                let template1 = TestUtility.createTemplate("1 <f:block name='block2' /><f:block name='block3' /> 4");
-                let template2 = TestUtility.createTemplate("2");
-                let template3 = TestUtility.createTemplate("3");
+                let template1 = TestUtility.createTemplate("1 <f:block name='block2' /><f:block name='block3' /> 4", ".template1");
+                let template2 = TestUtility.createTemplate("2", "template2");
+                let template3 = TestUtility.createTemplate("3", ".template3");
 
                 let controller2 = new Controller();
                 controller2.getRouter().createDefaultRoute("template3");
 
                 let mainController = new Controller();
-                mainController.setBlockPath("main");
                 mainController.getRouter().createDefaultRoute("template1")
-                .addTemplate("block2", "template2")
-                .addController("block3", controller2);
+                    .addTemplate("block2", "template2")
+                    .addController("block3", controller2);
                 let response = new TestResponse(mainController);
                 let request = new TestRequest();
                 //Build render engine
                 let engine = new TestRenderEngine();
-                engine.setTemplate(".template1", template1);
-                engine.setTemplate("template2", template2);
-                engine.setTemplate(".template3", template3);
+                engine.setTemplate(template1);
+                engine.setTemplate(template2);
+                engine.setTemplate(template3);
                 engine.dispatch(request, response);
-                assert.equal(response.toString(), '1 <div id="f-block-main-block2">2</div><div id="f-block-main-block3">3</div> 4');
+                assert.equal(
+                    response.getBody(), 
+                    '1 <div id="f-block-block2">2</div><div id="f-block-block3">3</div> 4'
+                );
             });
         });
     });
