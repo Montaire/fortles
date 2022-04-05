@@ -1,5 +1,6 @@
-import { Controller, Request, RequestType, Response, Middleware, Addon, Platform, ServiceManager, Service, ServiceType, RenderEngine, HtmlRenderEngine } from "./index.js";
+import { Controller, Request, RequestType, ChildResponse, Response, Middleware, Addon, Platform, ServiceManager, Service, ServiceType, RenderEngine, HtmlRenderEngine } from "./index.js";
 import Locale from "./localization/Locale.js";
+import { DummyRequest } from "./Request.js";
 
 /**
  * Application is the main entrnance point.
@@ -54,13 +55,15 @@ export class Application{
                 break;
             case RequestType.PARTIAL:
                 let controller = this.findChange(request);
+                let childResponse = new ChildResponse(controller, response);
+                engine.dispatch(request, childResponse);
                 break;
         }
         response.close();
     }
 
     public findChange(request: Request): Controller | null{
-        let oldRequest = request;
+        let oldRequest = new DummyRequest(request.getReferer());
         let newRoute;
         let oldRoute;
         let newController = this.mainController;

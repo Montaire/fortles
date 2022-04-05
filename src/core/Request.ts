@@ -1,17 +1,17 @@
 import { Locale } from "./localization";
+import { Cloneable } from "./utility";
 
-export default abstract class Request{
-
-  
+export default abstract class Request implements Cloneable{
     public abstract getType(): RequestType;
     public abstract getMime(): string;
     public abstract getPath(): string;
     public abstract getLocale(): Locale;
     public abstract getReferer(): string;
     public abstract getBlockPath(): string;
+    public abstract clone(): this;
 }
 
-export class DummyRequest extends Request{
+export class DummyRequest extends Request {
     
     path: string;
     
@@ -37,6 +37,9 @@ export class DummyRequest extends Request{
     }
     public getBlockPath(): string {
         throw new Error("Method not implemented.");
+    }
+    public clone(): this {
+        return this;
     }
 }
 
