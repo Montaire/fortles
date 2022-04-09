@@ -4,6 +4,7 @@
     "main": "index.js",
     "version": "0.1.0",
     "dependencies": {
-        "@fortles/core": "workspace:*"
+        "@fortles/core": "workspace:*",
+        "@fortles/model": "workspace:*"
     }
 }

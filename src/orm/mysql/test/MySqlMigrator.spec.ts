@@ -1,4 +1,4 @@
-import { TestEntity } from "../../../model/test/TestEntity.js";
+import { TestEntity } from "@fortles/test-utility";
 import { MySqlMigrator } from "../index.js";
 
 class TestConnection{
