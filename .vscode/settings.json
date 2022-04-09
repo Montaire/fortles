@@ -1,5 +1,10 @@
 {
     "typescript.preferences.quoteStyle": "double",
     "typescript.preferences.importModuleSpecifier": "relative",
-    "javascript.preferences.quoteStyle": "double"
+    "javascript.preferences.quoteStyle": "double",
+    "files.exclude": {
+        "**/*.d.ts": {"when": "$(basename).ts"},
+        "**/*.js": {"when": "$(basename).ts"},
+        "**/*.js.map": {"when": "$(basename)"}
+    }
 }

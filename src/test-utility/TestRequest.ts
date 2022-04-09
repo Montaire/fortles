@@ -31,5 +31,7 @@ export default class TestRequest extends Request{
     public getBlockPath(): string {
         return this.blockPath;
     }
-    
+    public clone(): this{
+        return this;
+    }
 }

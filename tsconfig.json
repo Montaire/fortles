@@ -5,17 +5,17 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "module": "ESNext",
-    "outDir": "dist",
+    //"outDir": "dist",
     "sourceMap": true,
-    "rootDir": "./",
+    "rootDir": "src",
     "declaration": true,  
-    "baseUrl": "./src/",
+    //"baseUrl": "./src/",
     //"incremental": true,
     "experimentalDecorators": true,
-    "plugins": [
+    /*"plugins": [
       { "transform": "./dst/model/typescript-plugin/TranspilerQueryPlugin.js", "type": "raw" }
-    ]
+    ]*/
   },
-  "include": ["./src", "./src/**/package.json"],
+  "include": ["./src"/*, "./src/**-/package.json"*/],
   "exclude": ["./src/oldtrash", "./node_modules", "./dist"]
 }

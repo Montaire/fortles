@@ -1,4 +1,4 @@
-import TestUtility, { TestRequest } from "@fortles/test-utility";
+import {TestUtility, TestRequest } from "@fortles/test-utility";
 import { Application, Controller, RequestType } from "@fortles/core";
 
 import assert from "assert";

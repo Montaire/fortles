@@ -64,4 +64,7 @@ export default class ServerRequest extends Request{
         return this.httpRequest;
     }
     
+    public clone(): this{
+        return this;
+    }
 }

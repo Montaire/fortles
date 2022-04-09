@@ -26,12 +26,12 @@
   "homepage": "https://github.com/Montaire/essentials#readme",
   "type": "module",
   "workspaces": [
-    "dist/core",
-    "dist/test-utility",
-    "dist/addon/*",
-    "dist/platform/*",
-    "dist/model",
-    "dist/orm/*"
+    "src/core",
+    "src/test-utility",
+    "src/addon/*",
+    "src/platform/*",
+    "src/model",
+    "src/orm/*"
   ],
   "devDependencies": {
     "@fortles/test-utility": "workspace:*",
@@ -43,5 +43,5 @@
     "typescript": "^4.5.5"
   },
   "private": true,
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@4.0.0-rc.1"
 }

@@ -1,5 +1,5 @@
 import { InvalidTemplateError, EvalWriteableShard, Controller } from "@fortles/core";
-import TestUtility, { TestRenderEngine, TestRequest, TestResponse } from "@fortles/test-utility";
+import { TestUtility, TestRenderEngine, TestRequest, TestResponse } from "@fortles/test-utility";
 import assert from "assert";
 
 describe("Template", function(){
