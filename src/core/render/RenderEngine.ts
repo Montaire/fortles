@@ -1,5 +1,4 @@
-import { Application, Asset, Request, Response } from "../index.js";
-import { Template, TemplateFactory } from "../template/index.js";
+import { Asset, Request, Response, Template, TemplateFactory } from "../index.js";
 
 export abstract class RenderEngine{
 
@@ -15,14 +14,14 @@ export abstract class RenderEngine{
      * @param request 
      * @param response 
      */
-    public beforeDispatch(request: Request, response: Response){}
+    public beforeRender(request: Request, response: Response){}
 
     /**
      * 
      * @param request 
      * @param response 
      */
-    public afterDispatch(request: Request, response: Response){} 
+    public afterRender(request: Request, response: Response){} 
 }
 
 export enum RenderEngineContentPlace{

@@ -1,5 +1,5 @@
-import { Application, Controller, StringCharacterStreamReader, Template } from "@fortles/core";
-import { TestPlatform as TestServerPlatform, TestRenderEngine, TestRequest, TestResponse, TestApplication } from "./index.js";
+import { Application, Controller, Renderable, StringCharacterStreamReader, Template } from "@fortles/core";
+import { TestServerPlatform, TestRenderEngine, TestRequest, TestResponse, TestApplication } from "@fortles/test-utility";
 
 export default class TestUtility{
 
@@ -58,6 +58,16 @@ export default class TestUtility{
         let application = TestUtility.createServerApplication(mainController, templates);
         let response = new TestResponse(application.getMainController());
         application.dispatch(request, response);
+        return response;
+    }
+
+    public static render(renderable: Renderable, templates: Template[] = [], request: TestRequest = new TestRequest()){
+        let response = new TestResponse();
+        let engine = new TestRenderEngine();
+        for(const template of templates){
+            engine.setTemplate(template);
+        }
+        renderable.render(engine, request, response);
         return response;
     }
 }

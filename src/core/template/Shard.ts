@@ -1,6 +1,3 @@
-import { Request, Response } from "../index.js";
-import { RenderEngine } from "../render/index.js";
+import { Renderable } from "../index.js";
 
-export default interface Shard{
-    render(engine: RenderEngine, request: Request, response: Response): void;
-}
+export default interface Shard extends Renderable{}

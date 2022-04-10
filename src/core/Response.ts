@@ -70,4 +70,8 @@ export default abstract class Response{
     setBlockPath(path: string){
         
     }
+
+    setData(data: object){
+        this.data = data;
+    }
 }

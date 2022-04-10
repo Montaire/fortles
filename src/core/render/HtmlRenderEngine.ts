@@ -29,7 +29,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
             }
             let template = this.templates.get(route.getTemplate());
             if(!template){
-                throw new Error('Template can not be found "' + response.getTemplateName()+ '"');
+                throw new Error('Template can not be found "' + route.getTemplate() + '"');
             }
             template.render(this, request, response);
         }catch(error){
@@ -46,7 +46,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         }
     }
     
-    public beforeDispatch(request: Request, response: Response){
+    public beforeRender(request: Request, response: Response){
         response.write("<!DOCTYPE html><html><header>");
         let headerTemplate = this.templates.get("header");
         if(headerTemplate){
@@ -62,7 +62,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
 
     }
 
-    public afterDispatch(request: Request, response: Response){
+    public afterRender(request: Request, response: Response){
         if(this.afterConetent){
             response.write(this.afterConetent);
         }

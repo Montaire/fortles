@@ -25,21 +25,10 @@ export default class BlockControlShard extends ControlShard {
         let router = controller.getRouter();
         let route = router.getRoute(request);
         if (route != null) {
-            let routed = route.getBlock(this.name) || router.getDefaultRoute().getBlock(this.name);
-            if (routed != null) {
-                let blockPath = controller.getBlockPath();
-                if(blockPath){
-                    blockPath += '-'
-                }
-                response.write('<div id="f-block-' + (blockPath ? blockPath + '-' : '') + this.name + '">');
-                if(routed.getController()){
-                    let routedResponse = new ChildResponse(routed.getController(), response);
-                    routedResponse.setTemplateName(routed.getTemplate());
-                    routed.getController().render(engine, request, routedResponse);
-                }else if(routed.getTemplate()){
-                    let template = engine.getTemplate(routed.getTemplate());
-                    template.render(engine, request, response);
-                }
+            let block = route.getBlock(this.name) || router.getDefaultRoute().getBlock(this.name);
+            if (block != null) {
+                response.write('<div id="f-block-' + controller.getBlockPath(this.name) + '">');
+                block.render(engine, request, response);
                 response.write("</div>");
             }
         } else {

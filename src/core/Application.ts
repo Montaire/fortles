@@ -1,6 +1,7 @@
-import { Controller, Request, RequestType, ChildResponse, Response, Middleware, Addon, Platform, ServiceManager, Service, ServiceType, RenderEngine, HtmlRenderEngine } from "./index.js";
+import { TemplateRenderEngine, Controller, Request, RequestType, Route, 
+    Block, Response, Middleware, Addon, Platform, ServiceManager, Service, 
+    ServiceType, RenderEngine, DummyRequest } from "./index.js";
 import Locale from "./localization/Locale.js";
-import { DummyRequest } from "./Request.js";
 
 /**
  * Application is the main entrnance point.
@@ -49,30 +50,53 @@ export class Application{
         let engine = this.getRenderEngine(request);
         switch(request.getType()){
             case RequestType.FULL:
-                engine.beforeDispatch(request, response);
-                engine.dispatch(request, response);
-                engine.afterDispatch(request, response);
+                engine.beforeRender(request, response);
+                this.mainController.render(engine, request, response);
+                engine.afterRender(request, response);
                 break;
             case RequestType.PARTIAL:
-                let controller = this.findChange(request);
-                let childResponse = new ChildResponse(controller, response);
-                engine.dispatch(request, childResponse);
+                this.renderPartial(engine, request, response);
+                break;
+            case RequestType.ACTION:
+                
                 break;
         }
         response.close();
     }
 
-    public findChange(request: Request): Controller | null{
+    protected renderPartial(engine: RenderEngine, request: Request, response: Response): void{
         let oldRequest = new DummyRequest(request.getReferer());
-        let newRoute;
-        let oldRoute;
+        let newRoute: Route;
+        let oldRoute: Route;
         let newController = this.mainController;
         let oldController = this.mainController;
         for(const name of request.getBlockPath()){
             newRoute = newController.getRouter().getRoute(request);
             oldRoute = oldController.getRouter().getRoute(oldRequest);
             if(newRoute != oldRoute){
-                return newController;
+                //Check for block changes.
+                let changedBlock: Block = null;
+                let changedBlockName: string;
+                for(const [key, block] of newRoute.getBlocks()){
+                    if(!oldRoute.hasBlock(key) || !block.compare(oldRoute.getBlock(key))){
+                        //If more than one block differs, render the whole controller.
+                        if(changedBlock){
+                            changedBlock = null;
+                            break;
+                        }
+                        changedBlock = block;
+                        changedBlockName = key;
+                    }
+                }
+                //If only one block changed render only that one.
+                if(changedBlock && engine instanceof TemplateRenderEngine){
+                    response.setBlockPath(newController.getBlockPath(changedBlockName));
+                    changedBlock.render(engine, request, response);
+                }else{
+                    response.setBlockPath(newController.getBlockPath());
+                    newController.render(engine, request, response);
+                }
+                return;
             }
             let newBlock = newRoute.getBlock(name);
             let oldBlock = oldRoute.getBlock(name);

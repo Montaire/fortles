@@ -1,5 +1,5 @@
-import {TestUtility, TestRequest } from "@fortles/test-utility";
-import { Application, Controller, RequestType } from "@fortles/core";
+import { TestUtility, TestRequest } from "@fortles/test-utility";
+import { Controller, RequestType } from "@fortles/core";
 
 import assert from "assert";
 
@@ -24,7 +24,7 @@ describe("Application", function(){
 
             assert.equal(
                 application.simulate(new TestRequest()).getBody(), 
-                "<div id=\"f-block-nav\">menu</div><div id=\"f-block-content\">home</div>", 
+                "<div id=\"f-block-nav\">menu</div><div id=\"f-block-content\">home</div>",
                 "Home page not correct!"
             );
 
@@ -35,7 +35,7 @@ describe("Application", function(){
             );
 
             let request = new TestRequest("/about-us", RequestType.PARTIAL);
-            request.referer = "";
+            request.referer = "/";
             request.blockPath = "menu"
             let response = application.simulate(request);
 
@@ -44,7 +44,6 @@ describe("Application", function(){
                 "about-us",
                 "Partial request not correct!"
             );
-            
             assert.equal(
                 response.blockPath,
                 "content",

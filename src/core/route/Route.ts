@@ -1,7 +1,5 @@
 import { Type } from "@fortles/model";
-import { ModelAwareController } from "../Controller.js";
-import { RuntimeError } from "../Error.js";
-import { Controller, Request } from "../index.js"
+import { Controller, Request, RuntimeError, ModelAwareController, Block} from "../index.js"
 //import { Type } from "../type/index.js";
 
 /**
@@ -10,16 +8,16 @@ import { Controller, Request } from "../index.js"
 export default class Route {
 
     protected path: string;
-    protected routeBlocks = new Map<string, RouteBlock>();
+    protected routeBlocks = new Map<string, Block>();
     protected parameters = new Map<string, Type<any, any>>()
-    protected template: string;
+    protected templateName: string;
     protected name: string;
     protected controller: Controller;
 
     constructor(name: string, template: string, controller: Controller) {
         this.name = name;
         this.path = '/' + (name || '');
-        this.template = template;
+        this.templateName = template;
         this.controller = controller;
     }
 
@@ -32,8 +30,8 @@ export default class Route {
      * @return Self for chaining functions.
      */
     public addController(block: string, controller: Controller, template: string = null): this{
-        controller.setBlockPath(this.controller.getBlockPath() == null ? block : (this.controller.getBlockPath() + "-" + block));
-        this.routeBlocks.set(block, new RouteBlock(controller, template || this.template));
+        controller.setBlockPath(this.controller.getBlockPath(block));
+        this.routeBlocks.set(block, new Block(controller, template || this.templateName));
         return this;
     }
 
@@ -45,7 +43,7 @@ export default class Route {
      * @return Self for chaining functions.
      */
     public addTemplate(block: string, template: string):this{
-        this.routeBlocks.set(block, new RouteBlock(null, template || this.template));
+        this.routeBlocks.set(block, new Block(null, template || this.templateName));
         return this;
     }
 
@@ -72,8 +70,16 @@ export default class Route {
      * @param name Name of the targeted block in the view
      * @return Controller and the requred template
      */
-    getBlock(name: string): RouteBlock {
+    getBlock(name: string): Block {
         return this.routeBlocks.get(name);
+    }
+
+    getBlocks(): Map<string, Block> {
+        return this.routeBlocks;
+    }
+
+    hasBlock(name: string): boolean {
+        return this.routeBlocks.has(name);
     }
 
     /**
@@ -90,37 +96,11 @@ export default class Route {
     }
     
     public getTemplate(): string {
-        return this.template;
+        return this.templateName;
     }
 
     public getName(): string {
         return this.name;
     }
 
-}
-
-/**
-     * A Block is an interchangeble element on the view.
-     */
- export class RouteBlock{
-
-    private template: string;
-    private controller: Controller;
-    /**
-     * Creates a new block.
-     * @param {Controller} Controller for the block
-     * @param {string} Template to render the data.
-     */
-    constructor(controller: Controller,  template: string) {
-        this.controller = controller;
-        this.template = template;
-    }
-
-    getTemplate(): string{
-        return this.template;
-    }
-
-    getController(): Controller{
-        return this.controller;
-    }
 }

@@ -71,8 +71,12 @@ export default class Controller {
      * Returns the position in the tree.
      * @return The path.
      */
-    public getBlockPath(): string {
-        return this.blockPath;
+    public getBlockPath(target?: string): string {
+        if(target){
+            return this.blockPath ? this.blockPath + "-" + target : target;
+        }else{
+            return this.blockPath;
+        }
     }
 }
 
