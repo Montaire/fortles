@@ -10,7 +10,7 @@ export default class TestRenderEngine extends TemplateRenderEngine{
         let router = response.getController().getRouter();
         let route = router.getRoute(request);
         if(!route){
-            throw new NotFoundError("Route not found!");
+            throw new NotFoundError("Route for '" + request.getPath() + "' not found!");
         }
         let template = this.templates.get(route.getTemplate());
         if(!template){

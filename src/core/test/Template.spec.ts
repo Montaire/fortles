@@ -26,6 +26,12 @@ describe("Template", function(){
                 assert.equal(TestUtility.createAndRenderTemplate("<p>${if(4 < 5){return 9;}}</p>"), "<p>9</p>", "Aritmetic calculation failed");
                 assert.throws(() => TestUtility.createAndRenderTemplate("<p>${if 4 < 5 {return 9;}}</p>"), /Eval.+string:1:5/, "Syntax error detected at the correct palce");
             });
+            it("Simple data evaluates", function(){
+                let template = TestUtility.createTemplate("<p>${a}</p>");
+                let response = new TestResponse();
+                response.setData({a: "1"});
+                assert.equal(TestUtility.renderTemplate(template, response),"<p>1</p>");
+            });
         });
         describe("Block", function(){
             it("Renders the routed blocks properly", function(){

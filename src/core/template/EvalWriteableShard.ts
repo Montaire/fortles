@@ -42,7 +42,7 @@ export default class EvalWriteableShard extends WriteableShard {
         if(this.fieldName != null){
             let data = response.getData()[this.fieldName];
             if(data){
-                response.write(response.getData()[this.fieldName]);
+                response.write(data);
             }
         }else{
             response.write(this.compiledScript.call(response.getData()));

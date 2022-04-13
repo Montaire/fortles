@@ -8,7 +8,6 @@
     "build": "yarn tsc",
     "build:watch": "yarn tsc --watch"
   },
-  "bin": "dist/cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Montaire/essentials.git"
@@ -31,7 +30,8 @@
     "src/addon/*",
     "src/platform/*",
     "src/model",
-    "src/orm/*"
+    "src/orm/*",
+    "src/dev"
   ],
   "devDependencies": {
     "@fortles/test-utility": "workspace:*",

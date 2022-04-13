@@ -62,7 +62,7 @@ export default class TestUtility{
     }
 
     public static render(renderable: Renderable, templates: Template[] = [], request: TestRequest = new TestRequest()){
-        let response = new TestResponse();
+        let response = new TestResponse(renderable instanceof Controller ? renderable : new Controller());
         let engine = new TestRenderEngine();
         for(const template of templates){
             engine.setTemplate(template);

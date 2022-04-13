@@ -6,7 +6,7 @@ export default class Template extends TemplateShard{
 	protected name: string;
 	protected application: Application;
 
-    constructor(reader: CharacterStreamReader, name:string = null, application: Application = null){
+    constructor(reader: CharacterStreamReader, name: string = null, application: Application = null){
         super(null);
         this.name = name;
         this.application = application;

@@ -19,7 +19,6 @@ import {
 } from "../index.js";
 
 export const enum TemplateShardStates{
-    TEXT_START,
     TEXT,
     EVAL_START,
     EVAL,
@@ -46,14 +45,11 @@ export default class TemplateShard implements Shard{
 
     prepare(reader: CharacterStreamReader): void {
         let shard = new WriteableShard();
-        let state = TemplateShardStates.TEXT_START;
+        let state = TemplateShardStates.TEXT;
         let evalBraclet = 1;
         let c: string;
         while ((c = reader.read()) !== null) {
             switch (state) {
-                case TemplateShardStates.TEXT_START:
-                    state = TemplateShardStates.TEXT;
-                    shard = new WriteableShard();
                 case TemplateShardStates.TEXT:
                     switch (c) {
                         case '$':
@@ -69,7 +65,6 @@ export default class TemplateShard implements Shard{
                             shard.write(c);
                             break;
                     }
-                    ;
                     break;
                 case TemplateShardStates.EVAL_START:
                     switch (c) {
@@ -100,7 +95,8 @@ export default class TemplateShard implements Shard{
                             evalBraclet--;
                             if(!evalBraclet){
                                 this.append(shard);
-                                state = TemplateShardStates.TEXT_START;
+                                shard = new WriteableShard();
+                                state = TemplateShardStates.TEXT;
                             }else{
                                 shard.write(c);
                             }
@@ -132,7 +128,7 @@ export default class TemplateShard implements Shard{
                         case ':':
                             this.append(shard);
                             this.prepareControl(reader);
-                            state = TemplateShardStates.TEXT_START;
+                            state = TemplateShardStates.TEXT;
                             shard = new WriteableShard();
                             break;
                         default:
@@ -202,7 +198,8 @@ export default class TemplateShard implements Shard{
                     switch (c) {
                         case '_':
                             this.append(shard);
-                            state = TemplateShardStates.TEXT_START;
+                            shard = new WriteableShard();
+                            state = TemplateShardStates.TEXT;
                             break;
                         default:
                             state = TemplateShardStates.LOCALIZATION;
