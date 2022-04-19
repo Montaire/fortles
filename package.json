@@ -31,7 +31,8 @@
     "src/platform/*",
     "src/model",
     "src/orm/*",
-    "src/dev"
+    "src/dev",
+    "src/cli"
   ],
   "devDependencies": {
     "@fortles/test-utility": "workspace:*",

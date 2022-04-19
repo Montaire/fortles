@@ -3,10 +3,8 @@
     "type": "module",
     "main": "index.js",
     "version": "0.1.0",
-    "bin": {
-        "fortles": "./cli.js"
-    },
     "dependencies": {
-        "commander": "^9.1.0"
+        "@fortles/core": "workspace:*",
+        "@fortles/platform.server": "workspace:*"
     }
 }
