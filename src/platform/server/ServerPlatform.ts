@@ -1,4 +1,4 @@
-import { Application, Asset, AssetService, HttpError} from "@fortles/core";
+import { Application, Asset, AssetService, HtmlRenderEngine, HttpError} from "@fortles/core";
 import { Platform } from "@fortles/core";
 import * as http from "http";
 import * as http2 from "http2";
@@ -17,6 +17,7 @@ export default class ServerPlatform extends Platform{
     }
 
     run(application: Application){
+        application.getRenderEngines().set("text/html", new HtmlRenderEngine(application));
         application.getService(AssetService).add(new Asset("./asset/favicon.ico", "favicon.ico", "image/x-icon", true));
         const server = http.createServer(
             (request, response) => {

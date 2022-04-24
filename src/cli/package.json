@@ -8,5 +8,8 @@
     },
     "dependencies": {
         "commander": "^9.1.0"
+    },
+    "optionalDependencies": {
+        "@fortles/dev": "workspace:*"
     }
 }

@@ -56,4 +56,4 @@ if(config && config.default){
 
 application.run();
 
-console.info("Development server started.");
+console.info("Development server started at http://localhost:" + runtimeConfig.port + "");

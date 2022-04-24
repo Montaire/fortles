@@ -11,20 +11,27 @@ export default class DevelopmentServer{
 
     protected defaultConfig: DevelopmentServerConfig = {
         port: 8080,
-        path: "./"
+        path: "./src"
     };
 
     public async start(config: DevelopmentServerConfig){
-        console.log(config, this.defaultConfig);
         config = Object.assign({}, this.defaultConfig, config);
         //1. Watch file changes
-        console.log(config.port);
+
         //2. Run migrations
 
         //3. Load config
 
         //4. Run server
-        let childProcess = fork(normalize(fileURLToPath(import.meta.url) + "/../run.js"),[JSON.stringify(config)]);
+        let childProcess = fork(
+            normalize(fileURLToPath(import.meta.url) + "/../run.js"),
+            [JSON.stringify(config)],
+            //{execArgv:['--inspect-brk']}
+        );
+
+        process.on("exit", (code) => {
+            childProcess.send({action: "exit"});
+        });
         /*childProcess.send({action: "exit"});
         childProcess.kill("SIGQUIT");*/
     }
