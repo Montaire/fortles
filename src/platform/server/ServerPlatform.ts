@@ -6,18 +6,19 @@ import { ServerRequest, ServerResponse } from "./index.js";
 
 export default class ServerPlatform extends Platform{
 	public port: number;
-
+    protected templatePaths: string[];
     /**
      * Port of the server
      * @param port 
      */
-    constructor(port: number){
+    constructor(port: number, templatePaths: string[]){
         super();
         this.port = port;
+        this.templatePaths = templatePaths;
     }
 
     run(application: Application){
-        application.getRenderEngines().set("text/html", new HtmlRenderEngine(application));
+        application.getRenderEngines().set("text/html", new HtmlRenderEngine(application, this.templatePaths));
         application.getService(AssetService).add(new Asset("./asset/favicon.ico", "favicon.ico", "image/x-icon", true));
         const server = http.createServer(
             (request, response) => {

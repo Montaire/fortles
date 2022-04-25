@@ -11,7 +11,7 @@ export default class DevelopmentServer{
 
     protected defaultConfig: DevelopmentServerConfig = {
         port: 8080,
-        path: "./src"
+        path: "./"
     };
 
     public async start(config: DevelopmentServerConfig){

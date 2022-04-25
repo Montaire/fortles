@@ -21,16 +21,15 @@ process.on("message", (message: RunMessage) => {
 
 let runtimeConfig = JSON.parse(argv.pop()) as DevelopmentServerConfig;
 
-let platform = new ServerPlatform(runtimeConfig.port);
 
 let path = process.cwd();
 let pathUrl = pathToFileURL(runtimeConfig.path ? resolve(path, runtimeConfig.path) : path);
 let mainController: Controller = null;
-let configUrl = pathUrl + "/config.js";
+let configUrl = pathUrl + "/src/config.js";
 let config = null;
 
 try{
-    let config = await import(pathUrl + "/config.js");
+    let config = await import(pathUrl + "/src/config.js");
     if(config.mainController instanceof Function){
         mainController = config.mainController();
     }
@@ -48,6 +47,7 @@ if(mainController == null){
     }
 }
 
+let platform = new ServerPlatform(runtimeConfig.port, [path + "/template"]);
 let application = new Application(platform, mainController);
 
 if(config && config.default){

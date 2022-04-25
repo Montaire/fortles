@@ -11,14 +11,15 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
     afterConetent: string = "";
     beforeContent: string = "";
 
-    constructor(application: Application){
+    constructor(application: Application, templatePaths: string[]){
         super();
         application.registerService(AssetService);
-        let templatePath = path.normalize(path.dirname(process.argv[1]) + '/../template');
-        if(!fs.existsSync(templatePath)){
-            throw new RuntimeError("There is no folder with templates on the'"+templatePath+"'");
+        for(const templatePath of templatePaths){
+            if(!fs.existsSync(templatePath)){
+                throw new RuntimeError("There is no folder with templates on the'"+templatePath+"'");
+            }
+            this.templates.build(templatePath);
         }
-        this.templates.build(templatePath);
     }
 
     public dispatch(request: Request, response: Response){
