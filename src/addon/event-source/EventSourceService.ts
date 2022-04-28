@@ -1,4 +1,4 @@
-import { Addon, Application, AssetService, Path, Request, Response, ScriptAsset, ServiceContainer } from "@fortles/core";
+import { Addon, Application, AssetService, Request, Response, ScriptAsset, ServiceContainer } from "@fortles/core";
 import { ServerRequest, ServerResponse } from "@fortles/platform.server";
 import * as http from "http";
 
@@ -6,8 +6,8 @@ export default class EventSourceService extends ServiceContainer implements Addo
     
     protected clients: http.ServerResponse[] = [];
 
-    prepareAddon(application: Application): void {
-        let asset = new ScriptAsset(Path.resolveMeta("./asset/event-source.js", import.meta));
+    async prepareAddon(application: Application): Promise<void> {
+        let asset = new ScriptAsset(await import.meta.resolve("./asset/event-source.js"));
         application.getService(AssetService).add(asset);
     }
 

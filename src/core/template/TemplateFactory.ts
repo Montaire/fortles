@@ -1,8 +1,6 @@
-import { exit } from "process";
-import { Application } from "../index.js";
-import { Template } from "./index.js";
+import { Template, FileCharacterStreamReader, RuntimeError } from "../index.js";
+
 import * as fs from "fs";
-import { FileCharacterStreamReader } from "../utility/index.js";
 
 export default class TemplateFactory{
 
@@ -41,7 +39,11 @@ export default class TemplateFactory{
     public createTemplate(path:string, name:string = null){
         let reader = new FileCharacterStreamReader(path);
         if(!name){
-            name = path.match(/.+?template[\//](.+)\.[^/.]+$/)[1];
+            let result = path.match(/.+?template[\\\/](.+)\.[^/.]+$/);
+            if(!result || !result[1]){
+                throw new RuntimeError("Cant extract template name from '" + path + "'");
+            }
+            name = result[1];
         }
         this.set(new Template(reader, name));
     }

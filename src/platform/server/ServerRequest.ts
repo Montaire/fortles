@@ -11,6 +11,15 @@ export default class ServerRequest extends Request{
     }
 
     public getType(): RequestType {
+        if(this.httpRequest.method != "GET"){
+            return RequestType.ACTION;
+        }
+        if(this.httpRequest.headers["fortles-source"] !== undefined){
+            return RequestType.PARTIAL;
+        }
+        if(this.httpRequest.headers["fortles-target"] !== undefined){
+            return RequestType.BLOCK;
+        }
         return RequestType.FULL;
     }
 
@@ -57,7 +66,9 @@ export default class ServerRequest extends Request{
     }
     
     getBlockPath(): string {
-        return this.httpRequest.headers["fortles-source"] as string;
+        return this.httpRequest.headers["fortles-source"] as string 
+            || this.httpRequest.headers["fortles-target"] as string 
+            || "";
     }
 
     public getOriginal(): http.IncomingMessage{

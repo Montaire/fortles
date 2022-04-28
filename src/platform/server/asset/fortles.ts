@@ -14,15 +14,21 @@ var Fortles: {[k: string]: any} = {
         event.preventDefault();
     },
 
+    loadPage: async function(target: string){
+    },
+
     loadBlock: async function(target: string){
         let response = await fetch(location.href, {
-            headers: {
-                "Fortles-Target": target,
-            }
+            headers: {"Fortles-Target": target}
         });
         if(response.ok){
             let targetPath = response.headers.get("Fortles-Target");
-            let targetElement = Fortles.getBlock(targetPath);
+            let targetElement: HTMLElement;
+            if(targetPath){
+                targetElement = Fortles.getBlock(targetPath);
+            }else{
+                targetElement = document.body;
+            }
             targetElement.innerHTML = await response.text();
         }
     },

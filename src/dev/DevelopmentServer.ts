@@ -58,7 +58,7 @@ export default class DevelopmentServer{
         this.childProcess = fork(
             Path.normalize(url.fileURLToPath(import.meta.url) + "/../run.js"),
             [JSON.stringify(this.config)],
-            //{execArgv:['--inspect-brk']}
+            {execArgv:['--enable-source-maps', '--experimental-import-meta-resolve']}
         );
     }
 
@@ -72,7 +72,7 @@ export default class DevelopmentServer{
         if(Path.extname(path) == ".html"){
             this.childProcess.send({
                 action: "reload",
-                path: path
+                data: path
             });
             return;
         }
@@ -80,7 +80,7 @@ export default class DevelopmentServer{
         if(path.includes("asset")){
             this.childProcess.send({
                 action: "reload", 
-                path: path
+                data: path
             });
             return;
         }

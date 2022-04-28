@@ -1,3 +1,4 @@
+import { NotFoundError } from "./Error.js";
 import { TemplateRenderEngine, Controller, Request, RequestType, Route, 
     Block, Response, Middleware, Addon, Platform, ServiceManager, Service, 
     ServiceType, RenderEngine, DummyRequest } from "./index.js";
@@ -58,11 +59,37 @@ export class Application{
             case RequestType.PARTIAL:
                 this.renderPartial(engine, request, response);
                 break;
+            case RequestType.BLOCK:
+                this.renderBlock(engine, request, response);
+                break;
             case RequestType.ACTION:
                 
                 break;
         }
         response.close();
+    }
+
+    protected renderBlock(engine: RenderEngine, request: Request, response: Response): void{
+        let controller = this.mainController;
+        let block: Block = null;
+        if(request.getBlockPath()){
+            for(const name of request.getBlockPath().split("-")){
+                block = controller.getRouter().getRoute(request).getBlock(name);
+                if(!block){
+                    throw new NotFoundError("Block not found");
+                }
+                if(controller){
+                    controller = block.getController();
+                }
+            }
+        }
+        if(block && engine instanceof TemplateRenderEngine){
+            response.setBlockPath(request.getBlockPath());
+            block.render(engine, request, response);
+        }else{
+            response.setBlockPath(controller.getBlockPath());
+            controller.render(engine, request, response);
+        }
     }
 
     protected renderPartial(engine: RenderEngine, request: Request, response: Response): void{
@@ -71,7 +98,7 @@ export class Application{
         let oldRoute: Route;
         let newController = this.mainController;
         let oldController = this.mainController;
-        for(const name of request.getBlockPath()){
+        for(const name of request.getBlockPath().split("-")){
             newRoute = newController.getRouter().getRoute(request);
             oldRoute = oldController.getRouter().getRoute(oldRequest);
             if(newRoute != oldRoute){

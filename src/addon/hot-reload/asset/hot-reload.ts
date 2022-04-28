@@ -9,6 +9,12 @@ if(Fortles.eventSource) {
         Fortles.loadBlock(e.data);
     });
 
+    Fortles.eventSource.addEventListener("reload-all", async e => {
+        document.open();
+        document.write(await (await fetch(location.href)).text());
+        document.close();
+    });
+
     Fortles.eventSource.addEventListener("reload-script", e => {
         
     });

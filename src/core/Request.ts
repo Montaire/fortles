@@ -44,7 +44,11 @@ export class DummyRequest extends Request {
 }
 
 export const enum RequestType{
+    /** Full view */
     FULL,
+    /** Get the partial update for the view */
     PARTIAL,
-    ACTION
+    ACTION,
+    /** View requests only a block */
+    BLOCK
 }

@@ -14,14 +14,14 @@ process.on("exit", (code) => {
 let runtimeConfig = JSON.parse(argv.pop()) as DevelopmentServerConfig;
 
 
-let path = process.cwd();
-let pathUrl = pathToFileURL(runtimeConfig.path ? resolve(path, runtimeConfig.path) : path);
+let rootPath = process.cwd();
+let pathUrl = pathToFileURL(runtimeConfig.path ? resolve(rootPath, runtimeConfig.path) : rootPath);
 let mainController: Controller = null;
 let configUrl = pathUrl + "/src/config.js";
 let config = null;
 
 try{
-    let config = await import(pathUrl + "/src/config.js");
+    config = await import(pathUrl + "/src/config.js");
     if(config.mainController instanceof Function){
         mainController = config.mainController();
     }
@@ -39,11 +39,14 @@ if(mainController == null){
     }
 }
 
-let platform = new ServerPlatform(runtimeConfig.port, [path + "/template"]);
+let platform = new ServerPlatform(runtimeConfig.port, [rootPath + "/template"]);
 let application = new Application(platform, mainController);
 
 if(config && config.default){
     config.default(application);
+}else{
+    console.log(config);
+    console.warn("No default export found in the config file: '" + configUrl + "'");
 }
 
 //Prepare watches
@@ -60,21 +63,21 @@ process.on("message", (message: RunMessage) => {
             console.info("Stopping development server.");
             process.exit();
         case "reload":
-            let mime = Mime.detect(message.path);     
+            let mime = Mime.detect(message.data);
             if(mime == MimeType.HTML){
-                application.getService(HotReloadAddon).reloadTemplate(message.path);
+                application.getService(HotReloadAddon).reloadTemplate(message.data);
             }else{
                 //If asset in the asset folder
-                let result = message.path.match(/.+?asset[\//](.+)$/);
+                let result = message.data.match(/.+?asset[\//](.+)$/);
                 if(result){
-                    let asset = new Asset(path, result[1]);
+                    let asset = new Asset(message.data, result[1]);
                     application.getService(HotReloadAddon).reloadAsset(asset);
                     return;
                 }
 
                 //If the asset loaded via class
                 for(const asset of application.getService(AssetService)){
-                    if(asset.source == message.path){
+                    if(asset.source == message.data){
                         application.getService(HotReloadAddon).reloadAsset(asset);
                         return;
                     }

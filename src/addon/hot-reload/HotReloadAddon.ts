@@ -1,4 +1,4 @@
-import { Addon, Application, AssetService, ScriptAsset, Service, HtmlRenderEngine, Asset, MimeType, Path } from "@fortles/core";
+import { Addon, Application, AssetService, ScriptAsset, Service, HtmlRenderEngine, Asset, MimeType } from "@fortles/core";
 import EventSourceService from "@fortles/addon.event-source";
 import fs from "fs";
 import * as http from "http";
@@ -8,10 +8,10 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
     protected clients: http.ServerResponse[] = [];
     protected application: Application;
 
-    public prepareAddon(application: Application): void {
+    public async prepareAddon(application: Application): Promise<void> {
         this.application = application;
         application.registerAddon(EventSourceService);
-        let asset = new ScriptAsset(Path.resolveMeta("./asset/hot-reload.js", import.meta));
+        let asset = new ScriptAsset(await import.meta.resolve("./asset/hot-reload.js"));
         application.getService(AssetService).add(asset);
     }
 
@@ -47,6 +47,10 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
      */
     public reloadBlock(blockPath: string = ""){
         this.container.send("reload-block", blockPath);
+    }
+
+    public reloadAll(){
+        this.container.send("reload-all", null);
     }
 
     /**
