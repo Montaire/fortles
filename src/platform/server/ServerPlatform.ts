@@ -17,9 +17,12 @@ export default class ServerPlatform extends Platform{
         this.templatePaths = templatePaths;
     }
 
-    run(application: Application){
+    prepare(application: Application){
         application.getRenderEngines().set("text/html", new HtmlRenderEngine(application, this.templatePaths));
         application.getService(AssetService).add(new Asset("./asset/favicon.ico", "favicon.ico", "image/x-icon", true));
+    }
+
+    run(application: Application){
         const server = http.createServer(
             (request, response) => {
                 try{

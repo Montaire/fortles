@@ -18,27 +18,31 @@ export default class TemplateFactory{
         this.transverseFolder(path, prefix, this.createTemplate.bind(this));
     }
 
-    public transverse(callback: (name: string, path: string) => void){
+    public transverse(callback: (path: string, name: string) => void){
         for(const {path, prefix} of this.roots){
             this.transverseFolder(path, prefix, callback);
         }
     }
 
-    public transverseFolder(rootFolder: string, prefix:string = null, callback: (name: string, path: string) => void){
+    public transverseFolder(rootFolder: string, prefix:string = null, callback: (path: string, name: string) => void){
         let files = fs.readdirSync(rootFolder, {withFileTypes: true});
         for(let file of files){
             let name = prefix ? prefix + '/' + file.name : file.name;
             if(file.isDirectory()){
                 this.transverseFolder(rootFolder + '/' + file.name, name, callback);
             }else{
+                //Remove Extension
                 name = name.replace(/\.[^/.]+$/, "");
-                callback(name, rootFolder + "/" + file.name);
+                callback(rootFolder + "/" + file.name, name);
             }
         }
     }
 
-    public createTemplate(name:string, path:string){
+    public createTemplate(path:string, name:string = null){
         let reader = new FileCharacterStreamReader(path);
+        if(!name){
+            name = path.match(/.+?template[\//](.+)\.[^/.]+$/)[1];
+        }
         this.set(new Template(reader, name));
     }
 

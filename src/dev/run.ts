@@ -1,22 +1,14 @@
-import { RunMessage } from "./index.js";
-import { Application, Controller } from "@fortles/core";
+import HotReloadAddon from "@fortles/addon.hot-reload";
+import { Application, Asset, AssetService, Controller, Mime, MimeType } from "@fortles/core";
 import { ServerPlatform } from "@fortles/platform.server";
-import { pathToFileURL } from "url";
-import { resolve } from "path"
+import { resolve } from "path";
 import { argv } from "process";
+import { pathToFileURL } from "url";
 import { DevelopmentServerConfig } from "./DevelopmentServer.js";
+import { RunMessage } from "./index.js";
 
 process.on("exit", (code) => {
     console.info("Development server stopped.");
-});
-
-process.on("message", (message: RunMessage) => {
-    switch(message.action){
-        case "exit":
-            console.info("Stopping development server.");
-            process.exit();
-            break;
-    }
 });
 
 let runtimeConfig = JSON.parse(argv.pop()) as DevelopmentServerConfig;
@@ -54,6 +46,41 @@ if(config && config.default){
     config.default(application);
 }
 
+//Prepare watches
+application.registerAddon(HotReloadAddon);
+
 application.run();
 
 console.info("Development server started at http://localhost:" + runtimeConfig.port + "");
+
+//Process messages form dev server
+process.on("message", (message: RunMessage) => {
+    switch(message.action){
+        case "exit":
+            console.info("Stopping development server.");
+            process.exit();
+        case "reload":
+            let mime = Mime.detect(message.path);     
+            if(mime == MimeType.HTML){
+                application.getService(HotReloadAddon).reloadTemplate(message.path);
+            }else{
+                //If asset in the asset folder
+                let result = message.path.match(/.+?asset[\//](.+)$/);
+                if(result){
+                    let asset = new Asset(path, result[1]);
+                    application.getService(HotReloadAddon).reloadAsset(asset);
+                    return;
+                }
+
+                //If the asset loaded via class
+                for(const asset of application.getService(AssetService)){
+                    if(asset.source == message.path){
+                        application.getService(HotReloadAddon).reloadAsset(asset);
+                        return;
+                    }
+                }
+                //TODO: If asset not found
+                console.error("Template not found.");
+            }
+    }
+});

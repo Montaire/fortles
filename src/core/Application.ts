@@ -26,6 +26,7 @@ export class Application{
         this.mainController = mainController;
         this.serviceManager = new ServiceManager(this);
         this.addMiddleware(this.serviceManager);
+        this.platform.prepare(this);
     }
 
     /**

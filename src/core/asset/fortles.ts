@@ -3,7 +3,7 @@ var Fortles: {[k: string]: any} = {
         let source = event.target as HTMLAnchorElement;
         let response = await fetch(source.href, {
             headers: {
-                "Fortles-Path": Fortles.getBlockPath(source)
+                "Fortles-Source": Fortles.getBlockPath(source)
             }
         });
         if(response.ok){
@@ -12,6 +12,19 @@ var Fortles: {[k: string]: any} = {
             targetElement.innerHTML = await response.text();
         }
         event.preventDefault();
+    },
+
+    loadBlock: async function(target: string){
+        let response = await fetch(location.href, {
+            headers: {
+                "Fortles-Target": target,
+            }
+        });
+        if(response.ok){
+            let targetPath = response.headers.get("Fortles-Target");
+            let targetElement = Fortles.getBlock(targetPath);
+            targetElement.innerHTML = await response.text();
+        }
     },
 
     getBlock: function(path: string): HTMLElement|null{

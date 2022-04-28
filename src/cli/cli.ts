@@ -15,7 +15,9 @@ if(DevelopmentServer){
         .command("server")
             .description("Starts a development server")
             .option("-p, --port <port>", 'Port')
-            .option("--path <path>", "Path of the project")
+            .option("--path <path>", "Custom path to the project")
+            .option("--watchFramework", "Enable watcher for internal framework changes. Meant to be used for the framework developers.")
+            .option("--no-watchProject", "Disable watcher for the project dictionary.")
             .action((config) => {
                 let developmentServer = new DevelopmentServer();
                 developmentServer.start(config);

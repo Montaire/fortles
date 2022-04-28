@@ -6,5 +6,6 @@
         "**/*.d.ts": {"when": "$(basename).ts"},
         "**/*.js": {"when": "$(basename).ts"},
         "**/*.js.map": {"when": "$(basename)"}
-    }
+    },
+    "html.customData": ["./html.html-data.json"]
 }

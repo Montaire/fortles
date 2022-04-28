@@ -3,8 +3,8 @@ import Path from "path";
 import fs from "fs";
 import DefaultServiceContainer from "../service/DefaultServiceContainer.js";
 
-export default class AssetService extends Service{
-    
+export default class AssetService extends Service implements Iterable<Asset>{
+
     protected map = new Map<string, Asset>();
     protected application: Application;
 
@@ -69,8 +69,14 @@ export default class AssetService extends Service{
         }
         return this;
     }
+
+    
     
     public getContainerType(): new () => DefaultServiceContainer {
         return null;
+    }
+
+    [Symbol.iterator](): Iterator<Asset> {
+        return this.map.values();
     }
 }

@@ -2,11 +2,15 @@ import { Platform, Application } from "@fortles/core";
 import { TestRequest, TestResponse } from "@fortles/test-utility";
 
 export default class TestServerPlatform extends Platform{
-
+    
     application: Application;
-
-    public run(application: Application): void {
+    
+    public prepare(application: Application): void {
         this.application = application;
+    }
+    
+    public run(application: Application): void {
+        
     }
 
     public dispatch(request: TestRequest): TestResponse{

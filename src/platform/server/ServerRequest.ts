@@ -57,7 +57,7 @@ export default class ServerRequest extends Request{
     }
     
     getBlockPath(): string {
-        return this.httpRequest.headers["fortles-path"] as string;
+        return this.httpRequest.headers["fortles-source"] as string;
     }
 
     public getOriginal(): http.IncomingMessage{

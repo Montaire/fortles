@@ -6,4 +6,6 @@ export default abstract class Platform{
      * @param application 
      */
     public abstract run(application: Application): void
+
+    public abstract prepare(application: Application): void
 }

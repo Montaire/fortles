@@ -1,8 +1,25 @@
 
 if(Fortles.eventSource) {
-    Fortles.eventSource.addEventListener("hot-reload", e => {
+
+    Fortles.eventSource.addEventListener("reload-asset", e => {
         location.reload();
-    }, false);
+    });
+
+    Fortles.eventSource.addEventListener("reload-block", e => {
+        Fortles.loadBlock(e.data);
+    });
+
+    Fortles.eventSource.addEventListener("reload-script", e => {
+        
+    });
+
+    Fortles.eventSource.addEventListener("reload-style", e => {
+        let element = document.querySelector("link[href='"+ e.data +"']");
+        let newElement = document.createElement("link");
+        newElement.href = e.data;
+        element.parentNode.replaceChild(element,newElement);
+    });
+
 } else {
     console.warn("Event source is not loaded.");
 }
