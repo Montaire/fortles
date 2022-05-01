@@ -10,6 +10,7 @@
         "commander": "^9.1.0"
     },
     "optionalDependencies": {
-        "@fortles/dev": "workspace:*"
+        "@fortles/dev": "workspace:*",
+        "@fortles/model": "workspace:*"
     }
 }

@@ -18,13 +18,16 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
     public prepare(application: Application): void {
     }
 
-    public watchTemplateFolder(prefix:string = null){
+    /**
+     * Watch the templates.
+     */
+    public watchTemplates(){
         let engine = this.application.getRenderEngines().get("text/html") as HtmlRenderEngine;
         let factory = engine.getTemplateFactory();
         factory.transverse((path, name) => {
             fs.watch(path, (eventType, fileName) => {
                 factory.createTemplate(name, path);
-                this.container.send("hot-reload", "");
+                this.reloadBlock();
             });
         });
     }
@@ -49,13 +52,25 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
         this.container.send("reload-block", blockPath);
     }
 
+    /**
+     * Reloads the whole document without navigation.
+     */
     public reloadAll(){
-        this.container.send("reload-all", null);
+        this.container.send("reload-all");
+    }
+
+    /**
+     * Full page reload.
+     */
+    public reload(){
+        this.container.send("reload");
     }
 
     /**
      * Reloads an asset.
-     * @param asset 
+     * Supply the mime type to reload to reload only the asset if possible.
+     * The source not required.
+     * @param asset Asset to reload.
      */
     public reloadAsset(asset: Asset){
         switch(asset.mime){
@@ -66,9 +81,13 @@ export default class HotReloadAddon extends Service<EventSourceService> implemen
                 this.container.send("reload-style", asset.path);
                 break;
             default:
-                this.container.send("reload-asset", asset.path);
+                this.reload();
                 break;
         }
+    }
+
+    public dropClients(){
+        this.container.dropClients();
     }
 
     public getPriority(): number {

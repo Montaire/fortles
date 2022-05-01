@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { argv } from "process";
-import  { DevelopmentServer } from "@fortles/dev";
+import { DevelopmentServer } from "@fortles/dev";
+import { Migration } from "@fortles/model";
 
 let program = new Command();
 
@@ -25,6 +26,16 @@ if(DevelopmentServer){
 }else{
     program.command("dev")
         .alias("development")
-            .description("To use the dev commands intall the '@fortles/dev' package");
+            .description("To use the dev commands intall the '@fortles/dev' package")
+            .action((config) => {
+                let migration = new Migration();
+                migration.run(config);
+            });
 }
+
+//If migration loaded
+program.command("migrate")
+    .description("Migrations")
+    .option("-r, --reset", "Resets database from the seed files.")
+
 program.parse(argv);

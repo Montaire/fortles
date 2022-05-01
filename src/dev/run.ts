@@ -1,7 +1,8 @@
 import HotReloadAddon from "@fortles/addon.hot-reload";
 import { Application, Asset, AssetService, Controller, Mime, MimeType } from "@fortles/core";
 import { ServerPlatform } from "@fortles/platform.server";
-import { resolve } from "path";
+import * as Path from "path";
+import * as url from "url";
 import { argv } from "process";
 import { pathToFileURL } from "url";
 import { DevelopmentServerConfig } from "./DevelopmentServer.js";
@@ -15,7 +16,7 @@ let runtimeConfig = JSON.parse(argv.pop()) as DevelopmentServerConfig;
 
 
 let rootPath = process.cwd();
-let pathUrl = pathToFileURL(runtimeConfig.path ? resolve(rootPath, runtimeConfig.path) : rootPath);
+let pathUrl = pathToFileURL(runtimeConfig.path ? Path.resolve(rootPath, runtimeConfig.path) : rootPath);
 let mainController: Controller = null;
 let configUrl = pathUrl + "/src/config.js";
 let config = null;
@@ -61,17 +62,26 @@ process.on("message", (message: RunMessage) => {
     switch(message.action){
         case "exit":
             console.info("Stopping development server.");
-            process.exit();
+            if(message.data == "reload"){
+                application.getService(HotReloadAddon).reloadAll();
+                application.getService(HotReloadAddon).dropClients();
+                process.exit();
+            }else{
+                process.exit(Number.parseInt(message.data));
+            }
         case "reload":
             let mime = Mime.detect(message.data);
             if(mime == MimeType.HTML){
                 application.getService(HotReloadAddon).reloadTemplate(message.data);
             }else{
                 //If asset in the asset folder
-                let result = message.data.match(/.+?asset[\//](.+)$/);
+                message.data = Path.normalize(message.data);
+                let result = message.data.match(/.+?asset(.+)$/);
                 if(result){
-                    let asset = new Asset(message.data, result[1]);
+                    const name = result[1].split(Path.sep).join(Path.posix.sep).substring(1);
+                    const asset = new Asset(message.data, name, Mime.detect(message.data));
                     application.getService(HotReloadAddon).reloadAsset(asset);
+                    console.info("Hot Reload: " + message.data);
                     return;
                 }
 
@@ -79,11 +89,12 @@ process.on("message", (message: RunMessage) => {
                 for(const asset of application.getService(AssetService)){
                     if(asset.source == message.data){
                         application.getService(HotReloadAddon).reloadAsset(asset);
+                        console.info("Hot Reload: " + message.data);
                         return;
                     }
                 }
                 //TODO: If asset not found
-                console.error("Template not found.");
+                console.error("Hot Reload: Asset not found");
             }
     }
 });

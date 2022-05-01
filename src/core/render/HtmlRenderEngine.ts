@@ -48,7 +48,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
     }
     
     public beforeRender(request: Request, response: Response){
-        response.write("<!DOCTYPE html><html><header>");
+        response.write("<!DOCTYPE html><html><head>");
         let headerTemplate = this.templates.get("header");
         if(headerTemplate){
             headerTemplate.render(this, request, response);
@@ -56,7 +56,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         if(this.header){
             response.write(this.header);
         }
-        response.write("</header><body>");
+        response.write("</head><body>");
         if(this.beforeContent){
             response.write(this.beforeContent);
         }

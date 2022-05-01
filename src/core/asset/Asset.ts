@@ -31,6 +31,7 @@ export class SourceAsset extends Asset{
 
 export class ScriptAsset extends SourceAsset{
     constructor(source:string, path:string = null, hasMap = true, place = RenderEngineContentPlace.AFTER_CONTENT){
+        source = Path.normalize(source);
         if(!path){
             path = "script/" + Path.basename(source);
         }

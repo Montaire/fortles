@@ -38,22 +38,23 @@ export default class DevelopmentServer{
         this.watcher = chokidar.watch(watchPaths);
         this.watcher.on("change", path => this.onChange(path));
         //2. Run migrations
+        
 
-        //3. Load config
-
-        //4. Run server
+        //3. Run server (run allows re running as well)
         this.run();
-        /*childProcess.send({action: "exit"});
-        childProcess.kill("SIGQUIT");*/
         
         process.on("exit", (code) => {
-            this.childProcess.send({action: "exit"});
+            this.childProcess.send({action: "exit", data: code});
         });
     }
 
+    /**
+     * Runs a development server
+     * if the development server already running, restarts it.
+     */
     protected run(){
         if(this.childProcess){
-            this.childProcess.send({action: "exit"});
+            this.childProcess.send({action: "exit", data: "reload"});
         }
         this.childProcess = fork(
             Path.normalize(url.fileURLToPath(import.meta.url) + "/../run.js"),

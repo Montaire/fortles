@@ -31,9 +31,15 @@ export default class EventSourceService extends ServiceContainer implements Addo
         }
     }
 
-    public send(event: string, data: string){
+    public send(event: string, message: string = ""){
         for(const client of this.clients){
-            client.write("event:" + event + "\ndata:" + data.replace("\n","\\n") + "\n\n");
+            client.write("event:" + event + "\ndata:" + message.replace("\n","\\n") + "\n\n");
+        }
+    }
+
+    public dropClients(){
+        for(const client of this.clients){
+            client.end();
         }
     }
 }
