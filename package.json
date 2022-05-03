@@ -29,6 +29,7 @@
     "src/test-utility",
     "src/addon/*",
     "src/platform/*",
+    "src/plugin/*",
     "src/model",
     "src/orm/*",
     "src/dev",
@@ -41,7 +42,7 @@
     "mocha": "^9.2.0",
     "source-map-support": "^0.5.21",
     "ttypescript": "^1.5.13",
-    "typescript": "^4.5.5"
+    "typescript": "^4.6.4"
   },
   "private": true,
   "packageManager": "yarn@4.0.0-rc.1"

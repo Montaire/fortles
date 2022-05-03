@@ -1,7 +1,8 @@
 import { Command } from "commander";
 import { argv } from "process";
 import { DevelopmentServer } from "@fortles/dev";
-import { Migration } from "@fortles/model";
+import { Migrator } from "@fortles/model";
+import { normalize } from "path";
 
 let program = new Command();
 
@@ -19,23 +20,23 @@ if(DevelopmentServer){
             .option("--path <path>", "Custom path to the project")
             .option("--watchFramework", "Enable watcher for internal framework changes. Meant to be used for the framework developers.")
             .option("--no-watchProject", "Disable watcher for the project dictionary.")
-            .action((config) => {
+            .action(config => {
                 let developmentServer = new DevelopmentServer();
                 developmentServer.start(config);
             });
 }else{
     program.command("dev")
         .alias("development")
-            .description("To use the dev commands intall the '@fortles/dev' package")
-            .action((config) => {
-                let migration = new Migration();
-                migration.run(config);
-            });
+            .description("To use the dev commands intall the '@fortles/dev' package")   
 }
 
 //If migration loaded
 program.command("migrate")
     .description("Migrations")
     .option("-r, --reset", "Resets database from the seed files.")
+    .action(config => {
+        let migrator = new Migrator();
+        migrator.run([normalize(process.cwd() + '/src/model')], config);
+    });
 
 program.parse(argv);

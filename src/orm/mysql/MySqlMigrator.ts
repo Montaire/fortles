@@ -32,7 +32,6 @@ export default class MySqlMigrator{
 
     async create(entityTypes: Iterable<typeof Entity> | typeof Entity[], reset:boolean = false){
         //Build tasks
-        let taskRunner = new TaskRunner();
         for(const entityType of entityTypes){
             
         }
@@ -131,23 +130,4 @@ export default class MySqlMigrator{
         }
         return result;
     }
-}
-
-class TaskRunner<T extends Task<K>, K>{
-    add(task: T){
-
-    }
-
-    run(){
-
-    }
-
-    buildDependacyGraph(){
-
-    }
-}
-
-class Task<T>{
-    depends 
-    run(){}
 }

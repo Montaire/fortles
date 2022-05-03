@@ -1,3 +1,4 @@
+import { Connection } from "@fortles/model";
 import { NotFoundError } from "./Error.js";
 import { TemplateRenderEngine, Controller, Request, RequestType, Route, 
     Block, Response, Middleware, Addon, Platform, ServiceManager, Service, 
@@ -242,6 +243,15 @@ export class Application{
     static getInstance(): Application{
         return this.instance;
     }
+
+    public setConnection(connection: Connection, name: string = null): this {
+        
+        return this;
+    }
+
+    public getConnection(name: string = null): Connection{
+        return null;
+    }    
 }
 
 export default Application.getInstance();
