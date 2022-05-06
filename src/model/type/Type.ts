@@ -1,8 +1,10 @@
-import { Entity } from "../index.js";
-import TypeUtility from "./TypeUtility.js";
+import { Entity, ErrorReporter, TypeUtility } from "../index.js";
 
 export type EntityPropertyDecorator = (target: Entity, propertyKey: string | symbol) => void;
 
+/**
+ * Callable, that returns null on success, and the error message on fail.
+ */
 export type Validation<T> = (value: T) => string | null
 
 /**
@@ -12,7 +14,7 @@ export type Validation<T> = (value: T) => string | null
  */
 
 
-export class Type<T,C>{
+export abstract class Type<T,C>{
     protected propertyMap = new Map<string, Object>();
 
     protected validations: Validation<T>[] = [];
@@ -39,12 +41,25 @@ export class Type<T,C>{
         return this.propertyMap.has(name);
     }
 
-    public addValidation(validation: Validation<T>){
+    /**
+     * Adds a validation
+     * @param validation A validation is a callable, that should return null on success, the error message on fail.
+     */
+    public addValidation(validation: Validation<T>): void{
         this.validations.push(validation);
     }
 
     /**
+     * Parses a value what was given on the user side. Validations wil run on successful parsing.
+     * @param input Input to process
+     * @param errorReporter Report errors here if the conversion fails. If an error were reported, the parsing fails regardless of the output.
+     * @returns The converted value, or null if the input recognised as a null value.
+     */
+    public abstract parse(input: string, errorReporter: ErrorReporter): T|null;
+
+    /**
      * Validates a property with the given rules.
+     * validation happens after parsing to the target type.
      * @param value Value to valudate
      * @returns Array of the errors
      */
@@ -66,18 +81,24 @@ export enum TypeProperty{
     HAS_ONE = "hasOne",
     HAS_MANY = "hasMany",
     BELONGS_TO = "belongsTo",
-    BELONGS_TO_MANY = "belongsToMany"
+    BELONGS_TO_MANY = "belongsToMany",
+    NULLABLE = "nullable"
 }
 
-export function readonly(target: Entity, name: string, descriptor: PropertyDescriptor) {
+export function readonly(target: Entity, name: string|Symbol, descriptor: PropertyDescriptor) {
     descriptor.writable = false;
     return descriptor;
 }  
 
-export function primaryKey(target: Entity, name: string): void{
+export function primaryKey(target: Entity, name: string|Symbol): void{
     TypeUtility.setTypeProperty(target, name, TypeProperty.PRIMARY_KEY);
 }
 
-export function generated(target: Entity, name:string) {
+export function generated(target: Entity, name:string|Symbol, descriptor: PropertyDescriptor) {
     TypeUtility.setTypeProperty(target, name, TypeProperty.GENERATED);
+    readonly(target, name, descriptor);
+}
+
+export function nullable(target: Entity, name:string|Symbol) {
+    TypeUtility.setTypeProperty(target, name, TypeProperty.NULLABLE);
 }

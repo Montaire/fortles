@@ -1,5 +1,6 @@
 import { Type } from "./index.js";
 import { Entity } from "../index.js";
+import ErrorReporter from "../ErrorReporter.js";
 
 type IntegerTypeConfig = {
     min?: number,
@@ -7,6 +8,18 @@ type IntegerTypeConfig = {
 };
 
 export class IntegerType extends Type<number, IntegerTypeConfig>{
+
+    public parse(input: string, error: ErrorReporter): number {
+        let result = Number.parseInt(input);
+        if(result == NaN){
+            if(input !== ""){
+                error.invalid();
+            }
+            return null;
+        }
+        return result;
+    }
+
     constructor(config: IntegerTypeConfig = {}){
         super(config);
         if(config.min){

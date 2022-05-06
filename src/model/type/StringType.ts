@@ -1,12 +1,18 @@
 import { Type, EntityPropertyDecorator, TypeUtility } from "./index.js";
 import { Entity } from "../index.js";
+import ErrorReporter from "../ErrorReporter.js";
 
-type StringTypeConfig = {
+export type StringTypeConfig = {
     fixed?: boolean,
     length?: number
 };
 
 export class StringType extends Type<string, StringTypeConfig>{
+
+    public parse(input: string, reporter: ErrorReporter): string {
+        return input;
+    }
+
     constructor(config: StringTypeConfig = {length: 80}){
         super(config);
     }
