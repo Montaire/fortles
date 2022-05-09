@@ -18,8 +18,9 @@ if(Fortles.eventSource) {
     Fortles.eventSource.addEventListener("reload-script", e => {
         let element = document.querySelector("script[src='"+ e.data +"']");
         let newElement = document.createElement("script");
-        newElement.src = e.data;
-        element.parentElement.replaceChild(newElement, element);
+        element.after(newElement);
+        newElement.remove();
+        //element.parentElement.replaceChild(newElement, element);
     });
 
     Fortles.eventSource.addEventListener("reload-style", e => {
@@ -27,7 +28,7 @@ if(Fortles.eventSource) {
         let newElement = document.createElement("link");
         newElement.rel = "stylesheet";
         newElement.href = e.data;
-        element.parentElement.replaceChild(newElement, element);
+        //element.parentElement.replaceChild(newElement, element);
     });
 
 } else {
