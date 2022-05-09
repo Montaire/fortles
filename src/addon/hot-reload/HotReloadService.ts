@@ -1,5 +1,5 @@
-import { Addon, Application, AssetService, ScriptAsset, Service, HtmlRenderEngine, Asset, MimeType } from "@fortles/core";
 import EventSourceService from "@fortles/addon.event-source";
+import { Addon, Application, Asset, AssetService, HtmlRenderEngine, MimeType, ScriptAsset, Service } from "@fortles/core";
 import fs from "fs";
 import * as http from "http";
 
@@ -10,7 +10,6 @@ export default class HotReloadService extends Service<EventSourceService> implem
 
     public async prepare(application: Application): Promise<void> {
         this.application = application;
-        application.register(EventSourceService);
         let asset = new ScriptAsset(await import.meta.resolve("./asset/hot-reload.js"));
         application.getService(AssetService).add(asset);
     }
@@ -83,6 +82,9 @@ export default class HotReloadService extends Service<EventSourceService> implem
         }
     }
 
+    /**
+     * Hangs up the open connection for each client.
+     */
     public dropClients(){
         this.container.dropClients();
     }

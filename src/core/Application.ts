@@ -13,7 +13,8 @@ export class Application{
 	protected mainController: Controller;
 	protected renderEngines: Map<string, RenderEngine> = new Map();
     protected middlewareQueue: Middleware[] = [];
-    protected registry = new Map<new() => Registrable, Registrable>();
+    protected addons = new Map<new() => Addon, Addon>();
+    protected plugins = new Map<new() => Plugin, Plugin>();
     protected serviceManager: ServiceManager;
     protected static instance: Application;
 
@@ -165,16 +166,21 @@ export class Application{
      * @returns Self for chaining.
      */
     public register(registerable: new() => Registrable): this{
-        if(this.registry.has(registerable)){
-            return this;
-        }
         let instance = new registerable();
         if(instance instanceof Service){
             instance = this.serviceManager.register(registerable as typeof Service);
-        }else{
-            instance.prepare(this);
+            return this;
         }
-        this.registry.set(registerable, instance);
+        if(instance instanceof Plugin){
+            if(!this.plugins.has(registerable)){
+                this.plugins.set(registerable, instance as Plugin);
+            }
+            return this;
+        }
+        //If not Service, neither Plugin, it must be an addon.
+        if(!this.addons.has(registerable)){
+            this.addons.set(registerable, instance);
+        }
         return this;
     }
 
