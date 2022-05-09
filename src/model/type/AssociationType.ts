@@ -25,6 +25,10 @@ export class AssociationType<C extends AssociationTypeConfig> extends Type<Entit
     public getFieldName(): string{
         return this.fieldName;
     }
+
+    public parse(input: string): Entity {
+        return null;
+    }
 }
 
 export class OneAssociationType<C> extends AssociationType<C>{}
@@ -42,6 +46,12 @@ export class HasManyAssociationType extends OneAssociationType<AssociationTypeCo
 export function hasOne(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
     return (target: Entity, propertyKey:string) => {
         TypeUtility.setType(target, propertyKey, new HasOneAssociationType(targetType, this, propertyKey, config));
+    }
+}
+
+export function hasMany(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
+    return (target: Entity, propertyKey:string) => {
+        TypeUtility.setType(target, propertyKey, new HasManyAssociationType(targetType, this, propertyKey, config));
     }
 }
 
