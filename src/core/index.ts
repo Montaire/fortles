@@ -7,6 +7,7 @@ export {Application, default as app} from "./Application.js";
 export {default as Middleware} from "./Middleware.js";
 export {default as Addon} from "./Addon.js"
 export {default as Platform} from "./Platform.js";
+export {default as Plugin} from "./Plugin.js";
 export * from "./Error.js";
 export * from "./service/index.js";
 export * from "./asset/index.js";

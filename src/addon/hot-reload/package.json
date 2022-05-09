@@ -1,7 +1,7 @@
 {
     "name": "@fortles/addon.hot-reload",
     "type": "module",
-    "main": "HotReloadAddon.js",
+    "main": "HotReloadService.js",
     "version": "0.1.0",
     "dependencies": {
         "@fortles/addon.event-source": "workspace:*",

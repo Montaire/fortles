@@ -13,7 +13,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
 
     constructor(application: Application, templatePaths: string[]){
         super();
-        application.registerService(AssetService);
+        application.register(AssetService);
         for(const templatePath of templatePaths){
             if(!fs.existsSync(templatePath)){
                 throw new RuntimeError("There is no folder with templates on the'"+templatePath+"'");

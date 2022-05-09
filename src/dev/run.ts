@@ -1,4 +1,4 @@
-import HotReloadAddon from "@fortles/addon.hot-reload";
+import HotReloadService from "@fortles/addon.hot-reload";
 import { Application, Asset, AssetService, Controller, Mime, MimeType } from "@fortles/core";
 import { ServerPlatform } from "@fortles/platform.server";
 import * as Path from "path";
@@ -51,7 +51,7 @@ if(config && config.default){
 }
 
 //Prepare watches
-application.registerAddon(HotReloadAddon);
+application.register(HotReloadService);
 
 application.run();
 
@@ -63,8 +63,8 @@ process.on("message", (message: RunMessage) => {
         case "exit":
             console.info("Stopping development server.");
             if(message.data == "reload"){
-                application.getService(HotReloadAddon).reloadAll();
-                application.getService(HotReloadAddon).dropClients();
+                application.getService(HotReloadService).reloadAll();
+                application.getService(HotReloadService).dropClients();
                 process.exit();
             }else{
                 process.exit(Number.parseInt(message.data));
@@ -72,7 +72,7 @@ process.on("message", (message: RunMessage) => {
         case "reload":
             let mime = Mime.detect(message.data);
             if(mime == MimeType.HTML){
-                application.getService(HotReloadAddon).reloadTemplate(message.data);
+                application.getService(HotReloadService).reloadTemplate(message.data);
             }else{
                 //If asset in the asset folder
                 message.data = Path.normalize(message.data);
@@ -80,7 +80,7 @@ process.on("message", (message: RunMessage) => {
                 if(result){
                     const name = result[1].split(Path.sep).join(Path.posix.sep).substring(1);
                     const asset = new Asset(message.data, name, Mime.detect(message.data));
-                    application.getService(HotReloadAddon).reloadAsset(asset);
+                    application.getService(HotReloadService).reloadAsset(asset);
                     console.info("Hot Reload: " + message.data);
                     return;
                 }
@@ -88,7 +88,7 @@ process.on("message", (message: RunMessage) => {
                 //If the asset loaded via class
                 for(const asset of application.getService(AssetService)){
                     if(asset.source == message.data){
-                        application.getService(HotReloadAddon).reloadAsset(asset);
+                        application.getService(HotReloadService).reloadAsset(asset);
                         console.info("Hot Reload: " + message.data);
                         return;
                     }

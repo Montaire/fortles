@@ -1,5 +1,5 @@
-import { Application } from "./index.js";
+import { Application, Registrable } from "./index.js";
 
-export default interface Addon{
-    prepareAddon(application: Application): void;
+export default interface Addon extends Registrable{
+    //prepareAddon(application: Application): void;
 }

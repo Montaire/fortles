@@ -3,19 +3,16 @@ import EventSourceService from "@fortles/addon.event-source";
 import fs from "fs";
 import * as http from "http";
 
-export default class HotReloadAddon extends Service<EventSourceService> implements Addon{
+export default class HotReloadService extends Service<EventSourceService> implements Addon{
 
     protected clients: http.ServerResponse[] = [];
     protected application: Application;
 
-    public async prepareAddon(application: Application): Promise<void> {
+    public async prepare(application: Application): Promise<void> {
         this.application = application;
-        application.registerAddon(EventSourceService);
+        application.register(EventSourceService);
         let asset = new ScriptAsset(await import.meta.resolve("./asset/hot-reload.js"));
         application.getService(AssetService).add(asset);
-    }
-
-    public prepare(application: Application): void {
     }
 
     /**

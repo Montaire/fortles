@@ -85,20 +85,19 @@ export enum TypeProperty{
     NULLABLE = "nullable"
 }
 
-export function readonly(target: Entity, name: string|Symbol, descriptor: PropertyDescriptor) {
+export function readonly(target: Entity, propertyKey: string|Symbol, descriptor: PropertyDescriptor) {
     descriptor.writable = false;
     return descriptor;
 }  
 
-export function primaryKey(target: Entity, name: string|Symbol): void{
-    TypeUtility.setTypeProperty(target, name, TypeProperty.PRIMARY_KEY);
+export function primaryKey(target: Entity, propertyKey: string|Symbol): void{
+    TypeUtility.setTypeProperty(target, propertyKey, TypeProperty.PRIMARY_KEY);
 }
 
-export function generated(target: Entity, name:string|Symbol, descriptor: PropertyDescriptor) {
-    TypeUtility.setTypeProperty(target, name, TypeProperty.GENERATED);
-    readonly(target, name, descriptor);
+export function generated(target: Entity, propertyKey:string|Symbol) {
+    TypeUtility.setTypeProperty(target, propertyKey, TypeProperty.GENERATED);
 }
 
-export function nullable(target: Entity, name:string|Symbol) {
-    TypeUtility.setTypeProperty(target, name, TypeProperty.NULLABLE);
+export function nullable(target: Entity, propertyKey:string|Symbol) {
+    TypeUtility.setTypeProperty(target, propertyKey, TypeProperty.NULLABLE);
 }

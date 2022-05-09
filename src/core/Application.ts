@@ -1,8 +1,7 @@
 import { Connection } from "@fortles/model";
-import { NotFoundError } from "./Error.js";
 import { TemplateRenderEngine, Controller, Request, RequestType, Route, 
     Block, Response, Middleware, Addon, Platform, ServiceManager, Service, 
-    ServiceType, RenderEngine, DummyRequest } from "./index.js";
+    ServiceType, RenderEngine, DummyRequest, Plugin, NotFoundError, Registrable } from "./index.js";
 import Locale from "./localization/Locale.js";
 
 /**
@@ -14,7 +13,7 @@ export class Application{
 	protected mainController: Controller;
 	protected renderEngines: Map<string, RenderEngine> = new Map();
     protected middlewareQueue: Middleware[] = [];
-    protected addons = new Map<new() => Addon, Addon>();
+    protected registry = new Map<new() => Registrable, Registrable>();
     protected serviceManager: ServiceManager;
     protected static instance: Application;
 
@@ -161,30 +160,21 @@ export class Application{
     }
 
     /**
-     * Adds an addon to the Application.
-     * @param addon Instance of the addon.
-     * @returns Self for chaining functions.
+     * Register an addon, servce or plugin, or any registrable
+     * @param registerable 
+     * @returns Self for chaining.
      */
-    /*public addAddon(addon: Addon): this{
-        this.addons.push(addon);
-        addon.prepareAddon(this);
-        return this;
-    }*/
-
-    /**
-     * Adds an addon to the Application.
-     * @param addon Instance of the addon.
-     * @returns Self for chaining functions.
-     */
-     public registerAddon(addonType: new() => Addon): this{
-        if(!this.addons.has(addonType)){
-            let addon = new addonType();
-            if(addon instanceof Service){
-                addon = this.registerService<any>(addonType);
-            }
-            addon.prepareAddon(this);
-            this.addons.set(addonType, addon);
+    public register(registerable: new() => Registrable): this{
+        if(this.registry.has(registerable)){
+            return this;
         }
+        let instance = new registerable();
+        if(instance instanceof Service){
+            instance = this.serviceManager.register(registerable as typeof Service);
+        }else{
+            instance.prepare(this);
+        }
+        this.registry.set(registerable, instance);
         return this;
     }
 
@@ -202,7 +192,7 @@ export class Application{
      * @param serviceType
      * @returns 
      */
-    public registerService<T extends Service>(serviceType: ServiceType<T>): T{
+    protected registerService<T extends Service>(serviceType: ServiceType<T>): T{
         return this.serviceManager.register(serviceType);
     }
 
@@ -251,7 +241,7 @@ export class Application{
 
     public getConnection(name: string = null): Connection{
         return null;
-    }    
+    }
 }
 
 export default Application.getInstance();
