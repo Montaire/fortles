@@ -1,7 +1,8 @@
-import { Entity } from "./index.js";
+import { Entity, EntityDescriptor } from "../index.js";
 import * as fs from "fs";
 import { extname, resolve } from "path";
 import { pathToFileURL } from "url";
+import DependencyGraph from "../DependencyGraph.js";
 
 export type MigratorConfig = {
 }
@@ -9,18 +10,15 @@ export type MigratorConfig = {
 export class Migrator {
 
     public async run(paths: string[], config: any){
-        console.log(process.cwd() + '/src/model');
-        //Collect
+        //Collect entites from the project and plugin paths
         const entities = await this.collect(paths);
-        //Create dependency graphx
+        //Build Descriptors: solve inheritance
+        const descriptors = EntityDescriptor.build(entities);
+        //Create dependency graph: check for unresolvable constraints
+        const dependencyGraph = new DependencyGraph(descriptors);
+        //Check for changes
 
-        //Check changes
-
-        //Create
-        this.create(entities);
-        //Modify
-
-        //Delete
+        //Build execution tree
     }
 
     protected create(entityType: typeof Entity[]){

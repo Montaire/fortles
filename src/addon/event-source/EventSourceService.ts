@@ -6,13 +6,10 @@ export default class EventSourceService extends ServiceContainer implements Addo
     
     protected clients: http.ServerResponse[] = [];
 
-    async prepareAddon(application: Application): Promise<void> {
+    public async prepare(application: Application): Promise<void> {
+        this.listenOnFullPath("event-source");
         let asset = new ScriptAsset(await import.meta.resolve("./asset/event-source.js"));
         application.getService(AssetService).add(asset);
-    }
-
-    public prepare(application: Application): void {
-        this.listenOnFullPath("event-source");
     }
 
     public onRequest(request: Request, response: Response, path: string, partialPath: string): void {

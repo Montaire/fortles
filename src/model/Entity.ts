@@ -20,4 +20,8 @@ export default class Entity{
     static hasType(name: string): boolean{
         return this.typeMap.has(name);
     }
+
+    static getTypeMap(): Readonly< Map<string, Type<any, any>>>{
+        return this.typeMap;
+    }
 }
