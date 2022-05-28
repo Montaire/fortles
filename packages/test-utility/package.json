@@ -1,0 +1,10 @@
+{
+    "name": "@fortles/test-utility",
+    "type": "module",
+    "main": "src/index.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@fortles/core": "workspace:*",
+        "@fortles/model": "workspace:*"
+    }
+}

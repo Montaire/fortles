@@ -2,12 +2,12 @@
   "compilerOptions": {
     "target": "ESNext",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
+    //"resolveJsonModule": true,
     "esModuleInterop": true,
     "module": "ESNext",
     //"outDir": "dist",
     "sourceMap": true,
-    "rootDir": "src",
+    "rootDir": "packages",
     "declaration": true,  
     //"baseUrl": "./src/",
     //"incremental": true,
@@ -17,6 +17,6 @@
       { "transform": "./dst/model/typescript-plugin/TranspilerQueryPlugin.js", "type": "raw" }
     ]*/
   },
-  "include": ["./src"/*, "./src/**-/package.json"*/],
-  "exclude": ["./src/oldtrash", "./node_modules", "./dist"]
+  "include": ["./packages"/*, "./src/**-/package.json"*/],
+  "exclude": ["./packages/oldtrash", "./node_modules"]
 }

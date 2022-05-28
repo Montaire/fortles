@@ -10,9 +10,9 @@
 			],
 			"group": "build",
 			"label": "Fortles: build:watch",
-			/*"runOptions": {
+			"runOptions": {
 				"runOn": "folderOpen"
-			},*/
+			},
 			"isBackground": true,
 			"presentation": {
         	    "echo": true,

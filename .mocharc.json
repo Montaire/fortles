@@ -1,8 +1,8 @@
 {
     "require": "source-map-support/register",
     "enable-source-maps": true,
-    "spec": "./src/**/test/*.spec.js",
-    "watch-files": ".src/**/*.js",
+    "spec": "./packages/**/test/*.spec.js",
+    "watch-files": ".packages/**/*.js",
     "slow": "40",
     "timeout": "1000",
     "node-option": "allow-natives-syntax"

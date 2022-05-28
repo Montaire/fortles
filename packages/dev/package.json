@@ -1,0 +1,13 @@
+{
+    "name": "@fortles/dev",
+    "type": "module",
+    "main": "src/index.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@fortles/addon.hot-reload": "workspace:*",
+        "@fortles/cli": "workspace:*",
+        "@fortles/core": "workspace:*",
+        "@fortles/platform.server": "workspace:*",
+        "chokidar": "^3.5.3"
+    }
+}

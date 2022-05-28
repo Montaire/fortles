@@ -1,0 +1,13 @@
+{
+    "name": "@fortles/orm.mysql",
+    "type": "module",
+    "main": "src/index.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@fortles/model": "workspace:*",
+        "mysql2": "^2.3.3"
+    },
+    "devDependencies": {
+        "@fortles/test-utility": "workspace:*"
+    }
+}

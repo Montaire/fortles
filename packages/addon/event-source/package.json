@@ -1,0 +1,10 @@
+{
+    "name": "@fortles/addon.event-source",
+    "type": "module",
+    "main": "src/EventSourceService.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@fortles/core": "workspace:*",
+        "@fortles/platform.server": "workspace:*"
+    }
+}

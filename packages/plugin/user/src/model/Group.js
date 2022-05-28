@@ -1,0 +1,4 @@
+import { Entity } from "@fortles/model";
+export default class Group extends Entity {
+}
+//# sourceMappingURL=Group.js.map

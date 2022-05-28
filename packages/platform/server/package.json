@@ -1,0 +1,9 @@
+{
+    "name": "@fortles/platform.server",
+    "type": "module",
+    "main": "src/index.js",
+    "version": "0.1.0",
+    "dependencies": {
+        "@fortles/core": "workspace:*"
+    }
+}
