@@ -1,5 +1,8 @@
 import { Entity, Type } from "../index.js";
 
+/**
+ * The largest set of the entities, it ucludes all connection, and extensions.
+ */
 export default class EntityDescriptor{
     baseEntityType: typeof Entity;
     typeMap: Map<string, Type<any, any>>;
@@ -23,6 +26,12 @@ export default class EntityDescriptor{
         }
     }
 
+    /**
+     * Builds all the EntityDescriptors from the given entities.
+     * It will include the techincal helper tables, and al the extenensions for the tables.
+     * @param entityTypes Entity Types to build from.
+     * @returns 
+     */
     static build(entityTypes: typeof Entity[]): EntityDescriptor[]{
         let descriptors: EntityDescriptor[] = [];
 

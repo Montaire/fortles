@@ -13,7 +13,7 @@ class TestConnection{
 
 describe("Orm.MySql", function(){
     describe("Migration", function(){
-        it("Can create table", function(){
+        it("Can create tables", function(){
             let connection = new TestConnection();
             let migrator = new MySqlMigrator(connection);
             migrator.create([TestEntity]);

@@ -9,6 +9,6 @@ node_modules
 !.yarn/versions
 tsconfig.tsbuildinfo
 yarn.lock
-/src/**/*.js
-/src/**/*.d.ts
-/src/**/*.js.map
+packages/**/*.js
+packages/**/*.d.ts
+packages/**/*.js.map

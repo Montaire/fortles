@@ -35,9 +35,9 @@ export class OneAssociationType<C> extends AssociationType<C>{}
 
 export class ManyAssociationType<C> extends AssociationType<C>{}
 
-export class BelongsToAssociationType extends OneAssociationType<AssociationTypeConfig>{}
+export class WithOneAssociationType extends OneAssociationType<AssociationTypeConfig>{}
 
-export class BelongsToManyAssociationType extends OneAssociationType<AssociationTypeConfig>{}
+export class WithManyAssociationType extends OneAssociationType<AssociationTypeConfig>{}
 
 export class HasOneAssociationType extends OneAssociationType<AssociationTypeConfig>{}
 
@@ -55,8 +55,14 @@ export function hasMany(targetType: typeof Entity, config: AssociationTypeConfig
     }
 }
 
-export function belongsTo(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
+export function withOne(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
     return (target: Entity, propertyKey:string) => {
-        TypeUtility.setType(target, propertyKey, new HasOneAssociationType(targetType, this, propertyKey, config));
+        TypeUtility.setType(target, propertyKey, new WithOneAssociationType(targetType, this, propertyKey, config));
+    }
+}
+
+export function withMany(targetType: typeof Entity, config: AssociationTypeConfig = {}): EntityPropertyDecorator {
+    return (target: Entity, propertyKey:string) => {
+        TypeUtility.setType(target, propertyKey, new WithManyAssociationType(targetType, this, propertyKey, config));
     }
 }

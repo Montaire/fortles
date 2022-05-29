@@ -10,15 +10,18 @@ export type MigratorConfig = {
 export class Migrator {
 
     public async run(paths: string[], config: any){
-        //Collect entites from the project and plugin paths
+        //Collect entites from the project and plugin paths.
         const entities = await this.collect(paths);
-        //Build Descriptors: solve inheritance
+        //Build Descriptors: solve inheritance.
         const descriptors = EntityDescriptor.build(entities);
-        //Create dependency graph: check for unresolvable constraints
+        //Create the dependency graph: check if the current model is valid.
         const dependencyGraph = new DependencyGraph(descriptors);
-        //Check for changes
+        //Get the descriptors from the previos state.
+        const oldDescriptors = [];
+        //Get changes as executable tasks.
 
-        //Build execution tree
+        //Create an execution plan.
+        //Execute.
     }
 
     protected create(entityType: typeof Entity[]){
