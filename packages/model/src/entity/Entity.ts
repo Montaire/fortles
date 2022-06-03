@@ -1,4 +1,4 @@
-import { Type } from "./index.js";
+import { Type } from "../index.js";
 
 export default class Entity{
 

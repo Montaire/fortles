@@ -1,4 +1,4 @@
-import { Entity, EntityDescriptor } from "../index.js";
+import { Entity, ModelDescriptor } from "../index.js";
 import * as fs from "fs";
 import { extname, resolve } from "path";
 import { pathToFileURL } from "url";
@@ -9,23 +9,19 @@ export type MigratorConfig = {
 
 export class Migrator {
 
-    public async run(paths: string[], config: any){
+    public async run(paths: string[], config: any = {}){
         //Collect entites from the project and plugin paths.
         const entities = await this.collect(paths);
         //Build Descriptors: solve inheritance.
-        const descriptors = EntityDescriptor.build(entities);
+        const descriptor = ModelDescriptor.build(entities);
         //Create the dependency graph: check if the current model is valid.
-        const dependencyGraph = new DependencyGraph(descriptors);
+        //const dependencyGraph = new DependencyGraph(descriptors);
         //Get the descriptors from the previos state.
         const oldDescriptors = [];
         //Get changes as executable tasks.
 
         //Create an execution plan.
         //Execute.
-    }
-
-    protected create(entityType: typeof Entity[]){
-        
     }
 
     protected async collect(rootFolders: string[]): Promise<typeof Entity[]>{

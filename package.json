@@ -31,7 +31,7 @@
     "packages/platform/*",
     "packages/plugin/*",
     "packages/model",
-    "packages/orm/*",
+    "packages/database/*",
     "packages/dev",
     "packages/cli"
   ],

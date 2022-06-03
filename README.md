@@ -1,4 +1,9 @@
-# essentials-node
-(.+from ["'][a-zA-Z./]+\/[A-Z][a-zA-Z]+)(['"])
+# Fortles
+Fortles is a light weight fully fetched extendable MVC framework written in Typescript.
+It is positioned between the classic framerowks, and the modern ractive ones. All basic feature, routing must work without javascript, But with modern (released in the last 5 years) browsers partial page loads works as well.
 
-https://nodejs.org/uk/blog/npm/peer-dependencies/
+## State
+Fortles in heavy development. Do not use in production!
+
+## History
+The really first version of Fortles called bfw (bad fun framework) it was written in PHP. It was a small site, where you could collect points from friends, from really bad jokes. As the framework become more serious its name changed as well to Essentials. The php verison evolved a lot, after an agreement for a product loader software for webshops. After this there was a need for a checkin desktop software for hospitals. This is couldn't be done with PHP of course. The first NodeJS verson was born. The software with electron, and sqlite darabase was fast. Actually too fast. We had put a small delay in loads, becouse it was fustrating, like it was not working. But it soon hit its limits. Without strong types it was not capable of bigger projects. Next version was born in Java. It was my thesis. It used hibernate for the model layer, and got on own tmeplate engine. I focused on making the template editable later. At the time GraalVM was released, with big hope of native images, thats why I chose Java this time. In the time of writing native images has still too many gotchas. This version was never used in production, only for a short tech demo. (Demonstrating that a well configured Java engine can be faster for concurrent loads than a NodeJS server). Now the Java version was lifted to TypeScript as base, with suprisingly little work. This version hopefully solves the scalability problem, with classes and strong types, and the Progressive Web Apps hopefully getting more accepted as well.

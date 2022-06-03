@@ -1,5 +1,5 @@
 {
-    "name": "@fortles/orm.mysql",
+    "name": "@fortles/databse.mysql",
     "type": "module",
     "main": "src/index.js",
     "version": "0.1.0",
