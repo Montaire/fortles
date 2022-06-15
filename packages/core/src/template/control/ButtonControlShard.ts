@@ -17,7 +17,7 @@ export default class AnchorControlShard extends ControlShard {
         return "button";
     }
 
-    public render(engine: RenderEngine, request:Request, response: Response): void{
+    public override render(engine: RenderEngine, request:Request, response: Response): void{
         let id = randomBytes(16);
         response.write("<button form=\"" + id + "\" " + this.rawAttributes + ">");
         super.render(engine, request, response);

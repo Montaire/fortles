@@ -18,7 +18,7 @@ export default class TestResponse extends Response{
         
     }
 
-    public toString(){
+    public override toString(){
         return this.body;
     }
 
@@ -26,7 +26,7 @@ export default class TestResponse extends Response{
         return this.body;
     }
 
-    public setBlockPath(path: string): void {
+    public override setBlockPath(path: string): void {
         this.blockPath = path;
     }
 }

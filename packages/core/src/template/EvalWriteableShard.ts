@@ -21,7 +21,7 @@ export default class EvalWriteableShard extends WriteableShard {
     /**
      * Prepares the given script
      */
-    public ready(): void{
+    public override ready(): void{
         if(this.content.length == 0){
             return;
         }
@@ -38,7 +38,7 @@ export default class EvalWriteableShard extends WriteableShard {
         }
     }
     
-    public render(engine: RenderEngine, request:Request, response:Response): void {
+    public override render(engine: RenderEngine, request:Request, response:Response): void {
         if(this.fieldName != null){
             let data = response.getData()[this.fieldName];
             if(data){

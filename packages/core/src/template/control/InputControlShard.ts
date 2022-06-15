@@ -14,7 +14,7 @@ export default class InputControlShard extends ControlShard {
         return "input";
     }
 
-    render(engine: RenderEngine, request:Request, response:Response): void {
+    override render(engine: RenderEngine, request:Request, response:Response): void {
         response.write(`<input name=${this.attributes.get("name")} />`);
     }
 }

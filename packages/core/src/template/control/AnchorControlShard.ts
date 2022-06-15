@@ -24,7 +24,7 @@ export default class AnchorControlShard extends ControlShard {
         return "a";
     }
 
-    public render(engine: RenderEngine, request:Request, response: Response): void{
+    public override render(engine: RenderEngine, request:Request, response: Response): void{
         response.write("<a href=\"" + this.url + "\" onclick=\"Fortles.go(this)\">");
         super.render(engine, request, response);
         response.write("</a>");

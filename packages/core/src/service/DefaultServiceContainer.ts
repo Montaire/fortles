@@ -4,11 +4,11 @@ import { ServiceContainer } from "../index.js";
 
 export default class DefaultServiceContainer extends ServiceContainer{
     
-    public prepare(application: Application): void {
+    public override prepare(application: Application): void {
         this.listenOnPartialPath("fortles");
     }
 
-    public getContainerType(): null {
+    public override getContainerType(): null {
         return null;
     }
 }

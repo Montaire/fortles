@@ -8,7 +8,7 @@ export default class ServiceContainer<SC extends ServiceContainer<any> | null = 
     protected fullPathMap = new Map<string, Service>();
     protected partialPathMap = new Map<string, Service>();
 
-    public onRequest(request: Request, response: Response, path: string, partialPath: string): void {
+    public override onRequest(request: Request, response: Response, path: string, partialPath: string): void {
         if(path && this.fullPathMap.has(path)){
             let service = this.fullPathMap.get(path);
             service.onRequest(request, response, path, path);
@@ -36,7 +36,7 @@ export default class ServiceContainer<SC extends ServiceContainer<any> | null = 
         return this.partialPathMap.keys();
     }
 
-    public listenOnPartialPath(path: string, target: Service = null): void {
+    public override listenOnPartialPath(path: string, target: Service = null): void {
         if(target || !this.container){
             this.partialPathMap.set(path, target);
         }else{
@@ -44,7 +44,7 @@ export default class ServiceContainer<SC extends ServiceContainer<any> | null = 
         }
     }
 
-    public listenOnFullPath(path: string, useRoot: boolean = false, target: Service = null): void {
+    public override listenOnFullPath(path: string, useRoot: boolean = false, target: Service = null): void {
         if((useRoot || !target) && this.container){
             //If container has parent, send the listener to the root ServiceManager
             this.container.listenOnFullPath(path, useRoot, target || this);

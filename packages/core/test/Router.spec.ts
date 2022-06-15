@@ -3,7 +3,7 @@ import { TestRequest } from "@fortles/test-utility";
 import { Controller, Router } from "../src/index.js";
 
 class TestController1 extends Controller{
-    protected buildRouter(router: Router): void {
+    protected override buildRouter(router: Router): void {
         router.createDefaultRoute()
             .addTemplate("inner-block1", "inner-template1");
     }

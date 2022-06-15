@@ -13,11 +13,11 @@ export class HttpError extends Error{
 }
 
 export class NotFoundError extends HttpError{
-    code = 404;
+    override code = 404;
 }
 
 export class InternalServerError extends HttpError{
-    code = 500;
+    override code = 500;
 }
 
 export class RuntimeError extends Error{

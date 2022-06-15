@@ -4,7 +4,7 @@ import assert from "assert";
 
 class TestController extends Controller{
     public viewCounter = 0;
-    public view(request: Request, response: Response): void {
+    public override view(request: Request, response: Response): void {
         this.viewCounter++;
         response.setData({counter: this.viewCounter});
     }

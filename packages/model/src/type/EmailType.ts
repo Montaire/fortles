@@ -10,7 +10,7 @@ export type EmailTypeConfig = {
 
 export class EmailType extends StringType{
 
-    public parse(input: string, reporter: ErrorReporter): string {
+    public override parse(input: string, reporter: ErrorReporter): string {
         return input;
     }
     

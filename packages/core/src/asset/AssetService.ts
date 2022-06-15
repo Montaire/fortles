@@ -8,12 +8,12 @@ export default class AssetService extends Service implements Iterable<Asset>{
     protected map = new Map<string, Asset>();
     protected application: Application;
 
-    public prepare(applcation: Application): void {
+    public override prepare(applcation: Application): void {
         this.application = applcation;
         this.listenOnPartialPath("asset");
     }
 
-    public onRequest(request: Request, response: Response): void {
+    public override onRequest(request: Request, response: Response): void {
         let mime: string = null;
         let path = request.getPath();
         if(this.map.has(path)){
@@ -72,7 +72,7 @@ export default class AssetService extends Service implements Iterable<Asset>{
 
     
     
-    public getContainerType(): new () => DefaultServiceContainer {
+    public override getContainerType(): new () => DefaultServiceContainer {
         return null;
     }
 

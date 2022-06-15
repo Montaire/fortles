@@ -11,7 +11,7 @@ export default class IfControlShard extends ControlShard{
         return "if";
     }
 
-    render(engine: RenderEngine, request: Request, response: Response){
+    override render(engine: RenderEngine, request: Request, response: Response){
         if(true){
             super.render(engine, request, response);
         }

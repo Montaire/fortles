@@ -20,7 +20,7 @@ export default class BlockControlShard extends ControlShard {
         return "block";
     }
     
-    public render(engine: TemplateRenderEngine, request: Request, response: Response): void {
+    public override render(engine: TemplateRenderEngine, request: Request, response: Response): void {
         let controller = response.getController();
         let router = controller.getRouter();
         let route = router.getRoute(request);

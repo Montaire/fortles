@@ -47,7 +47,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
         }
     }
     
-    public beforeRender(request: Request, response: Response){
+    public override beforeRender(request: Request, response: Response){
         response.write("<!DOCTYPE html><html><head>");
         let headerTemplate = this.templates.get("header");
         if(headerTemplate){
@@ -63,7 +63,7 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
 
     }
 
-    public afterRender(request: Request, response: Response){
+    public override afterRender(request: Request, response: Response){
         if(this.afterConetent){
             response.write(this.afterConetent);
         }

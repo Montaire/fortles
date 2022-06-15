@@ -8,7 +8,7 @@ export default class HotReloadService extends Service<EventSourceService> implem
     protected clients: http.ServerResponse[] = [];
     protected application: Application;
 
-    public async prepare(application: Application): Promise<void> {
+    public override async prepare(application: Application): Promise<void> {
         this.application = application;
         let asset = new ScriptAsset(await import.meta.resolve("../asset/hot-reload.js"));
         application.getService(AssetService).add(asset);
@@ -93,7 +93,7 @@ export default class HotReloadService extends Service<EventSourceService> implem
         return 101;
     }
 
-    public getContainerType(): new () => EventSourceService {
+    public override getContainerType(): new () => EventSourceService {
         return EventSourceService;
     }
 

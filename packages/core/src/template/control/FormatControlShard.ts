@@ -25,7 +25,7 @@ export default class FormatControlShard extends ControlShard{
         return "f";
     }
 
-    render(renderEngine: RenderEngine, request: Request, response: Response): void{
+    override render(renderEngine: RenderEngine, request: Request, response: Response): void{
         response.write(this.text);
     }
 }

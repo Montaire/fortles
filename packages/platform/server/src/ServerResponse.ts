@@ -22,7 +22,7 @@ export default class ServerResponse extends Response{
         this.httpResponse.end();
     }
 
-    public getStream(): stream.Writable{
+    public override getStream(): stream.Writable{
         return this.httpResponse;
     }
 
@@ -30,7 +30,7 @@ export default class ServerResponse extends Response{
         return this.httpResponse;
     }
 
-    public setMime(mime: string): void {
+    public override setMime(mime: string): void {
         this.httpResponse.setHeader('Content-Type', mime);
     }
 }
