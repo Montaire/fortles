@@ -8,8 +8,8 @@ export type UuidTypeConfig = {
 };
 
 export class UuidType extends StringType{
-    constructor(config: UuidTypeConfig = {generated: true}){
-        super({fixed: true, length:36});
+    constructor(name: string, config: UuidTypeConfig = {generated: true}){
+        super(name, {fixed: true, length:36});
         let regexp = /([0-9a-f]{4}-?){4}/;
         this.addValidation(x => regexp.test(x) ? null : "");
     }
@@ -20,7 +20,7 @@ export class UuidType extends StringType{
 }
 
 export function uuid(config?: UuidTypeConfig): EntityPropertyDecorator {
-    return function(target: Entity, propertyKey: string | Symbol): void{
-        TypeUtility.setType(target, propertyKey, new UuidType(config));
+    return function(target: Entity, propertyKey: string): void{
+        TypeUtility.setType(target, propertyKey, new UuidType(propertyKey, config));
     };
 }

@@ -19,10 +19,7 @@ export abstract class Type<T,C>{
 
     protected validations: Validation<T>[] = [];
 
-    protected config: C;
-
-    public constructor(config: C){
-        this.config = config;
+    public constructor(protected name: string, protected config: C){
     }
 
     public setProperty(name: string, value: Object = null): void{
@@ -39,6 +36,10 @@ export abstract class Type<T,C>{
 
     public hasProperty(name: string): boolean{
         return this.propertyMap.has(name);
+    }
+
+    public getName(){
+        return this.name;
     }
 
     /**

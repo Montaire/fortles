@@ -4,7 +4,9 @@ import ErrorReporter from "../ErrorReporter.js";
 
 type IntegerTypeConfig = {
     min?: number,
-    max?: number
+    max?: number,
+    unsigned?: boolean,
+    bytes?: number
 };
 
 export class IntegerType extends Type<number, IntegerTypeConfig>{
@@ -20,8 +22,8 @@ export class IntegerType extends Type<number, IntegerTypeConfig>{
         return result;
     }
 
-    constructor(config: IntegerTypeConfig = {}){
-        super(config);
+    constructor(name: string, config: IntegerTypeConfig = {}){
+        super(name, config);
         if(config.min){
             this.addValidation(x => x >= config.min ? null : "Should not be less than "+config.min);
         }
@@ -32,7 +34,7 @@ export class IntegerType extends Type<number, IntegerTypeConfig>{
 }
 
 export function integer(config?: IntegerTypeConfig): PropertyDecorator {
-    return function(target: Entity, propertyKey: string | Symbol): void{
-        target.constructor["typeMap"].set(propertyKey, new IntegerType(config));
+    return function(target: Entity, propertyKey: string): void{
+        target.constructor["typeMap"].set(propertyKey, new IntegerType(propertyKey, config));
     };
 }

@@ -13,13 +13,13 @@ export class StringType extends Type<string, StringTypeConfig>{
         return input;
     }
 
-    constructor(config: StringTypeConfig = {length: 80}){
-        super(config);
+    constructor(name: string, config: StringTypeConfig = {length: 80}){
+        super(name, config);
     }
 }
 
 export function string(config?: StringTypeConfig): EntityPropertyDecorator {
-    return function(target: Entity, propertyKey: string | Symbol): void{
-        TypeUtility.setType(target, propertyKey, new StringType(config));
+    return function(target: Entity, propertyKey: string): void{
+        TypeUtility.setType(target, propertyKey, new StringType(propertyKey, config));
     };
 }

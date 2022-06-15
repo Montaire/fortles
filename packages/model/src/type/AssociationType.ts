@@ -9,21 +9,15 @@ export class AssociationType<C extends AssociationTypeConfig> extends Type<Entit
 
     protected target: typeof Entity;
     protected source: typeof Entity;
-    protected fieldName: string;
 
-    constructor(target: typeof Entity, source: typeof Entity, fieldName: string, config: C){
-        super(config);
+    constructor(target: typeof Entity, source: typeof Entity, name: string, config: C){
+        super(name, config);
         this.target = target;
         this.source = source;
-        this.fieldName = fieldName;
     }
 
     public getTarget(): typeof Entity{
         return this.target;
-    }
-
-    public getFieldName(): string{
-        return this.fieldName;
     }
 
     public parse(input: string): Entity {
