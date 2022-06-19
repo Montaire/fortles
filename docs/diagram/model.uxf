@@ -1,14 +1,47 @@
-<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>80</x><y>50</y><w>140</w><h>130</h></coordinates><panel_attributes>Connection
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text></help_text><element><id>UMLClass</id><coordinates><x>0</x><y>40</y><w>370</w><h>130</h></coordinates><panel_attributes>Connection
+template=MC: ModelConnector
 --
-query(): Query
-migrate(): Migrator</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>250</x><y>150</y><w>100</w><h>30</h></coordinates><panel_attributes>Migrator</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>390</x><y>50</y><w>100</w><h>30</h></coordinates><panel_attributes>Query</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>210</x><y>50</y><w>200</w><h>40</h></coordinates><panel_attributes></panel_attributes><additional_attributes>10;20;180;20</additional_attributes></element><element><id>Relation</id><coordinates><x>210</x><y>150</y><w>60</w><h>40</h></coordinates><panel_attributes></panel_attributes><additional_attributes>10;20;40;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>80</x><y>230</y><w>140</w><h>130</h></coordinates><panel_attributes>MySqlConnection
+~modelConnector: MC
 --
-query(): Query
-migrate(): Migrator</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>140</x><y>170</y><w>30</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>390</x><y>120</y><w>100</w><h>30</h></coordinates><panel_attributes>OrmQuery</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>430</x><y>70</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>250</x><y>220</y><w>190</w><h>140</h></coordinates><panel_attributes>template=T: Type&lt;S&gt;, V, W
-TypeConnector
+contructor(modelConnector): MC
+query(entityType: typeof Entity): Query&lt;Entity&gt;
+migrate()
+getModelConnector(): ModelConnector</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>200</y><w>120</w><h>100</h></coordinates><panel_attributes>MySqlConnection
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>50</x><y>160</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>UMLClass</id><coordinates><x>720</x><y>320</y><w>200</w><h>150</h></coordinates><panel_attributes>template=T: Type&lt;I&gt;, I, O
+/TypeConnector/
 --
-importData(): S
-exportData(): V
-importDefinition(): T
-exportDefinition(): W</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>240</x><y>440</y><w>180</w><h>60</h></coordinates><panel_attributes>StringMysqlConnector
-template=StringType</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>300</x><y>350</y><w>30</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element></diagram>
+#type: T
+--
+/importData(O): I/
+/exportData(I): O/
+/importDefinition(string): T/
+/exportDefinition(): string/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>720</x><y>490</y><w>190</w><h>60</h></coordinates><panel_attributes>StringMysqlConnector
+template=StringType</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>780</x><y>460</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>UMLClass</id><coordinates><x>720</x><y>270</y><w>150</w><h>30</h></coordinates><panel_attributes>Type</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>400</x><y>490</y><w>180</w><h>60</h></coordinates><panel_attributes>MySqlEntityConnector
+template=E: Entity</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>460</y><w>40</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;11;40</additional_attributes></element><element><id>Relation</id><coordinates><x>600</x><y>360</y><w>140</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>120;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>330</x><y>320</y><w>360</w><h>150</h></coordinates><panel_attributes>/EntityConnector/
+template=ED: EntityDescriptor&lt;E&gt;
+--
+#typeConnectorMap: Map&lt;Type, TypeConnector&gt;
+--
+importEntity(data: array): E
+exportEntity(entity: E): array
+exportCreateDefinition(): string
+exportDropDefinition(): string
+exportAlterDefinition(old: EntityConnector): string</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>780</x><y>290</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>530</x><y>280</y><w>210</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>190;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>290</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>330</y><w>300</w><h>140</h></coordinates><panel_attributes>/ModelConnector/
+--
+#entityConnectorMap: Map&lt;Entity, EntityConnector&gt;
+#queryConnector: QueryConnector
+--
+/create(entityConnector: EntityConnector)/
+/drop(entityConnector: EntityConnector)/
+/alter(entityConnector: EntityConnector)/
+query(entityType: typeof Entity)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>290</x><y>350</y><w>60</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>40;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>70</x><y>500</y><w>150</w><h>50</h></coordinates><panel_attributes>MySqlModelConnector</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>130</x><y>460</y><w>40</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;11;40</additional_attributes></element><element><id>Relation</id><coordinates><x>130</x><y>160</y><w>30</w><h>190</h></coordinates><panel_attributes>lt=-&gt;</panel_attributes><additional_attributes>10;10;10;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>390</x><y>220</y><w>180</w><h>80</h></coordinates><panel_attributes>EntityDescriptor
+template=E: Entity
+--
+baseEntity: E
+types: Map&lt;string, Type&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>393</x><y>170</y><w>150</w><h>30</h></coordinates><panel_attributes>Entity
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>190</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>UMLClass</id><coordinates><x>159</x><y>200</y><w>140</w><h>100</h></coordinates><panel_attributes>Migrator
+--
+connection: Connection
+--
+run()
+runInteractive()?</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>219</x><y>160</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>530</x><y>170</y><w>280</w><h>120</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>260;100;260;10;10;10</additional_attributes></element></diagram>
