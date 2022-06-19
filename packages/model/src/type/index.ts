@@ -5,4 +5,3 @@ export * from "./UuidType.js";
 export * from "./EmailType.js";
 export { default as TypeUtility} from "./TypeUtility.js";
 export * from "./AssociationType.js";
-export * from "./TypeConnector.js";
