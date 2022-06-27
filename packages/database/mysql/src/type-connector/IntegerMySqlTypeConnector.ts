@@ -1,16 +1,18 @@
 import { IntegerType, TypeConnector } from "@fortles/model";
-import { LargeNumberLike } from "crypto";
 
 export default class IntegerMySqlTypeConnector extends TypeConnector<IntegerType, number, number>{
+
     override exportData(value: number): number{
         return value;
     }
+
     override importData(value: number): number {
         return value;
     }
+
     override exportDefiniton(): string {
         let config = this.type.getConfig();
-        let definition = "`" + this.type.getName() + "` ";
+        let definition = "";
         if(config.unsigned){
             definition += "UNSIGNED ";
         }
@@ -35,6 +37,7 @@ export default class IntegerMySqlTypeConnector extends TypeConnector<IntegerType
         }
         return definition;
     }
+
     override importDefinition(definiton: string): IntegerType {
         throw new Error("Method not implemented.");
     }

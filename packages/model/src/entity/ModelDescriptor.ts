@@ -1,4 +1,7 @@
+import { extname, resolve } from "path";
+import { pathToFileURL } from "url";
 import { Entity, EntityDescriptor } from "../index.js";
+import { readdirSync } from "fs";
 
 export default class ModelDescriptor{
     
@@ -7,13 +10,20 @@ export default class ModelDescriptor{
     constructor(desriptors: EntityDescriptor[] = []){
         this.descriptors = desriptors;
     }
+
+    public static async create(rootFolders: string[]): Promise<ModelDescriptor>{
+        let entityTypes = await this.collectEntityTypes(rootFolders);
+        let descriptors = this.buildDescriptors(entityTypes);
+        return new this(descriptors);
+    }
+
     /**
      * Builds all the EntityDescriptors from the given entities.
      * It will include the techincal helper tables, and al the extenensions for the tables.
      * @param entityTypes Entity Types to build from.
      * @returns 
      */
-     static build(entityTypes: typeof Entity[]): ModelDescriptor{
+     protected static buildDescriptors(entityTypes: typeof Entity[]): EntityDescriptor[]{
         let descriptors: EntityDescriptor[] = [];
 
         for(const entityType of entityTypes){
@@ -23,9 +33,30 @@ export default class ModelDescriptor{
                     break;
                 }
             }
-            descriptors.push(new EntityDescriptor(entityType.getTypeMap()))
+            descriptors.push(EntityDescriptor.create(entityType));
         }
-        return new ModelDescriptor(descriptors);
+        return descriptors;
+    }
+
+    protected static async collectEntityTypes(rootFolders: string[]): Promise<typeof Entity[]>{
+        let result: typeof Entity[] = [];
+        for(const rootFolder of rootFolders){
+            let files = readdirSync(rootFolder, {withFileTypes: true});
+            for(const file of files){
+                if(file.isDirectory()){
+                    result.concat(await this.collectEntityTypes([file.name]));
+                }else if(extname(file.name) == ".js"){
+                    let url = pathToFileURL(resolve(rootFolder,file.name));
+                    let module = await import(url.toString());
+                    for(const name in module){
+                        if(new module[name] instanceof Entity){
+                            result.push(module[name]);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     static serialize(modelDescriptor: ModelDescriptor): string{

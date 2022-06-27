@@ -13,41 +13,8 @@ process.on("exit", (code) => {
 
 let runtimeConfig = JSON.parse(argv.pop()) as DevelopmentServerConfig;
 
-
-let rootPath = process.cwd();
-let pathUrl = pathToFileURL(runtimeConfig.path ? Path.resolve(rootPath, runtimeConfig.path) : rootPath);
-let mainController: Controller = null;
-let configUrl = pathUrl + "/src/config.js";
-let config = null;
-
-try{
-    config = await import(pathUrl + "/src/config.js");
-    if(config.mainController instanceof Function){
-        mainController = config.mainController();
-    }
-} catch (error){
-    console.warn("Configuration file not found at '" + configUrl + "'");
-}
-
-if(mainController == null){
-    let mainControllerUrl = pathUrl + "/src/controller/MainController.js";
-    try{
-        mainController = (await import(mainControllerUrl)).default;
-    } catch (error){
-        console.error("Main Controller not found at '" + mainControllerUrl + "' nor in hte config. Call this script from the root of your project.");
-        process.exit();
-    }
-}
-
-let platform = new ServerPlatform(runtimeConfig.port, [rootPath + "/template"]);
-let application = new Application(platform, mainController);
-
-if(config && config.default){
-    config.default(application);
-}else{
-    console.log(config);
-    console.warn("No default export found in the config file: '" + configUrl + "'");
-}
+let platform = new ServerPlatform(runtimeConfig.port, [process.cwd() + "/template"]);
+let application = await Application.create(platform, runtimeConfig.path);
 
 //Prepare watches
 application.register(HotReloadService);

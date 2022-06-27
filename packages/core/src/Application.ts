@@ -1,4 +1,6 @@
 import { Connection } from "@fortles/model";
+import { resolve } from "path";
+import { pathToFileURL } from "url";
 import { TemplateRenderEngine, Controller, Request, RequestType, Route, 
     Block, Response, Middleware, Addon, Platform, ServiceManager, Service, 
     ServiceType, RenderEngine, DummyRequest, Plugin, NotFoundError, Registrable } from "./index.js";
@@ -247,6 +249,50 @@ export class Application{
 
     public getConnection(name: string = null): Connection{
         return null;
+    }
+
+    /**
+     * Creates an applicaton from a project path.
+     * @param path Path to the project
+     * @param platform Platform to run on
+     * @returns An application promise
+     */
+    public static async create(platform: Platform = null, path: string = null): Promise<Application>{
+        let rootPath = process.cwd();
+        let pathUrl = pathToFileURL(path ? resolve(rootPath, path) : rootPath);
+        let mainController: Controller = null;
+        let configUrl = pathUrl + "/src/config.js";
+        let config = null;
+
+        try{
+            config = await import(pathUrl + "/src/config.js");
+            if(config.mainController instanceof Function){
+                mainController = config.mainController();
+            }
+        } catch (error){
+            console.warn("Configuration file not found at '" + configUrl + "'");
+        }
+
+        if(mainController == null){
+            let mainControllerUrl = pathUrl + "/src/controller/MainController.js";
+            try{
+                mainController = (await import(mainControllerUrl)).default;
+            } catch (error){
+                console.error("Main Controller not found at '" + mainControllerUrl + "' nor in hte config. Call this script from the root of your project.");
+                process.exit();
+            }
+        }
+
+        let application = new Application(platform, mainController);
+
+        if(config && config.default){
+            config.default(application);
+        }else{
+            console.log(config);
+            console.warn("No default export found in the config file: '" + configUrl + "'");
+        }
+
+        return application;
     }
 }
 
