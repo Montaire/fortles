@@ -12,6 +12,10 @@ export default class EntityDescriptor{
         this.typeMap = new Map(typeMap);
     }
 
+    public getName(){
+        return this.name;
+    }
+
     public append(entityType: typeof Entity){
         for(const [name, type] of entityType.getTypeMap()){
             if(this.typeMap.has(name)){

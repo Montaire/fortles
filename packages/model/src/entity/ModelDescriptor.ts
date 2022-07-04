@@ -2,6 +2,7 @@ import { extname, resolve } from "path";
 import { pathToFileURL } from "url";
 import { Entity, EntityDescriptor } from "../index.js";
 import { readdirSync } from "fs";
+import { EntityChange } from "./EntityChange.js";
 
 export default class ModelDescriptor{
     
@@ -59,11 +60,36 @@ export default class ModelDescriptor{
         return result;
     }
 
+    public getChanges(oldModelDescriptor: ModelDescriptor): EntityChange[]{
+        let current = Object.fromEntries(this.descriptors.map(x => [x.getName(), x]));
+        let pervious = Object.fromEntries(oldModelDescriptor.descriptors.map(x => [x.getName(), x]));
+        let changes: EntityChange[] = [];
+        let change: EntityChange;
+        for(const key in current){
+            if(pervious[key]){
+                //Modified
+                change = new EntityChange(pervious[key], current[key]);
+                delete pervious[key];
+            }else{
+                //Created
+                change = new EntityChange(null, current[key]);
+            }
+            changes.push(change);
+        }
+        //Deleted
+        for(const key in pervious){
+            let change = new EntityChange(pervious[key], null);
+            changes.push(change);
+        }
+        return changes;
+    }
+
     static serialize(modelDescriptor: ModelDescriptor): string{
         return "";
     }
 
-    static deserialize(json: string): ModelDescriptor{
+    static deserialize(rawData: string): ModelDescriptor{
+        let data = JSON.parse(rawData);
         return new ModelDescriptor();
     }
 }

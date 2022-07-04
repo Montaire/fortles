@@ -1,4 +1,4 @@
-export { default as Entity} from "./entity/Entity.js";
+export * from "./entity/index.js";
 export * from "./type/index.js";
 export * from "./connection/index.js";
 export { default as Query } from "./query/Query.js";
