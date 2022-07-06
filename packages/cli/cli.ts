@@ -3,6 +3,7 @@ import { argv } from "process";
 import { DevelopmentServer } from "@fortles/dev";
 import { Migrator } from "@fortles/model";
 import { normalize } from "path";
+import { Application } from "@fortles/core";
 
 let program = new Command();
 
@@ -20,9 +21,9 @@ if(DevelopmentServer){
             .option("--path <path>", "Custom path to the project")
             .option("--watchFramework", "Enable watcher for internal framework changes. Meant to be used for the framework developers.")
             .option("--no-watchProject", "Disable watcher for the project dictionary.")
-            .action(config => {
-                let developmentServer = new DevelopmentServer();
-                developmentServer.start(config);
+            .action(async config => {
+                let application = await Application.create(null, config.path);
+                let model = application.getModel();
             });
 }else{
     program.command("dev")

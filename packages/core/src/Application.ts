@@ -1,4 +1,4 @@
-import { Connection } from "@fortles/model";
+import { Connection, Model } from "@fortles/model";
 import { resolve } from "path";
 import { pathToFileURL } from "url";
 import { TemplateRenderEngine, Controller, Request, RequestType, Route, 
@@ -19,6 +19,7 @@ export class Application{
     protected plugins = new Map<new() => Plugin, Plugin>();
     protected serviceManager: ServiceManager;
     protected static instance: Application;
+    protected model: Model;
 
     /**
      * Creates a new application for the given platform.
@@ -31,6 +32,7 @@ export class Application{
         this.serviceManager = new ServiceManager(this);
         this.addMiddleware(this.serviceManager);
         this.platform.prepare(this);
+        this.model = new Model();
     }
 
     /**
@@ -240,15 +242,6 @@ export class Application{
 
     static getInstance(): Application{
         return this.instance;
-    }
-
-    public setConnection(connection: Connection, name: string = null): this {
-        
-        return this;
-    }
-
-    public getConnection(name: string = null): Connection{
-        return null;
     }
 
     /**
