@@ -19,7 +19,7 @@ export class Application{
     protected plugins = new Map<new() => Plugin, Plugin>();
     protected serviceManager: ServiceManager;
     protected static instance: Application;
-    protected model: Model;
+    protected model: Model = null;
 
     /**
      * Creates a new application for the given platform.
@@ -32,7 +32,6 @@ export class Application{
         this.serviceManager = new ServiceManager(this);
         this.addMiddleware(this.serviceManager);
         this.platform.prepare(this);
-        this.model = new Model();
     }
 
     /**

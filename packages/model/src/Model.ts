@@ -7,7 +7,7 @@ export default class Model{
     protected modelDescriptor: ModelDescriptor;
     protected connections: Map<string, Connection>;
 
-    constructor(modelDescriptor: ModelDescriptor, connections = new  Map<string, Connection>()){
+    constructor(modelDescriptor: ModelDescriptor = new ModelDescriptor(), connections = new  Map<string, Connection>()){
         this.modelDescriptor = modelDescriptor;
         this.connections = connections;
     }

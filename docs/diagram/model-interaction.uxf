@@ -1,0 +1,7 @@
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLSequenceAllInOne</id><coordinates><x>60</x><y>37</y><w>410</w><h>170</h></coordinates><panel_attributes>title=Query
+obj=Model~m
+obj=Connection~c
+gate-&gt;m: query</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLSequenceAllInOne</id><coordinates><x>60</x><y>257</y><w>450</w><h>170</h></coordinates><panel_attributes>title=Migration
+obj=Model~m
+obj=Connection~c
+gate-&gt;m: migrate</panel_attributes><additional_attributes></additional_attributes></element></diagram>

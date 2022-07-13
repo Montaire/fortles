@@ -4,13 +4,6 @@
     "main": "src/index.js",
     "version": "0.1.0",
     "bin": {
-        "fortles": "./cli.js"
-    },
-    "dependencies": {
-        "commander": "^9.1.0"
-    },
-    "optionalDependencies": {
-        "@fortles/dev": "workspace:*",
-        "@fortles/model": "workspace:*"
+        "fortles": "./src/cli.js"
     }
 }

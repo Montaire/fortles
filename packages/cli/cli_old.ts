@@ -23,7 +23,7 @@ if(DevelopmentServer){
             .option("--no-watchProject", "Disable watcher for the project dictionary.")
             .action(async config => {
                 let application = await Application.create(null, config.path);
-                let model = application.getModel();
+                //let model = application.getModel();
             });
 }else{
     program.command("dev")
