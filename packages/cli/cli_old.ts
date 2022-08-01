@@ -1,4 +1,4 @@
-import { Command } from "commander";
+/*import { Command } from "commander";
 import { argv } from "process";
 import { DevelopmentServer } from "@fortles/dev";
 import { Migrator } from "@fortles/model";
@@ -40,4 +40,4 @@ program.command("migrate")
         migrator.run([normalize(process.cwd() + '/src/model')], config);
     });
 
-program.parse(argv);
+program.parse(argv);*/
