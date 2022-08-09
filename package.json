@@ -33,7 +33,8 @@
     "packages/model",
     "packages/database/*",
     "packages/dev",
-    "packages/cli"
+    "packages/cli",
+    "packages/command"
   ],
   "devDependencies": {
     "@fortles/test-utility": "workspace:*",

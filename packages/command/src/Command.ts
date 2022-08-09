@@ -1,7 +1,9 @@
 type VariableConfig<T = String> = {
     variableParser?: (x: string) => T,
     variableType?: new(x: string) => T,
-    variableName?: string,
+    variableTypeName?: string,
+    variableExample?: string,
+    variableFormat?: string
 }
 
 export type OptionConfig<T = String> = {
@@ -22,13 +24,21 @@ export type ArgumentConfig<T = String> = {
 } & VariableConfig<T>;
 
 export abstract class CommandBlock<C = any>{
-
+    /**
+     * Block level title.
+     */
     static title: string;
 
     protected name: string;
     protected description: string;
     protected config: C;
 
+    /**
+     * Creates a new block.
+     * @param name Name of the block. From the command line this name will be used.
+     * @param description Short description. It will be displayed on the help page.
+     * @param config Configuration of the block.
+     */
     constructor(name: string, description: string, config: C){
         this.name = name;
         this.description = description;
@@ -66,10 +76,21 @@ export abstract class CommandBlock<C = any>{
         return this;
     }
 
+    /**
+     * Gets the short description.
+     * @returns The short description.
+     */
     public getDescription(): string{
         return this.description;
     }
 
+    /**
+     * Processes the blocks value from string.
+     * @param args Arguments fromt the command line.
+     * @param position From which position should start the processing.
+     * @param config Configuration to be build for the run.
+     * @returns At which position the processing stopped. (position + arguments consumed)
+     */
     public process(args: string[], position: number, config: any):number{
         return null;
     }
@@ -125,7 +146,16 @@ export class FlagCommandBlock extends CommandBlock<FlagConfig>{
     }
 }
 
-export class VariableCommandBlock<T, C extends VariableConfig<T>> extends CommandBlock<C>{
+/**
+ * Base class for {@link CommandBlock}s with input varables.
+ * It handles the parsing, and parsing, variable related conifurations.
+ */
+export abstract class VariableCommandBlock<T, C extends VariableConfig<T>> extends CommandBlock<C>{
+    /**
+     * Parses a variable from text to the corresponding type.
+     * @param text Parses variable from this text.
+     * @returns The variable in the correct type.
+     */
     protected parseVariable(text: string): T{
         if(this.config.variableParser){
             return this.config.variableParser(text);
@@ -144,7 +174,7 @@ export class OptionCommandBlock<T> extends VariableCommandBlock<T, OptionConfig<
     override getFullName(): string{
         let name = " --" + this.name + (this.config.short ? " -" + this.config.short : "");
         name += this.config.required ? " <" :  " [";
-        name += this.config.variableType && this.config.variableType.name.toLowerCase() || "string";
+        name += this.config.variableTypeName || (this.config.variableType && this.config.variableType.name.toLowerCase()) || "string";
         if(this.config.default){
             name += ": " + this.config.default;
         }else{
@@ -172,7 +202,6 @@ export class ArgumentCommandBlock<T> extends VariableCommandBlock<T, ArgumentCon
  * A console command.
  */
 export class Command<Config = {}> extends CommandBlock<{}>{
-    
     static override title = "Commands";
     protected commands = new Map<string, Command>();
     protected flags = new Map<string, CommandBlock<FlagConfig>>();
@@ -199,6 +228,9 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         error: [CommandFormat.Bright, CommandFormat.FgRed]
     }
     
+    /**
+     * Types and the classes of the different building blocks.
+     */
     public blockTypes = {
         commands: Command,
         flags: FlagCommandBlock,
@@ -280,6 +312,11 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         return this as any;
     }
     
+    /**
+     * Changes the title from the name of the command.
+     * @param title Title tho show in the manual.
+     * @returns Self for chaining.
+     */
     public setTitle(title: string): this{
         this.title = title;
         return this;
@@ -289,6 +326,11 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         return this.title || this.getFullName();
     }
 
+    /**
+     * Long description of the command.
+     * It will be prented below the usage.
+     * @param text The long description.
+     */
     public setManual(text: string){
         this.manual = text;
     }
@@ -368,6 +410,11 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         }
     }
     
+    /**
+     * Processes the arguments.
+     * @param args Array of input arguments.
+     * @returns The config on success null on failure.
+     */
     protected processArguments(args: string[]): Config| null{
         //explode short config
         const pargs = [];
@@ -397,6 +444,10 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         return config || null;
     }
 
+    /**
+     * Prints the help to the console via the print function.
+     * @param errors If there is an arror that related to a field pass here.
+     */
     protected printHelp(errors: Map<string, string>){
         this.print(Command.format(this.getTitle(), ...this.style.title));
         if(this.description){
@@ -425,8 +476,8 @@ export class Command<Config = {}> extends CommandBlock<{}>{
                          "string") +">";
                          
                         usage += Command.format(
-                        blockValue,
-                        ...this.style[blockName]); 
+                            blockValue,
+                            ...this.style[blockName]); 
                 }
             }
             if(this[blockName].size > 0){
@@ -440,8 +491,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         }
         this.print(usage);
         this.print(Command.format(this.getDescription(), ...this.style.description));
-        for(const blockName in this.blockTypes){
-            
+        for(const blockName in this.blockTypes){  
             this.printHelpFor(blockName, errors);
         }
     }
@@ -458,10 +508,18 @@ export class Command<Config = {}> extends CommandBlock<{}>{
             this.print(Command.format(block.title, ...this.style.title))
             for(const block of map.values()){
                 const format = this.style.block.concat(this.style[blockName]);
-                this.print(
-                    Command.format(block.getFullName(),  ...format) + " " + 
-                    block.getDescription()  + 
-                    (errors.has(block.getName()) ? Command.format(" (" + errors.get(block.getName()) + ")", ...this.style.error) : ""));
+                let line = Command.format(block.getFullName(),  ...format);
+                line += " " + block.getDescription();
+                if(block.getConfig().variableFormat){
+                    line += "  Format: " + block.getConfig().variableFormat;
+                }
+                if(block.getConfig().variableFormat){
+                    line += "  Example: " + block.getConfig().variableExample;
+                }
+                if(errors.has(block.getName())){
+                    line += Command.format(" (" + errors.get(block.getName()) + ")", ...this.style.error);
+                }
+                this.print(line);
             }
         }
     }

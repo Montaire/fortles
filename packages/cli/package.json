@@ -6,6 +6,9 @@
     "bin": {
         "fortles": "./src/cli.js"
     },
+    "dependencies": {
+        "@fortles/command": "workspace:*"
+    },
     "optionalDependencies": {
         "@fortles/dev": "workspace:*"
     }
