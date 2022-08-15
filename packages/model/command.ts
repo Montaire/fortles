@@ -1,4 +1,4 @@
-import { Command } from "@fortles/cli";
+import { Command } from "@fortles/command";
 
 export default function(command: Command){
     

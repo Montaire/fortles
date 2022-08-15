@@ -1,7 +1,6 @@
 {
     "name": "@fortles/cli",
     "type": "module",
-    "main": "src/index.js",
     "version": "0.1.0",
     "bin": {
         "fortles": "./src/cli.js"

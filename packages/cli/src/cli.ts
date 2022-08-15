@@ -1,12 +1,9 @@
 #!/bin/sh 
 ":" //# comment; exec /usr/bin/env node --experimental-import-meta-resolve "$0" "$@"
 
-import { string } from "@fortles/model";
 import * as fs from "fs";
-import { normalize, resolve } from "path";
-import { exit } from "process";
-import { fileURLToPath, pathToFileURL } from "url";
-import { Command } from "./index.js";
+import { fileURLToPath } from "url";
+import { Command } from "@fortles/command";
 
 let command = new Command("fortles");
 
