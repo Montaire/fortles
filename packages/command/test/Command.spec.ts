@@ -139,8 +139,4 @@ describe("Command", function(){
                 .run([]);
         });
     });
-    describe("Complex", function(){
-
-    });
-
 });

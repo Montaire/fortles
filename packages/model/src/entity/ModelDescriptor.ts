@@ -4,6 +4,10 @@ import { Entity, EntityDescriptor } from "../index.js";
 import { readdirSync } from "fs";
 import { EntityChange } from "./EntityChange.js";
 
+/**
+ * Describes how the model looks.
+ * It contains all the entities as well.
+ */
 export default class ModelDescriptor{
     
     protected descriptors: EntityDescriptor[];
@@ -12,6 +16,11 @@ export default class ModelDescriptor{
         this.descriptors = desriptors;
     }
 
+    /**
+     * Creates a Model desciptor from the {@link Entity}s found in the goven subfolders.
+     * @param rootFolders Search entities in this folders.
+     * @returns The new EntityDescriptor
+     */
     public static async create(rootFolders: string[]): Promise<ModelDescriptor>{
         let entityTypes = await this.collectEntityTypes(rootFolders);
         let descriptors = this.buildDescriptors(entityTypes);
@@ -24,7 +33,7 @@ export default class ModelDescriptor{
      * @param entityTypes Entity Types to build from.
      * @returns 
      */
-     protected static buildDescriptors(entityTypes: typeof Entity[]): EntityDescriptor[]{
+    protected static buildDescriptors(entityTypes: typeof Entity[]): EntityDescriptor[]{
         let descriptors: EntityDescriptor[] = [];
 
         for(const entityType of entityTypes){
@@ -60,6 +69,11 @@ export default class ModelDescriptor{
         return result;
     }
 
+    /**
+     * Finds what changed in this EntitiyDescriptors from the give oldModelDescriptor
+     * @param oldModelDescriptor Detect changes from this Descriptor.
+     * @returns Array of the changes
+     */
     public getChanges(oldModelDescriptor: ModelDescriptor): EntityChange[]{
         let current = Object.fromEntries(this.descriptors.map(x => [x.getName(), x]));
         let pervious = Object.fromEntries(oldModelDescriptor.descriptors.map(x => [x.getName(), x]));
@@ -84,12 +98,30 @@ export default class ModelDescriptor{
         return changes;
     }
 
-    static serialize(modelDescriptor: ModelDescriptor): string{
-        return "";
+    /**
+     * Serializes a given model descriptor
+     * @param modelDescriptor 
+     * @returns 
+     */
+    static serialize(modelDescriptor: ModelDescriptor): object{
+        let result = {
+            descriptors: Object.fromEntries(modelDescriptor.descriptors.entries())
+        }
+        return result;
     }
 
     static deserialize(rawData: string): ModelDescriptor{
         let data = JSON.parse(rawData);
         return new ModelDescriptor();
+    }
+
+    /**
+     * Creates a copy from the model descriptor.
+     * Descriptor map cloned as well.
+     * @returns The new ModelDescriptor.
+     */
+    public clone(): ModelDescriptor{
+        const descriptors = Array.from(this.descriptors.values());
+        return new ModelDescriptor(descriptors);
     }
 }
