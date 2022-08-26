@@ -66,7 +66,7 @@ export default class MySqlMigrator{
             let pk = this.config.defaultPrimaryKey;
             rows.push("\t `id` " + pk.type + " " + pk.modifier);
         }
-        for(const [fieldName, type] of entityType.typeMap){
+        for(const [fieldName, type] of entityType.getTypeMap()){
             if(type instanceof AssociationType){
                 //Only has ones foreign key
                 if(type instanceof OneAssociationType){

@@ -1,9 +1,10 @@
-import { Type } from "../index.js";
+import { Connection, Type } from "../index.js";
 
-export default class Entity{
+export class Entity{
 
-    static typeMap = new Map<string, Type<any, any>>();
+    protected static typeMap = new Map<string, Type<any, any>>();
     protected static primaryKeys: string[] = [];
+    protected static connection: Connection;
 
     static getPrimaryKeys(): string[] | null{
         if(!this.primaryKeys.length){
@@ -23,5 +24,9 @@ export default class Entity{
 
     static getTypeMap(): Readonly< Map<string, Type<any, any>>>{
         return this.typeMap;
+    }
+    
+    static getConnection(): Connection{
+        return this.connection;
     }
 }

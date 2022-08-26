@@ -5,15 +5,15 @@ export default class Model{
 
     protected modelDescriptor: ModelDescriptor;
     protected connections: Map<string, Connection>;
-    protected migrator: Migartor;
 
     constructor(modelDescriptor: ModelDescriptor = new ModelDescriptor(), connections = new  Map<string, Connection>()){
         this.modelDescriptor = modelDescriptor;
         this.connections = connections;
     }
 
-    migrate(rootPath = "./"): void{
-
+    public migrate(): void{
+        const migrator = new Migartor(this);
+        migrator.migrate();
     }
 
     public getConnections(): Map<string, Connection>{
@@ -24,7 +24,7 @@ export default class Model{
         return this.modelDescriptor;
     }
 
-    query<T>(): Query<T>{
+    query<T>(type: new() => T): Query<T>{
         return null;
     }
 }

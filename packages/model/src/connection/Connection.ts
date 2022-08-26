@@ -1,7 +1,7 @@
-import { EntityChange } from "../index.js";
+import { ModelChange } from "../index.js";
 
 export abstract class Connection{
-    public applyChange(change: EntityChange){
+    public applyChange(change: ModelChange){
 
     }
 }
