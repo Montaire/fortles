@@ -56,7 +56,7 @@ export default class ModelDescriptor{
         for(const file of files){
             if(file.isDirectory()){
                 result.concat(await this.collectEntityTypes(file.name));
-            }else if(extname(file.name) == ".js"){
+            }else if(extname(file.name) == ".js" && file.name != "index.js"){
                 let url = pathToFileURL(resolve(rootFolder,file.name));
                 let module = await import(url.toString());
                 for(const name in module){
@@ -127,5 +127,9 @@ export default class ModelDescriptor{
 
     public getSources(): string[]{
         return this.sources;
+    }
+
+    public getEntityDescriptors(): EntityDescriptor[]{
+        return this.entityDescriptors;
     }
 }

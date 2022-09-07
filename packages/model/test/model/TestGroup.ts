@@ -1,7 +1,7 @@
 import { Entity, hasMany } from "../../src/index.js";
-import TestUser from "./TestUser.js";
+import { TestUser } from "./index.js";
 
-export default class TestGroup extends Entity{
+export class TestGroup extends Entity{
     @hasMany(TestUser)
     users: TestUser[];
 }
