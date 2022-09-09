@@ -18,9 +18,9 @@ export class ModelChange{
     
     public getType(): ModelChangeType{
         if(this.from == null){
-            return ModelChangeType.DROP;
-        }else if(this.to == null){
             return ModelChangeType.CREATE;
+        }else if(this.to == null){
+            return ModelChangeType.DROP;
         }else{
             return ModelChangeType.ALTER;
         }

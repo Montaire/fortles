@@ -12,8 +12,8 @@ export default class ModelDescriptor{
     protected entityDescriptors: EntityDescriptor[];
     protected sources: string[];
 
-    constructor(descriptors: EntityDescriptor[] = [], sources: string[] = []){
-        this.entityDescriptors = descriptors;
+    constructor(entityDescriptors: EntityDescriptor[] = [], sources: string[] = []){
+        this.entityDescriptors = entityDescriptors;
         this.sources = sources;
     }
 
@@ -41,7 +41,7 @@ export default class ModelDescriptor{
     protected buildDescriptors(entityTypes: typeof Entity[], source: string = null): void{
         for(const entityType of entityTypes){
             for(const descriptor of this.entityDescriptors){
-                if(entityType instanceof descriptor.baseEntityType){
+                if(descriptor.baseEntityType && new entityType instanceof descriptor.baseEntityType){
                     descriptor.append(entityType, source);
                     break;
                 }
@@ -71,12 +71,12 @@ export default class ModelDescriptor{
 
     /**
      * Finds what changed in this EntitiyDescriptors from the give oldModelDescriptor
-     * @param oldModelDescriptor Detect changes from this Descriptor.
+     * @param fromModelDescriptor Detect changes from this Descriptor.
      * @returns Array of the changes
      */
-    public getChanges(oldModelDescriptor: ModelDescriptor): ModelChange[]{
+    public getChanges(fromModelDescriptor: ModelDescriptor): ModelChange[]{
         let current = Object.fromEntries(this.entityDescriptors.map(x => [x.getName(), x]));
-        let pervious = Object.fromEntries(oldModelDescriptor.entityDescriptors.map(x => [x.getName(), x]));
+        let pervious = Object.fromEntries(fromModelDescriptor.entityDescriptors.map(x => [x.getName(), x]));
         let changes: ModelChange[] = [];
         let change: ModelChange;
         for(const key in current){
@@ -98,21 +98,40 @@ export default class ModelDescriptor{
         return changes;
     }
 
+    public static toObject(modelDescriptor: ModelDescriptor): object{
+        return {
+            entityDescriptors: modelDescriptor.entityDescriptors.map(x => EntityDescriptor.toObject(x)),
+            sources: Array.from(modelDescriptor.sources)
+        };
+    }
+
     /**
-     * Serializes a given model descriptor
+     * Serializes a given model descriptor to JSON
      * @param modelDescriptor 
      * @returns 
      */
-    static serialize(modelDescriptor: ModelDescriptor): object{
-        let result = {
-            descriptors: Object.fromEntries(modelDescriptor.entityDescriptors.entries())
-        }
-        return result;
+    public static serialize(modelDescriptor: ModelDescriptor): string{
+        const data = this.toObject(modelDescriptor);
+        return JSON.stringify(modelDescriptor);
     }
 
-    static deserialize(rawData: string): ModelDescriptor{
-        let data = JSON.parse(rawData);
-        return new ModelDescriptor();
+    public static fromObject(data: {[key: string]: any}): ModelDescriptor{
+        return new ModelDescriptor(
+            data.entityDescriptors.map(x => EntityDescriptor.fromObject(x)), 
+            data.sources);
+    }
+
+    /**
+     * Deserializes a model from the given JSON
+     * @param rawData 
+     * @returns 
+     */
+    public static deserialize(rawData: string): ModelDescriptor{
+        const data = JSON.parse(rawData);
+        for(const i in data.entityDescriptors){
+            data.entityDescriptors[i] = Object.assign(new EntityDescriptor(), data.entityDescriptors[i]);
+        }
+        return Object.assign(new ModelDescriptor(), data);
     }
 
     /**
@@ -121,8 +140,7 @@ export default class ModelDescriptor{
      * @returns The new ModelDescriptor.
      */
     public clone(): ModelDescriptor{
-        const descriptors = Array.from(this.entityDescriptors.values());
-        return new ModelDescriptor(descriptors);
+        return structuredClone(this);
     }
 
     public getSources(): string[]{

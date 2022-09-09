@@ -1,32 +1,38 @@
 import { Connection, Type } from "../index.js";
+import { EntityModelInfo } from "./EntityModelInfo.js";
 
 export class Entity{
 
-    protected static typeMap = new Map<string, Type<any, any>>();
-    protected static primaryKeys: string[] = [];
-    protected static connection: Connection;
+    protected static modelInfoMap = new Map<string, EntityModelInfo>();
+
+    static getModelInfo(): EntityModelInfo{
+        if(!this.modelInfoMap.has(this.name)){
+            this.modelInfoMap.set(this.name, new EntityModelInfo());
+        }
+        return this.modelInfoMap.get(this.name);
+    }
 
     static getPrimaryKeys(): string[] | null{
-        if(!this.primaryKeys.length){
+        if(!this.getModelInfo().primaryKeys.length){
             return null;
         }{
-            return this.primaryKeys;
+            return this.getModelInfo().primaryKeys;
         }
     }
 
     static getType(name: string): Type<any, any>{
-        return this.typeMap.get(name);
+        return this.getModelInfo().typeMap.get(name);
     }
 
     static hasType(name: string): boolean{
-        return this.typeMap.has(name);
+        return !!(this.getModelInfo().typeMap.has(name));
     }
 
     static getTypeMap(): Readonly< Map<string, Type<any, any>>>{
-        return this.typeMap;
+        return this.getModelInfo().typeMap;
     }
     
     static getConnection(): Connection{
-        return this.connection;
+        return this.getModelInfo().connection;
     }
 }

@@ -15,7 +15,7 @@ class TestCommand extends Command{
 
     printResult: string = "";
 
-    override print(text: string): void{
+    protected override print(text: string): void{
         this.printResult += text + "\n";
     }
 

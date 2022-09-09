@@ -66,7 +66,7 @@ export class Migartor{
      */
     public saveSnapshot(name: string = ".snapshot", basePath: string = this.basePath): void{
         this.modelDescriptorSnapshot = this.model.getModelDescriptor().clone();
-        writeFileSync(basePath + "/" + name, JSON.stringify(ModelDescriptor.serialize(this.modelDescriptorSnapshot)));
+        writeFileSync(basePath + "/" + name, ModelDescriptor.serialize(this.modelDescriptorSnapshot));
     }
 
     /**
@@ -75,7 +75,7 @@ export class Migartor{
      */
     public loadSnapshot(name: string = ".snapshot", basePath: string = this.basePath): ModelDescriptor{
         const rawData = readFileSync(basePath + "/" + name);
-        return ModelDescriptor.deserialize(JSON.parse(rawData.toString()));
+        return ModelDescriptor.deserialize(rawData.toString());
     }
 
     /**

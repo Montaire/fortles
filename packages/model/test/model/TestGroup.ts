@@ -1,7 +1,6 @@
-import { Entity, hasMany } from "../../src/index.js";
-import { TestUser } from "./index.js";
+import { Entity, hasMany, string } from "../../src/index.js";
 
 export class TestGroup extends Entity{
-    @hasMany(TestUser)
-    users: TestUser[];
+    @string()
+    name: string;
 }

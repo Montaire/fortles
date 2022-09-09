@@ -1,5 +1,5 @@
 {
-    "require": "source-map-support/register",
+    "require": ["source-map-support/register", "mocha-steps"],
     "enable-source-maps": true,
     "spec": "./packages/**/test/*.spec.js",
     "watch-files": ".packages/**/*.js",
