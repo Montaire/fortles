@@ -1,4 +1,4 @@
-import { Type } from "./index.js";
+import { Type, TypeUtility } from "./index.js";
 import { Entity } from "../index.js";
 import ErrorReporter from "../ErrorReporter.js";
 
@@ -35,6 +35,6 @@ export class IntegerType extends Type<number, IntegerTypeConfig>{
 
 export function integer(config?: IntegerTypeConfig): PropertyDecorator {
     return function(target: Entity, propertyKey: string): void{
-        target.constructor["typeMap"].set(propertyKey, new IntegerType(propertyKey, config));
+        TypeUtility.setType(target, propertyKey,  new IntegerType(propertyKey, config));
     };
 }

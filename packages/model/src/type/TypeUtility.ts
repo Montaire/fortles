@@ -13,6 +13,6 @@ export default class TypeUtility{
     
     public static setType(target: Entity, propertyKey: string, type: Type<any, any>): void{
         const modelInfo = (target.constructor as typeof Entity).getModelInfo();
-        modelInfo.set(propertyKey, type);
+        modelInfo.typeMap.set(propertyKey, type);
     }
 }

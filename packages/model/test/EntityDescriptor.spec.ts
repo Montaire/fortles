@@ -33,7 +33,9 @@ describe("EntityDescriptor", function(){
 
     it("Can not override exisiting type", function(){
         const entityDescriptor = EntityDescriptor.create(TestUser, "base.js");
-        entityDescriptor.append(TestUserWronglyExtended, "extended.js");
+        assert.throws(() => {
+            entityDescriptor.append(TestUserWronglyExtended, "extended.js");
+        })
     });
 
     it("Can be export to and from object", function(){

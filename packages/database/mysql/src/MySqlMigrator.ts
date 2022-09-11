@@ -10,7 +10,9 @@ export type MySqlMigratorConfig = {
         modifier?: string
     }
 }
-
+/**
+ * @deprecated
+ */
 export default class MySqlMigrator{
 
     protected connection;

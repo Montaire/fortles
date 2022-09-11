@@ -19,7 +19,20 @@ export abstract class Type<T,C>{
 
     protected validations: Validation<T>[] = [];
 
-    public constructor(protected name: string, protected config: C){
+    protected name: string;
+
+    protected config: C;
+
+    public constructor(
+        name: string, 
+        config: C, propertyMap: Map<string, Object> = new Map<string, Object>(), 
+        validations: Validation<T>[] = []
+    ){
+        this.name = name;
+        this.config = config;
+        this.propertyMap = propertyMap;
+        this.validations = validations;
+
     }
 
     public setProperty(name: string, value: Object = null): void{
@@ -74,6 +87,27 @@ export abstract class Type<T,C>{
         }
         return errors;
     }
+
+    public static toObject(type: Type<any, any>): object{
+        return{
+            constructor: type.constructor.name,
+            name: type.name,
+            config: type.config,
+            propertyMap: Array.from(type.propertyMap.entries()),
+            validations: type.validations
+        };
+    }
+
+    public static fromObject(data: {[key:string]: any}): Type<any, any>{
+        return new data.constructor(
+            data.name,
+            data.config,
+            new Map(data.propertyMap),
+            data.validations
+        );
+    }
+
+
 }
 
 export enum TypeProperty{
@@ -91,14 +125,14 @@ export function readonly(target: Entity, propertyKey: string|Symbol, descriptor:
     return descriptor;
 }  
 
-export function primaryKey(target: Entity, propertyKey: string|Symbol): void{
-    TypeUtility.setTypeProperty(target, propertyKey, TypeProperty.PRIMARY_KEY);
+export function primaryKey(target: Entity, propertyKey: string): void{
+    TypeUtility.setTypeProperty(target, propertyKey as string, TypeProperty.PRIMARY_KEY);
 }
 
-export function generated(target: Entity, propertyKey:string|Symbol) {
-    TypeUtility.setTypeProperty(target, propertyKey, TypeProperty.GENERATED);
+export function generated(target: Entity, propertyKey: string) {
+    TypeUtility.setTypeProperty(target, propertyKey as string, TypeProperty.GENERATED);
 }
 
-export function nullable(target: Entity, propertyKey:string|Symbol) {
+export function nullable(target: Entity, propertyKey: string) {
     TypeUtility.setTypeProperty(target, propertyKey, TypeProperty.NULLABLE);
 }

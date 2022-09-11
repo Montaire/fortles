@@ -112,7 +112,7 @@ export default class ModelDescriptor{
      */
     public static serialize(modelDescriptor: ModelDescriptor): string{
         const data = this.toObject(modelDescriptor);
-        return JSON.stringify(modelDescriptor);
+        return JSON.stringify(data);
     }
 
     public static fromObject(data: {[key: string]: any}): ModelDescriptor{
