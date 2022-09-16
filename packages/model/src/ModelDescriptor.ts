@@ -1,7 +1,8 @@
 import { extname, resolve } from "path";
 import { pathToFileURL } from "url";
 import { Entity, EntityDescriptor, ModelChange, Type } from "./index.js";
-import { readdirSync } from "fs";
+import { createReadStream, createWriteStream, readdirSync } from "fs";
+import { Readable, Stream, Writable } from "stream";
 
 /**
  * Describes how the model looks.
@@ -25,7 +26,7 @@ export default class ModelDescriptor{
     public static async create(rootFolders: string[]): Promise<ModelDescriptor>{
         const modelDescriptor = new this([], rootFolders);
         for(const rootFolder of rootFolders){
-            const entityTypes = await this.collectEntityTypes(rootFolder);
+            const entityTypes = await this.collectEntityTypesFromFolder(rootFolder);
             modelDescriptor.buildDescriptors(entityTypes, rootFolder);
         }
         return modelDescriptor;
@@ -50,20 +51,26 @@ export default class ModelDescriptor{
         }
     }
 
-    protected static async collectEntityTypes(rootFolder: string): Promise<typeof Entity[]>{
+    protected static async collectEntityTypesFromFolder(rootFolder: string): Promise<typeof Entity[]>{
         let result: typeof Entity[] = [];
-        let files = readdirSync(rootFolder, {withFileTypes: true});
+        const files = readdirSync(rootFolder, {withFileTypes: true});
         for(const file of files){
             if(file.isDirectory()){
-                result.concat(await this.collectEntityTypes(file.name));
+                result = result.concat(await this.collectEntityTypesFromFolder(file.name));
             }else if(extname(file.name) == ".js" && file.name != "index.js"){
-                let url = pathToFileURL(resolve(rootFolder,file.name));
-                let module = await import(url.toString());
-                for(const name in module){
-                    if(new module[name] instanceof Entity){
-                        result.push(module[name]);
-                    }
-                }
+                result = result.concat(await this.collectEntityTypesFromFile(resolve(rootFolder,file.name)));
+            }
+        }
+        return result;
+    }
+
+    protected static async collectEntityTypesFromFile(path: string): Promise<typeof Entity[]>{
+        const result: typeof Entity[] = [];
+        const url = pathToFileURL(path);
+        const module = await import(url.toString());
+        for(const name in module){
+            if(new module[name] instanceof Entity){
+                result.push(module[name]);
             }
         }
         return result;
@@ -115,6 +122,26 @@ export default class ModelDescriptor{
         return JSON.stringify(data);
     }
 
+    public static serialize2(modelDescriptor: ModelDescriptor, path: string): void{
+        const writeStream = createWriteStream(path);
+        for(const entityDescriptor of modelDescriptor.getEntityDescriptors()){
+            let sources = new Set(entityDescriptor.sourceMap.values());
+            for(const source of sources){
+                const readStream = createReadStream(source);
+                readStream.pipe(writeStream);
+                readStream.destroy();
+            }
+        }
+        writeStream.end();
+    }
+
+    public static async deserialize2(path:string): Promise<ModelDescriptor>{
+        const entityTypes = await this.collectEntityTypesFromFile(path);
+        const modelDescriptor = new this([], [path]);
+        modelDescriptor.buildDescriptors(entityTypes);
+        return modelDescriptor;
+    }
+
     public static fromObject(data: {[key: string]: any}): ModelDescriptor{
         return new ModelDescriptor(
             data.entityDescriptors.map(x => EntityDescriptor.fromObject(x)), 
@@ -123,15 +150,12 @@ export default class ModelDescriptor{
 
     /**
      * Deserializes a model from the given JSON
-     * @param rawData 
+     * @param rawData
      * @returns 
      */
     public static deserialize(rawData: string): ModelDescriptor{
         const data = JSON.parse(rawData);
-        for(const i in data.entityDescriptors){
-            data.entityDescriptors[i] = Object.assign(new EntityDescriptor(), data.entityDescriptors[i]);
-        }
-        return Object.assign(new ModelDescriptor(), data);
+        return this.fromObject(data);
     }
 
     /**

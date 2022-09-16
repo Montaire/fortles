@@ -33,14 +33,18 @@ describe("ModelDescriptor", function(){
         assert.equal(testGroupChange.to.baseEntityType, TestUser);
     });
 
-    it("Serializes and deserializes", function(){
-        const serialized = ModelDescriptor.serialize(modelDescriptor);
-        const deserialized = ModelDescriptor.deserialize(serialized);
+    it("Serializes and deserializes", async function(){
+        const path = "./temp/serialized-model-descriptor.js";
+        ModelDescriptor.serialize2(modelDescriptor, path);
+        const deserialized = await ModelDescriptor.deserialize2(path);
         //BaseEntityType is needed for building up the model descriptor only.
         //It makes no sense, or even exits when a snapshot is loaded, deserialized.
         for(const entityDescriptor of modelDescriptor.getEntityDescriptors()){
             entityDescriptor.baseEntityType = null;
         }
+        //@ts-ignore
+        //console.log(modelDescriptor.getEntityDescriptors()[0].typeMap, deserialized.getEntityDescriptors()[0].typeMap);
+        console.log(TestUser.toString());
         assert.deepEqual(modelDescriptor, deserialized);
     });
 });

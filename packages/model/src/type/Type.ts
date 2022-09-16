@@ -1,4 +1,5 @@
 import { Entity, ErrorReporter, TypeUtility } from "../index.js";
+import * as types from "../type/index.js"
 
 export type EntityPropertyDecorator = (target: Entity, propertyKey: string | symbol) => void;
 
@@ -15,6 +16,7 @@ export type Validation<T> = (value: T) => string | null
 
 
 export abstract class Type<T,C>{
+
     protected propertyMap = new Map<string, Object>();
 
     protected validations: Validation<T>[] = [];
@@ -90,7 +92,7 @@ export abstract class Type<T,C>{
 
     public static toObject(type: Type<any, any>): object{
         return{
-            constructor: type.constructor.name,
+            type: type.constructor.name,
             name: type.name,
             config: type.config,
             propertyMap: Array.from(type.propertyMap.entries()),
@@ -99,15 +101,17 @@ export abstract class Type<T,C>{
     }
 
     public static fromObject(data: {[key:string]: any}): Type<any, any>{
-        return new data.constructor(
+        let typeConstructor = types[data.type];
+        if(!typeConstructor){
+            throw new Error("Unknow type '" + data.type + "'. TODO: Use types from other places as well!");
+        }
+        return new typeConstructor(
             data.name,
             data.config,
             new Map(data.propertyMap),
             data.validations
         );
     }
-
-
 }
 
 export enum TypeProperty{

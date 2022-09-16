@@ -61,12 +61,16 @@ export default class EntityDescriptor{
     public static toObject(entityDescriptor: EntityDescriptor): object{
         return {
             name: entityDescriptor.baseName,
-            typeMap: Array.from(entityDescriptor.typeMap.entries()),
+            typeMap: Array.from(entityDescriptor.typeMap.entries())
+                .map(([key, value]) => [key, Type.toObject(value)]),
             sourceMap: Array.from(entityDescriptor.sourceMap.entries()),
         }
     }
 
     public static fromObject(data: {[key: string]: any}): EntityDescriptor{
-        return new EntityDescriptor(data.name, new Map(data.typeMap), new Map(data.sourceMap));
+        return new EntityDescriptor(
+            data.name, 
+            new Map(data.typeMap.map(([key, value]) => [key, Type.fromObject(value)])), 
+            new Map(data.sourceMap));
     }
 }

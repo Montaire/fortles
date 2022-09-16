@@ -12,6 +12,6 @@ export default class User extends Entity{
     @email()
     email: string;
 
-    @withMany(Group)
+    @withMany(() => Group)
     groups: Group[];
 }

@@ -14,7 +14,7 @@ export class TestUser extends Entity{
     @email()
     email: string;
 
-    @withMany(TestGroup)
+    @withMany(() => TestGroup)
     groups: TestGroup[];
 
     @string()
