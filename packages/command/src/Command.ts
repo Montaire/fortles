@@ -57,6 +57,10 @@ export abstract class CommandBlock<C = any>{
     public getFullName(): string{
         return this.name;
     }
+
+    public getHelpName(): string{
+        return this.getFullName();
+    }
     
     /**
      * Returns the conifgutation of the block.
@@ -222,6 +226,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
     protected manual: string;
     protected action: (config: Config) => void;
     protected isEmptyFails: boolean = false;
+    protected isEmptyCallable: boolean = false;
 
     /**
      * Style of the different messages.
@@ -251,7 +256,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      * Creates a new Command.
      * @param name Name of the command. Should match with the the on in the bin.
      * @param parent If sub command parent also needed.
-     * @param help Outo inject the --help -h flag.
+     * @param help Auto inject the --help -h flag.
      */
     constructor(name: string, parent: Command = null, help: boolean = true){
         super(name, "", {});
@@ -364,8 +369,10 @@ export class Command<Config = {}> extends CommandBlock<{}>{
             this.commands.get(args[0]).run(args.splice(1));
             return;
         }
-        if(!this.action){
-            this.print(Command.format(this.getFullName() + " needs a command!", ...this.style.error));
+        if((!this.isEmptyCallable || this.parent) && !this.action){
+            if(this.isEmptyFails){
+                this.print(Command.format(this.getFullName() + " needs a command!\n", ...this.style.error));
+            }
             this.printHelp();
             return null;
         }
@@ -469,7 +476,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      * @param errors If there is an arror that related to a field pass here.
      */
     protected printHelp(errors: Map<string, string> = new Map<string, string>()){
-        this.print(Command.format(this.getTitle(), ...this.style.title));
+        this.print(Command.format(this.getTitle(), ...this.style.block));
         if(this.description){
             this.print(this.description);
         }
@@ -528,7 +535,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
             this.print(Command.format(blockType.title, ...this.style.title))
             for(const block of blockList){
                 const format = this.style.block.concat(this.style[blockName]);
-                let line = Command.format(" " + block.getFullName(),  ...format);
+                let line = Command.format(" " + block.getHelpName(),  ...format);
                 line += " " + block.getDescription();
                 if(block.getConfig().variableFormat){
                     line += "  Format: " + block.getConfig().variableFormat;
@@ -544,8 +551,12 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         }
     }
 
-    public override getFullName(){
+    public override getFullName(): string{
         return this.parent ? (this.parent.getFullName() + " " + this.name) : this.name;
+    }
+
+    public override getHelpName(): string{
+        return this.name;
     }
 
     /**
@@ -575,12 +586,24 @@ export class Command<Config = {}> extends CommandBlock<{}>{
     }
 
     /**
-     * 
+     * Sets wether on empty call the error message should be shown.
+     * Defaults to false.
      * @param fails
      * @returns Self for chaining.
      */
     public setEmptyFails(fails: boolean){
         this.isEmptyFails = fails;
+        return this;
+    }
+
+    /**
+     * Sets wether the command can be called with empty parameters.
+     * Defaults to false.
+     * @param isCallable
+     * @returns Self for chaining.
+     */
+    public setEmptyCallable(isCallable: boolean){
+        this.isEmptyCallable = isCallable;
         return this;
     }
 

@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { Command } from "@fortles/command";
 
 let command = new Command("fortles");
+command.setEmptyFails(true);
 
 let packageJson = JSON.parse(fs.readFileSync("./package.json", {encoding: "utf-8"}));
 let success: boolean = false;
@@ -30,7 +31,6 @@ if(packageJson && (packageJson.dependencies || packageJson.devDependencies)){
     }
     for(const dependency of dependencies){
         if(dependency.startsWith("@fortles")){
-            console.log(dependency + "/src/command.js");
             try{
                 let commandDecorator = await import(dependency + "/src/command.js");      
                 commandDecorator.default(command);

@@ -1,7 +1,7 @@
-import { extname, resolve } from "path";
+import { dirname, extname, resolve } from "path";
 import { pathToFileURL } from "url";
 import { Entity, EntityDescriptor, ModelChange, Type } from "./index.js";
-import { createReadStream, createWriteStream, readdirSync } from "fs";
+import { createReadStream, createWriteStream, mkdirSync, readdirSync } from "fs";
 import { Readable, Stream, Writable } from "stream";
 
 /**
@@ -122,7 +122,12 @@ export default class ModelDescriptor{
         return JSON.stringify(data);
     }
 
+    protected static createFolder(path: string){
+        mkdirSync(dirname(path), {recursive: true});
+    }
+
     public static serialize2(modelDescriptor: ModelDescriptor, path: string): void{
+        this.createFolder(path);
         const writeStream = createWriteStream(path);
         for(const entityDescriptor of modelDescriptor.getEntityDescriptors()){
             let sources = new Set(entityDescriptor.sourceMap.values());

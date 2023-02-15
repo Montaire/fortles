@@ -28,11 +28,12 @@ describe("Command", function(){
     var command: TestCommand;
     beforeEach(function(){
         command = new TestCommand("test");
+        command.setEmptyCallable(true);
     });
     describe("Basic usage", function(){
         it("Runs simple command", function(){
             let config = command.run([]);
-            assert.deepEqual(config, {}, "Config should be empty object.");
+            assert.deepEqual(config, {}, "Config should be empty.");
         });
         it("Prints a simple help", function(){
             let config = command.run(["-h"]);
@@ -51,7 +52,7 @@ describe("Command", function(){
             command.addCommand("one", "Command One");
             command.run(["-h"]);
             assert.match(command.getPrinted(), /Commands/, "Help should contain Commands section");
-            assert.match(command.getPrinted(), /test one Command One/, "Help should contain the full path to call the subcommand, and the description.");
+            assert.match(command.getPrinted(), /one Command One/, "Help should contain the full path to call the subcommand, and the description.");
             command.run(["one", "-h"]);
             console.log(command.getPrinted());
         });
