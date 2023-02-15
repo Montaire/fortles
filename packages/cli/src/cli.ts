@@ -30,12 +30,13 @@ if(packageJson && (packageJson.dependencies || packageJson.devDependencies)){
     }
     for(const dependency of dependencies){
         if(dependency.startsWith("@fortles")){
+            console.log(dependency + "/src/command.js");
             try{
                 let commandDecorator = await import(dependency + "/src/command.js");      
                 commandDecorator.default(command);
                 success = true;
             }catch(error){
-                //Ignore missing packages
+                console.error(error);
             }
         }
     }

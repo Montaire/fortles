@@ -9,6 +9,7 @@
         "@fortles/command": "workspace:*"
     },
     "optionalDependencies": {
-        "@fortles/dev": "workspace:*"
+        "@fortles/dev": "workspace:*",
+        "@fortles/model": "workspace:*"
     }
 }

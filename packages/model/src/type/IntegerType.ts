@@ -13,7 +13,7 @@ export class IntegerType extends Type<number, IntegerTypeConfig>{
 
     public parse(input: string, error: ErrorReporter): number {
         let result = Number.parseInt(input);
-        if(result == NaN){
+        if(Number.isNaN(result)){
             if(input !== ""){
                 error.invalid();
             }

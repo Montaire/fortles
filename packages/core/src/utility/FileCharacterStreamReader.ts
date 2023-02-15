@@ -31,6 +31,11 @@ import * as Path from "path";
         }
         if(fs.readSync(this.fd, this.buffer)){
             let c = this.buffer.toString();
+            //Ignore windows \r
+            if(c === "\r"){
+                fs.readSync(this.fd, this.buffer);
+                c = this.buffer.toString();
+            }
             if(c === "\n"){
                 this.line++;
                 this.cursor = 0;

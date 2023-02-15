@@ -15,7 +15,7 @@ S
         return this.connection;
     }
 
-    protected entityConnectorMap = new Map<typeof Entity, EntityConnector>;
+    //protected entityConnectorMap = new Map<typeof Entity, EntityConnector>;
     
     abstract create(entityConnector: EntityConnector): void;
 

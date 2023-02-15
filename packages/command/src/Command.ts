@@ -346,8 +346,9 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      * It will be prented below the usage.
      * @param text The long description.
      */
-    public setManual(text: string){
+    public setManual(text: string): this{
         this.manual = text;
+        return this;
     }
     
     /**
@@ -363,8 +364,8 @@ export class Command<Config = {}> extends CommandBlock<{}>{
             this.commands.get(args[0]).run(args.splice(1));
             return;
         }
-        if(this.parent && !this.action){
-            this.print(Command.format("Sub command '" + this.getName() + "' needs an action!", ...this.style.error));
+        if(!this.action){
+            this.print(Command.format(this.getFullName() + " needs a command!", ...this.style.error));
             this.printHelp();
             return null;
         }

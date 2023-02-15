@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "dependencies": {
         "@fortles/model": "workspace:*",
-        "mysql2": "^2.3.3"
+        "mysql2": "^3.1.2"
     },
     "devDependencies": {
         "@fortles/test-utility": "workspace:*"
