@@ -1,6 +1,7 @@
 import assert from "assert";
 import { EntityDescriptor, integer, string, StringType } from "../src/index.js";
 import { TestUser } from "./model/index.js";
+import { ClassSerializer } from "../src/utlity/ClassSerializer.js";
 
 class TestUserExtended extends TestUser{
     @string()
@@ -38,10 +39,10 @@ describe("EntityDescriptor", function(){
         })
     });
 
-    it("Can be export to and from object", function(){
+    it("Can be serialized", function(){
         const entityDescriptor = EntityDescriptor.create(TestUser, "source/path.js");
-        const data = EntityDescriptor.toObject(entityDescriptor);
-        const imported = EntityDescriptor.fromObject(data);
+        const exported = ClassSerializer.serialize(entityDescriptor);
+        const imported = ClassSerializer.deserialize(exported);
         //Base entity only needed for building up the descriptors, for finding the base class.
         //When loading, it is possible that the base class is altered, so it should be ignored in this test.
         entityDescriptor.baseEntityType = null;

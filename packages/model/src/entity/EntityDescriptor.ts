@@ -1,9 +1,10 @@
 import { Entity, Type } from "../index.js";
+import { ClassSerializer, Exportable, ExportedData } from "../utlity/ClassSerializer.js";
 
 /**
  * The largest set of the entities, it ucludes all connection, and extensions.
  */
-export default class EntityDescriptor{
+export default class EntityDescriptor implements Exportable{
     baseEntityType: typeof Entity;
     baseName: string;
     typeMap: Map<string, Type<any, any>>;
@@ -14,6 +15,7 @@ export default class EntityDescriptor{
         this.typeMap = new Map(typeMap);
         this.sourceMap = sourceMap;
         this.baseEntityType = baseType;
+        ClassSerializer.register(EntityDescriptor);
     }
 
     public append(entityType: typeof Entity, source: string = null){
@@ -46,6 +48,8 @@ export default class EntityDescriptor{
             this.baseEntityType = entityType;
             this.baseName = entityType.name;
         }
+        //Register entity to the serializer
+        ClassSerializer.register(entityType);
     }
 
     public getName(): string{
@@ -58,19 +62,18 @@ export default class EntityDescriptor{
         return new this(entityType.name, entityType.getTypeMap(), sourceMap, entityType);
     }
 
-    public static toObject(entityDescriptor: EntityDescriptor): object{
+    public export(): object{
         return {
-            name: entityDescriptor.baseName,
-            typeMap: Array.from(entityDescriptor.typeMap.entries())
-                .map(([key, value]) => [key, Type.toObject(value)]),
-            sourceMap: Array.from(entityDescriptor.sourceMap.entries()),
+            baseName: this.baseName,
+            typeMap: Array.from(this.typeMap.entries())
+                .map(([key, value]) => [key, ClassSerializer.export(value)]),
+            sourceMap: Array.from(this.sourceMap.entries()),
         }
     }
 
-    public static fromObject(data: {[key: string]: any}): EntityDescriptor{
-        return new EntityDescriptor(
-            data.name, 
-            new Map(data.typeMap.map(([key, value]) => [key, Type.fromObject(value)])), 
-            new Map(data.sourceMap));
+    public import(data: ExportedData): void{
+        this.baseName = data.baseName, 
+        this.typeMap = new Map(data.typeMap.map(([key, value]) => [key, ClassSerializer.import(value)])), 
+        this.sourceMap = new Map(data.sourceMap);
     }
 }

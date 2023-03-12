@@ -1,4 +1,4 @@
-import { Type, TypeUtility } from "./index.js";
+import { EntityFieldDecorator, Type, TypeUtility } from "./index.js";
 import { Entity } from "../index.js";
 import ErrorReporter from "../ErrorReporter.js";
 
@@ -22,7 +22,7 @@ export class IntegerType extends Type<number, IntegerTypeConfig>{
         return result;
     }
 
-    constructor(name: string, config: IntegerTypeConfig = {}){
+    constructor(name: string | symbol, config: IntegerTypeConfig = {}){
         super(name, config);
         if(config.min){
             this.addValidation(x => x >= config.min ? null : "Should not be less than "+config.min);
@@ -33,8 +33,8 @@ export class IntegerType extends Type<number, IntegerTypeConfig>{
     }
 }
 
-export function integer(config?: IntegerTypeConfig): PropertyDecorator {
-    return function(target: Entity, propertyKey: string): void{
-        TypeUtility.setType(target, propertyKey,  new IntegerType(propertyKey, config));
+export function integer(config?: IntegerTypeConfig): EntityFieldDecorator {
+    return function(target: Entity, context: ClassFieldDecoratorContext): void{
+        TypeUtility.setType(target, context.name,  new IntegerType(context.name, config));
     };
 }

@@ -1,13 +1,11 @@
 import { Entity, ErrorReporter, TypeUtility } from "../index.js";
-import * as types from "../type/index.js"
+import { ClassSerializer, Exportable, ExportedData } from "../utlity/ClassSerializer.js";
 
-export type EntityPropertyDecorator = (target: Entity, propertyKey: string | symbol) => void;
-
+export type EntityFieldDecorator = (target: Entity, context: ClassFieldDecoratorContext) => void;
 /**
  * Callable, that returns null on success, and the error message on fail.
  */
 export type Validation<T> = (value: T) => string | null
-
 /**
  * - Validation
  * - Conversion (serialization, deserialization, sql->extendable)
@@ -15,7 +13,7 @@ export type Validation<T> = (value: T) => string | null
  */
 
 
-export abstract class Type<T,C>{
+export abstract class Type<T,C> implements Exportable{
 
     protected propertyMap = new Map<string, Object>();
 
@@ -26,15 +24,15 @@ export abstract class Type<T,C>{
     protected config: C;
 
     public constructor(
-        name: string, 
+        name: string | symbol, 
         config: C, propertyMap: Map<string, Object> = new Map<string, Object>(), 
         validations: Validation<T>[] = []
     ){
-        this.name = name;
+        this.name = name.toString();
         this.config = config;
         this.propertyMap = propertyMap;
         this.validations = validations;
-
+        ClassSerializer.register(this.constructor as any);
     }
 
     public setProperty(name: string, value: Object = null): void{
@@ -90,27 +88,23 @@ export abstract class Type<T,C>{
         return errors;
     }
 
-    public static toObject(type: Type<any, any>): object{
+    public export(): ExportedData {
         return{
-            type: type.constructor.name,
-            name: type.name,
-            config: type.config,
-            propertyMap: Array.from(type.propertyMap.entries()),
-            validations: type.validations
+            type: this.constructor.name,
+            name: this.name,
+            config: this.config,
+            propertyMap: Array.from(this.propertyMap.entries()),
+            //TODO: investigetae vether validators should be exported.
+            //validations: this.validations
         };
     }
 
-    public static fromObject(data: {[key:string]: any}): Type<any, any>{
-        let typeConstructor = types[data.type];
-        if(!typeConstructor){
-            throw new Error("Unknow type '" + data.type + "'. TODO: Use types from other places as well!");
-        }
-        return new typeConstructor(
-            data.name,
-            data.config,
-            new Map(data.propertyMap),
-            data.validations
-        );
+    public import(source: ExportedData): void {
+        this.name = source.name;
+        this.config = source.config;
+        this.propertyMap = new Map(source.propertyMap);
+        //TODO: investigetae vether validators should be exported.
+        //this.validations = source.validations;
     }
 }
 
@@ -124,19 +118,19 @@ export enum TypeProperty{
     NULLABLE = "nullable"
 }
 
-export function readonly(target: Entity, propertyKey: string|Symbol, descriptor: PropertyDescriptor) {
+export function readonly(value: Entity, context: ClassFieldDecoratorContext, descriptor: PropertyDescriptor) {
     descriptor.writable = false;
     return descriptor;
 }  
 
-export function primaryKey(target: Entity, propertyKey: string): void{
-    TypeUtility.setTypeProperty(target, propertyKey as string, TypeProperty.PRIMARY_KEY);
+export function primaryKey(value: Entity, context: ClassFieldDecoratorContext): void{
+    TypeUtility.setTypeProperty(value, context.name, TypeProperty.PRIMARY_KEY);
 }
 
-export function generated(target: Entity, propertyKey: string) {
-    TypeUtility.setTypeProperty(target, propertyKey as string, TypeProperty.GENERATED);
+export function generated(value: Entity, context: ClassFieldDecoratorContext) {
+    TypeUtility.setTypeProperty(value, context.name, TypeProperty.GENERATED);
 }
 
-export function nullable(target: Entity, propertyKey: string) {
-    TypeUtility.setTypeProperty(target, propertyKey, TypeProperty.NULLABLE);
+export function nullable(value: Entity, context: ClassFieldDecoratorContext) {
+    TypeUtility.setTypeProperty(value, context.name, TypeProperty.NULLABLE);
 }

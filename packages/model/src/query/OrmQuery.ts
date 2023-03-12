@@ -29,8 +29,8 @@ export default class OrmQuery<T> extends Query<T>{
     }
 }
 
-export function orm(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    let original = descriptor.value.toString();
+export function orm(value: Function, context: ClassMethodDecoratorContext) {
+    let original = value.toString();
     original = original.replace('where(x => x.id == id)', 'where(x => x.id == id,[id])');
     eval("descriptor.value = function " + original);
 }

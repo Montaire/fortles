@@ -1,4 +1,4 @@
-import { Type, EntityPropertyDecorator, TypeUtility } from "./index.js";
+import { Type, EntityFieldDecorator, TypeUtility } from "./index.js";
 import { Entity } from "../index.js";
 import ErrorReporter from "../ErrorReporter.js";
 
@@ -13,13 +13,13 @@ export class StringType extends Type<string, StringTypeConfig>{
         return input;
     }
 
-    constructor(name: string, config: StringTypeConfig = {length: 80}){
+    constructor(name: string | symbol, config: StringTypeConfig = {length: 80}){
         super(name, config);
     }
 }
 
-export function string(config?: StringTypeConfig): EntityPropertyDecorator {
-    return function(target: Entity, propertyKey: string): void{
-        TypeUtility.setType(target, propertyKey, new StringType(propertyKey, config));
+export function string(config?: StringTypeConfig): EntityFieldDecorator {
+    return function(target: Entity, context: ClassFieldDecoratorContext): void{
+        TypeUtility.setType(target, context.name, new StringType(context.name, config));
     };
 }

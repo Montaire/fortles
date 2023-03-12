@@ -3,6 +3,7 @@ import { pathToFileURL } from "url";
 import { Entity, EntityDescriptor, ModelChange, Type } from "./index.js";
 import { createReadStream, createWriteStream, mkdirSync, readdirSync } from "fs";
 import { Readable, Stream, Writable } from "stream";
+import { ClassSerializer } from "./utlity/ClassSerializer.js";
 
 /**
  * Describes how the model looks.
@@ -107,7 +108,7 @@ export default class ModelDescriptor{
 
     public static toObject(modelDescriptor: ModelDescriptor): object{
         return {
-            entityDescriptors: modelDescriptor.entityDescriptors.map(x => EntityDescriptor.toObject(x)),
+            entityDescriptors: modelDescriptor.entityDescriptors.map(x => ClassSerializer.export(x)),
             sources: Array.from(modelDescriptor.sources)
         };
     }
@@ -149,7 +150,7 @@ export default class ModelDescriptor{
 
     public static fromObject(data: {[key: string]: any}): ModelDescriptor{
         return new ModelDescriptor(
-            data.entityDescriptors.map(x => EntityDescriptor.fromObject(x)), 
+            data.entityDescriptors.map(x => ClassSerializer.import(x)), 
             data.sources);
     }
 

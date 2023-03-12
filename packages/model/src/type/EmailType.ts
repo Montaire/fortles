@@ -1,4 +1,4 @@
-import { Type, EntityPropertyDecorator, TypeUtility } from "./index.js";
+import { Type, EntityFieldDecorator, TypeUtility } from "./index.js";
 import { Entity } from "../index.js";
 import { StringType } from "./StringType.js";
 import ErrorReporter from "../ErrorReporter.js";
@@ -14,7 +14,7 @@ export class EmailType extends StringType{
         return input;
     }
     
-    constructor(name: string, config: EmailTypeConfig = {length: 80}){
+    constructor(name: string | symbol, config: EmailTypeConfig = {length: 80}){
         super(name, {
             length: config.length,
             fixed: false
@@ -22,8 +22,8 @@ export class EmailType extends StringType{
     }
 }
 
-export function email(config?: EmailTypeConfig): EntityPropertyDecorator {
-    return function(target: Entity, propertyKey: string): void{
-        TypeUtility.setType(target, propertyKey, new EmailType(propertyKey, config));
+export function email(config?: EmailTypeConfig): EntityFieldDecorator {
+    return function(value: Entity, context: ClassFieldDecoratorContext): void{
+        TypeUtility.setType(value, context.name, new EmailType(context.name, config));
     };
 }

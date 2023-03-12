@@ -11,7 +11,7 @@
     "declaration": true,  
     //"baseUrl": "./src/",
     //"incremental": true,
-    "experimentalDecorators": true,
+    //"experimentalDecorators": true,
     "noImplicitOverride": true,
     "skipLibCheck": true
     /*"plugins": [
