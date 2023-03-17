@@ -33,12 +33,12 @@ export const enum TemplateShardStates{
 
 export default class TemplateShard implements Shard{
     
-	protected parent: TemplateShard;
-	protected shardName: string
+	protected parent: TemplateShard|null;
+	protected shardName: string|null = null;
     protected shards: Shard[] = [];
     protected namespace = 'f';
 
-    constructor(parent: TemplateShard){
+    constructor(parent: TemplateShard|null){
         this.parent = parent;
         this.shards = [];
     }
@@ -47,7 +47,7 @@ export default class TemplateShard implements Shard{
         let shard = new WriteableShard();
         let state = TemplateShardStates.TEXT;
         let evalBraclet = 1;
-        let c: string;
+        let c: string|null;
         while ((c = reader.read()) !== null) {
             switch (state) {
                 case TemplateShardStates.TEXT:
@@ -254,9 +254,9 @@ export default class TemplateShard implements Shard{
     }
 
     prepareControl(reader: CharacterStreamReader): void{
-        let c: string;
+        let c: string|null;
         let controlName = '';
-        let cursorPosition: ControlShardCursorPosition;
+        let cursorPosition: ControlShardCursorPosition = ControlShardCursorPosition.ENDED;
         parser:
         while ((c = reader.read()) !== null) {
             switch(c){
@@ -287,11 +287,13 @@ export default class TemplateShard implements Shard{
      * @return Returns true if the shard is ended.
      */
      end(reader: CharacterStreamReader, shard: WriteableShard): boolean {
-         for (let i=0; i < this.shardName.length; i++) {
-             let c = reader.read();
-             if (c === null || this.shardName[i] !== c) {
-                shard.write(this.shardName.substring(0, i));
-                return false;
+        if(this.shardName){
+            for (let i=0; i < (this.shardName.length); i++) {
+                let c = reader.read();
+                if (c === null || this.shardName[i] !== c) {
+                    shard.write(this.shardName.substring(0, i));
+                    return false;
+                }
             }
         }
         let c = reader.read();
@@ -311,13 +313,13 @@ export default class TemplateShard implements Shard{
         }
     }
 
-    public getParent(): TemplateShard {
+    public getParent(): TemplateShard|null {
         return this.parent;
     }
 
-    public getTemplate(): Template {
-        let shard: TemplateShard = this;
-        while (shard.getParent() != null) {
+    public getTemplate(): Template|null {
+        let shard: TemplateShard|null = this;
+        while (shard?.getParent() != null) {
             shard = shard.getParent();
         }
         if (shard instanceof Template) {
@@ -332,7 +334,7 @@ export default class TemplateShard implements Shard{
      *
      * @return Name of the template
      */
-    public getTemplateName(): string {
+    public getTemplateName(): string|null {
         let template = this.getTemplate();
         if (template != null) {
             return template.getName();
@@ -341,7 +343,7 @@ export default class TemplateShard implements Shard{
         }
     }
     
-    public getApplication(): Application{
+    public getApplication(): Application|null{
         let template = this.getTemplate();
         if (template != null) {
             return template.getApplication();

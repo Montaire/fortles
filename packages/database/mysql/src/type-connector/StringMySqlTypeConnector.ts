@@ -12,7 +12,7 @@ export default class StringMySqlTypeConnector extends TypeConnector<StringType, 
         let config = this.type.getConfig();
         let definition = "";
 
-        if(config.length < 255){
+        if(!config.length || config.length < 255){
             if(config.fixed){
                 definition += "VARCHAR";
             }else{

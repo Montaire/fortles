@@ -6,10 +6,13 @@ import * as http from "http";
 export default class HotReloadService extends Service<EventSourceService> implements Addon{
 
     protected clients: http.ServerResponse[] = [];
-    protected application: Application;
+    protected application!: Application;
 
     public override async prepare(application: Application): Promise<void> {
         this.application = application;
+        if(!import.meta.resolve){
+            throw new Error("import.meta.resolve is not enabled on your system.");
+        }
         let asset = new ScriptAsset(await import.meta.resolve("../asset/hot-reload.js"));
         application.getService(AssetService).add(asset);
     }
@@ -33,7 +36,7 @@ export default class HotReloadService extends Service<EventSourceService> implem
      * @param path Path to the template file.
      * @param name Name of the template. If emtpy ot will be calculated from tzhe file name.
      */
-    public reloadTemplate(path: string, name: string = null){
+    public reloadTemplate(path: string, name: string|null = null){
         let engine = this.application.getRenderEngines().get("text/html") as HtmlRenderEngine;
         let factory = engine.getTemplateFactory();
         factory.createTemplate(path);
@@ -45,21 +48,21 @@ export default class HotReloadService extends Service<EventSourceService> implem
      * @param blockPath The block path or empty to reload the main block
      */
     public reloadBlock(blockPath: string = ""){
-        this.container.send("reload-block", blockPath);
+        this.getContainer()?.send("reload-block", blockPath);
     }
 
     /**
      * Reloads the whole document without navigation.
      */
     public reloadAll(){
-        this.container.send("reload-all");
+        this.getContainer()?.send("reload-all");
     }
 
     /**
      * Full page reload.
      */
     public reload(){
-        this.container.send("reload");
+        this.getContainer()?.send("reload");
     }
 
     /**
@@ -71,10 +74,10 @@ export default class HotReloadService extends Service<EventSourceService> implem
     public reloadAsset(asset: Asset){
         switch(asset.mime){
             case MimeType.JS: 
-                this.container.send("reload-script", asset.path);
+                this.getContainer()?.send("reload-script", asset.path);
                 break;
             case MimeType.CSS: 
-                this.container.send("reload-style", asset.path);
+                this.getContainer()?.send("reload-style", asset.path);
                 break;
             default:
                 this.reload();
@@ -86,7 +89,7 @@ export default class HotReloadService extends Service<EventSourceService> implem
      * Hangs up the open connection for each client.
      */
     public dropClients(){
-        this.container.dropClients();
+        this.getContainer()?.dropClients();
     }
 
     public getPriority(): number {

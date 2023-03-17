@@ -7,7 +7,7 @@ export enum MimeType{
 }
 
 export class Mime{
-    public static detect(path: string): MimeType{
+    public static detect(path: string): MimeType | null{
         let extension = extname(path);
         switch(extension){
             case ".css": return MimeType.CSS;

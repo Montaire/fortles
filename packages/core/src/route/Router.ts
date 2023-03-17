@@ -22,7 +22,7 @@ export default class Router {
      * @param template Name of the template. If null the controller's location and name will be used.
      * @returns The created route.
      */
-    public createRoute(name: string, template: string = null): Route {
+    public createRoute(name: string, template: string|null = null): Route {
         let route = new Route(name, template || this.controller.getPath(), this.controller);
         this.routes.push(route);
         return route;
@@ -33,7 +33,7 @@ export default class Router {
      * @param template Name of the template. If null, the controller's location and name will be used.
      * @returns The created route.
      */
-    public createDefaultRoute(template: string = null): Route{
+    public createDefaultRoute(template: string|null = null): Route{
         if(template){
             template = '.' + template;
         }else{
@@ -56,7 +56,7 @@ export default class Router {
         return route;
     }
 
-    public getRoute(request: Request): Route {
+    public getRoute(request: Request): Route|null {
         for (let route of this.routes) {
             if (route.match(request)) {
                 return route;

@@ -25,6 +25,6 @@ export default class Model{
     }
 
     query<T>(type: new() => T): Query<T>{
-        return null;
+        throw Error("Not implemented");
     }
 }

@@ -17,7 +17,7 @@ export default class TestUtility{
      * Renders a template to a string.
      * @param template 
      */
-    public static renderTemplate(template: Template, response: TestResponse = null): string{
+    public static renderTemplate(template: Template, response: TestResponse|null = null): string{
         let request = new TestRequest();
         let renderEngine = new TestRenderEngine();
         response = response || new TestResponse();
@@ -36,7 +36,7 @@ export default class TestUtility{
         return this.renderTemplate(this.createTemplate(content));
     }
 
-    public static createServerApplication(mainController: Controller = null, templates: Template[] = []): TestApplication{
+    public static createServerApplication(mainController: Controller|null = null, templates: Template[] = []): TestApplication{
         let platform = new TestServerPlatform();
 
         if(!mainController){
@@ -54,7 +54,7 @@ export default class TestUtility{
         return application;
     }
     
-    public static simulateRequest(request: TestRequest, mainController: Controller = null, templates: Template[] = []): TestResponse{
+    public static simulateRequest(request: TestRequest, mainController: Controller|null = null, templates: Template[] = []): TestResponse{
         let application = TestUtility.createServerApplication(mainController, templates);
         let response = new TestResponse(application.getMainController());
         application.dispatch(request, response);

@@ -7,7 +7,7 @@ import { Locale } from "./localization/index.js"
  */
 export default abstract class Response{
     protected controller: Controller;
-    protected template = 'Main';
+    protected template: string|null = 'Main';
     protected data = {};
 
     /**
@@ -35,7 +35,7 @@ export default abstract class Response{
      * Gets the name of the template
      * @returns
      */
-    getTemplateName(): string{
+    getTemplateName(): string|null{
         return this.template;
     }
 
@@ -43,11 +43,11 @@ export default abstract class Response{
      * Sets the name of the template
      * @param template 
      */
-    setTemplateName(template: string): void{
+    setTemplateName(template: string|null): void{
         this.template = template;
     }
 
-    getData(): Object{
+    getData(): {[key: string]: any}{
         return this.data;
     }
 
@@ -55,11 +55,11 @@ export default abstract class Response{
         return this.controller;
     }
 
-    getLocale(): Locale{
+    getLocale(): Locale | null{
         return null;
     }
 
-    getStream(): stream.Writable{
+    getStream(): stream.Writable | null{
         return null;
     }
 
@@ -67,7 +67,7 @@ export default abstract class Response{
 
     }
 
-    setBlockPath(path: string){
+    setBlockPath(path: string | null){
         
     }
 

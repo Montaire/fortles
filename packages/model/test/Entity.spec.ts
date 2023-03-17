@@ -7,12 +7,12 @@ class TestEntity extends Entity{
     public id: number = 0;
 
     @string()
-    public name: string;
+    public name?: string;
 }
 
 describe("Entity", function(){
 
-    let entity: TestEntity = null;
+    let entity: TestEntity|null = null;
     before("Create new Entity", function(){
         entity = new TestEntity();
     });

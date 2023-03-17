@@ -6,7 +6,7 @@ import { Entity, Query, Connection, EntityConnector } from "../index.js";
 export abstract class ModelConnector<C extends Connection>{
 
     protected connection: C;
-S
+
     constructor(connection: C){
         this.connection = connection;
     }
@@ -24,6 +24,6 @@ S
     abstract alter(entityConnector: EntityConnector): void;
 
     query<T>(entityType: new() => T): Query<T>{
-        return null;
+        throw Error("Not Implemented");
     }
 }

@@ -1,3 +1,4 @@
 {
-    "name": "@fortles/addon.i18n"
+    "name": "@fortles/addon.i18n",
+    "type": "module"
 }

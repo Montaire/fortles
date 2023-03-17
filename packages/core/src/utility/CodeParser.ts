@@ -13,9 +13,9 @@ enum CodeParserState{
 export default class CodeParser{
 
     constructor(reader: CharacterStreamReader, flags: CodeParserTypes){
-        let c:string = null;
+        let c: string | null;
         let word = "";
-        let state:CodeParserState = null;
+        let state: CodeParserState | null = null;
 
         while(c = reader.read()){
             switch(c){
@@ -32,9 +32,9 @@ export class CallParameterParser{
 
 export class ArrowFunctionParser{
     constructor(reader: CharacterStreamReader){
-        let c:string = null;
+        let c: string | null;
         let word = "";
-        let state:CodeParserState = null;
+        let state : CodeParserState | null = null;
 
         while(c = reader.read()){
             

@@ -5,7 +5,7 @@ export default class Controller {
 
     protected router: Router = new Router(this);
     protected path: string;
-    protected blockPath: string;
+    protected blockPath?: string;
 
     public constructor() {
         let className = this.constructor.name;
@@ -71,11 +71,11 @@ export default class Controller {
      * Returns the position in the tree.
      * @return The path.
      */
-    public getBlockPath(target?: string): string {
+    public getBlockPath(target?: string): string | null {
         if(target){
             return this.blockPath ? this.blockPath + "-" + target : target;
         }else{
-            return this.blockPath;
+            return this.blockPath ?? null;
         }
     }
 }

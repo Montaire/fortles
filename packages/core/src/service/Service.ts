@@ -2,11 +2,11 @@ import { Request, Response, Application, app, ServiceContainer, DefaultServiceCo
 
 export type RequestEventListener = (request: Request, response: Response, path: string, partialPath: string|null) => void
 
-export type ServiceType<T extends Service = Service> = new() => T;
+export type ServiceType<T extends Service = Service> = {new(): T};
 
-export default class Service<SC extends ServiceContainer<any> | null = ServiceContainer>{
+export default class Service<SC extends ServiceContainer<any> = ServiceContainer<any>>{
 
-    protected container: SC;
+    protected container?: SC;
 
     /**
      * Do preparation logic here.
@@ -32,7 +32,7 @@ export default class Service<SC extends ServiceContainer<any> | null = ServiceCo
      * @param listener This function will be called on request. Default `null`.
      */
     protected listenOnFullPath(path: string, useRoot: boolean = false): void{
-        this.container.listenOnFullPath(path, useRoot, this);
+        this.container?.listenOnFullPath(path, useRoot, this);
     }
 
     /**
@@ -44,21 +44,21 @@ export default class Service<SC extends ServiceContainer<any> | null = ServiceCo
      * @param listener This function will be called on request. Default `null`.
      */
     protected listenOnPartialPath(path: string): void{
-        this.container.listenOnPartialPath(path, this);
+        this.container?.listenOnPartialPath(path, this);
     }
 
     /**
      * @returns The parent container.
      */
     public getContainer(): SC|null{
-        return this.container;
+        return this?.container ?? null;
     }
 
     public setContainer(container: SC){
         this.container = container;
     }
 
-    public getContainerType(): new() => SC | null{
+    public getContainerType(): (new() => SC) | null{
         return DefaultServiceContainer as any;
     }
 

@@ -26,9 +26,12 @@ export default class MySqlMigrator{
         }
     };
 
-    protected rowSize: number;
+    /**
+     * Max size of a row in sql, not used yet
+     */
+    protected rowSize: number|null = null;
 
-    constructor(connection){
+    constructor(connection: any){
         this.connection = connection;
     }
 
@@ -66,7 +69,9 @@ export default class MySqlMigrator{
         //If entity has no primary key defined add the Connections default one.
         if(!entityType.getPrimaryKeys()){
             let pk = this.config.defaultPrimaryKey;
-            rows.push("\t `id` " + pk.type + " " + pk.modifier);
+            if(pk){
+                rows.push("\t `id` " + pk.type + " " + pk.modifier);
+            }
         }
         for(const [fieldName, type] of entityType.getTypeMap()){
             if(type instanceof AssociationType){
@@ -78,7 +83,7 @@ export default class MySqlMigrator{
                         primaryKeys = ["id"];
                     }
                     for(const keyName of primaryKeys){
-                        let row = "\t`" + fieldName + "`" + this.createPrimitiveType(target.getType(keyName));
+                        let row = "\t`" + fieldName + "`" + this.createPrimitiveType(target.getType(keyName) as Type<any, any>);
                         if(appendForeignKeys){
                             row += "REFERENCES " + target.name + "(" + keyName +")";
                             rows.push(row);
@@ -122,7 +127,7 @@ export default class MySqlMigrator{
     protected createStringType(type: StringType, modifier: boolean = true): string{
         let result = "";
         let length = type.getConfig().length ?? 80;
-        if(!length || length < this.config.charLength){
+        if(!length || length < (this.config.charLength ?? 255)){
             result += type.getConfig().fixed ? " CHAR" : " VARCHAR";
         }else{
             result += " TEXT";

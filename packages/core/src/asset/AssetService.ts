@@ -2,11 +2,12 @@ import { app, ContentAvareRenderEngine, NotFoundError,  Request, Response, Servi
 import Path from "path";
 import fs from "fs";
 import DefaultServiceContainer from "../service/DefaultServiceContainer.js";
+import internal from "stream";
 
 export default class AssetService extends Service implements Iterable<Asset>{
 
     protected map = new Map<string, Asset>();
-    protected application: Application;
+    protected application?: Application;
 
     public override prepare(applcation: Application): void {
         this.application = applcation;
@@ -14,10 +15,13 @@ export default class AssetService extends Service implements Iterable<Asset>{
     }
 
     public override onRequest(request: Request, response: Response): void {
-        let mime: string = null;
+        let mime: string|null = null;
         let path = request.getPath();
+        if(!path){
+            throw new NotFoundError("The path is invalid");
+        }
         if(this.map.has(path)){
-            let asset = this.map.get(path);
+            let asset = this.map.get(path) as Asset;
             path = asset.source;
             mime = asset.mime;
         }else{
@@ -35,14 +39,14 @@ export default class AssetService extends Service implements Iterable<Asset>{
         }
         if(response.getStream()){ 
             let stream = fs.createReadStream(path);
-            stream.pipe(response.getStream());
+            stream.pipe(response.getStream() as internal.Writable);
         }else{
             let data = fs.readFileSync(path);
             response.write(data);
         }
     }
     
-    public resolveMime(extension: string): string{
+    public resolveMime(extension: string): string|null{
         switch(extension){
             case 'css': return 'text/css';
             case 'js' : return 'text/javascript';
@@ -62,9 +66,11 @@ export default class AssetService extends Service implements Iterable<Asset>{
             this.listenOnFullPath(asset.path, asset.useRoot);
         }
         //add to the corresponding render engines.
-        for(const engine of this.application.getRenderEngines().values()){
-            if(engine instanceof ContentAvareRenderEngine){
-                engine.addAssetToContent(asset);
+        if(this.application){
+            for(const engine of this.application.getRenderEngines().values()){
+                if(engine instanceof ContentAvareRenderEngine){
+                    engine.addAssetToContent(asset);
+                }
             }
         }
         return this;
@@ -72,7 +78,7 @@ export default class AssetService extends Service implements Iterable<Asset>{
 
     
     
-    public override getContainerType(): new () => DefaultServiceContainer {
+    public override getContainerType(): (new() => ServiceContainer<any>) | null {
         return null;
     }
 

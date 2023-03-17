@@ -96,7 +96,7 @@ export abstract class CommandBlock<C = any>{
      * @returns At which position the processing stopped. (position + arguments consumed)
      */
     public process(args: string[], position: number, config: any):number{
-        return null;
+        return 0;
     }
 }
 
@@ -106,8 +106,8 @@ export abstract class CommandBlock<C = any>{
  * Name of the corresponding Attribute, Flag, or Option also can be set.
  */
 export class CommandError extends Error{
-    protected blockName: string;
-    protected blockMessage: string;
+    protected blockName: string | null;
+    protected blockMessage: string | null;
     /**
      * Creates a new error to show in the command line.
      * @param message Error message.
@@ -117,8 +117,8 @@ export class CommandError extends Error{
      */
     constructor(message: string, blockName?: string, blockMessage?: string, options?: ErrorOptions){
         super(message, options);
-        this.blockMessage = blockMessage;
-        this.blockName = blockName;
+        this.blockMessage = blockMessage ?? null;
+        this.blockName = blockName ?? null;
     }
     /**
      * Returns the error message for the Attribute, Flag or Option
@@ -145,7 +145,7 @@ export class FlagCommandBlock extends CommandBlock<FlagConfig>{
     }
 
     public override process(args: string[], position: number, config: FlagConfig): number {
-        config[this.getName()] = true;
+        (config as {[key:string]: any})[this.getName()] = true;
         return position;
     }
 }
@@ -187,7 +187,7 @@ export class OptionCommandBlock<T> extends VariableCommandBlock<T, OptionConfig<
     }
     public override process(args: string[], position: number, config: OptionConfig<T>): number {
         position++;
-        config[this.getName()] = this.parseVariable(args[position]);
+        (config as {[key:string]: any})[this.getName()] = this.parseVariable(args[position]);
         return position;
     }
 }
@@ -195,7 +195,7 @@ export class OptionCommandBlock<T> extends VariableCommandBlock<T, OptionConfig<
 export class ArgumentCommandBlock<T> extends VariableCommandBlock<T, ArgumentConfig<T>>{
     static override title = "Arguments";
     public override process(args: string[], position: number, config: ArgumentConfig<T>): number {
-        config[this.getName()] = this.parseVariable(args[position]);
+        (config as {[key:string]: any})[this.getName()] = this.parseVariable(args[position]);
         return position;
     }
     public override getFullName(): string {
@@ -213,25 +213,30 @@ export class ArgumentCommandBlock<T> extends VariableCommandBlock<T, ArgumentCon
 /**
  * A console command.
  */
-export class Command<Config = {}> extends CommandBlock<{}>{
+export class Command<Config = {}> extends CommandBlock<Config>{
     static override title = "Commands";
     protected commands = new Map<string, Command>();
     protected flags = new Map<string, CommandBlock<FlagConfig>>();
     protected options = new Map<string, CommandBlock<OptionConfig<any>>>();
     protected arguments: CommandBlock<ArgumentConfig<any>>[] = [];
+    protected blocksByType: {[key: string]: Map<string, CommandBlock>} = {
+        commands: new Map<string, Command>(),
+        flags: new Map<string, CommandBlock<FlagConfig>>(),
+        options: new Map<string, CommandBlock<OptionConfig<any>>>()
+    };
     protected blocks =  new Map<string, CommandBlock>();
-    protected descriptionText: string = null;
-    protected parent: Command;
-    protected title: string;
-    protected manual: string;
-    protected action: (config: Config) => void;
+    protected descriptionText: string|null = null;
+    protected parent: Command|null;
+    protected title: string|null = null;
+    protected manual: string|null = null;
+    protected action: ((config: Config) => void) | null = null;
     protected isEmptyFails: boolean = false;
     protected isEmptyCallable: boolean = false;
 
     /**
      * Style of the different messages.
      */
-    public style = {
+    public style: {[key: string]: CommandFormat[]} = {
         title: [CommandFormat.Underscore, CommandFormat.Bright],
         block: [CommandFormat.Bright],
         description: [],
@@ -240,17 +245,17 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         options:  [CommandFormat.FgBlue],
         arguments:  [CommandFormat.FgGreen],
         error: [CommandFormat.Bright, CommandFormat.FgRed]
-    }
+    };
     
     /**
      * Types and the classes of the different building blocks.
      */
-    public blockTypes = {
+    public blockTypes: {[key: string]: any} = {
         commands: Command,
         flags: FlagCommandBlock,
         options: OptionCommandBlock,
         arguments: ArgumentCommandBlock
-    }
+    };
     
     /**
      * Creates a new Command.
@@ -258,8 +263,8 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      * @param parent If sub command parent also needed.
      * @param help Auto inject the --help -h flag.
      */
-    constructor(name: string, parent: Command = null, help: boolean = true){
-        super(name, "", {});
+    constructor(name: string, parent: Command<any>|null = null, help: boolean = true){
+        super(name, "", {} as Config);
         this.parent = parent;
         if(help){
             this.addFlag("help", "Show this help.", "h");
@@ -273,7 +278,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      */
     public addCommand(name: string, description?: string): Command{
         let command = new Command(name, this);
-        this.commands.set(name, command);
+        this.blocksByType.commands.set(name, command);
         if(description){
             command.setDescription(description);
         }
@@ -289,7 +294,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      */
     public addOption<Name extends string, Type = String>(name: Name, description: string, config: OptionConfig<Type> = {}): Command<Config & {[name in Name]: Type}>{
         const block = new OptionCommandBlock<Type>(name, description, config)
-        this.options.set(name, block);
+        this.blocksByType.options.set(name, block);
         this.blocks.set((name.length == 1 ? "-" : "--") +  name, block);
         if(config.short){
             this.blocks.set("-" + config.short, block);
@@ -305,9 +310,9 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      * @param short Short name of the flag. Eg: `-n`
      * @returns Self for chaining.
      */
-    public addFlag<Name extends string>(name: Name, description: string, short: string = null): Command<Config & {[name in Name]: Boolean}>{
+    public addFlag<Name extends string>(name: Name, description: string, short?: string): Command<Config & {[name in Name]: Boolean}>{
         const block = new FlagCommandBlock(name, description, {short: short});
-        this.flags.set(name, block);
+        this.blocksByType.flags.set(name, block);
         this.blocks.set((name.length == 1 ? "-" : "--") +  name, block);
         if(short){
             this.blocks.set("-" + short, block);
@@ -361,13 +366,14 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      * @param args Argument to run on. Leave null.
      * @returns Returns the cofiguration or null if the command can not be run.
      */
-    public run(args: string[] = null): Config|null{
+    public run(args: string[] | null = null): Config|null{
         if(!args){
             args = process.argv.splice(2);
         }
-        if(this.commands.has(args[0])){
-            this.commands.get(args[0]).run(args.splice(1));
-            return;
+        if(this.blocksByType.commands.has(args[0])){
+            const command = this.blocksByType.commands.get(args[0]) as Command;
+            command.run(args.splice(1));
+            return null;
         }
         if((!this.isEmptyCallable || this.parent) && !this.action){
             if(this.isEmptyFails){
@@ -382,9 +388,9 @@ export class Command<Config = {}> extends CommandBlock<{}>{
         try{
             config = this.processArguments(args);
         }catch(error){
-            this.print(Command.format(error, ...this.style.error));
+            this.print(Command.format(error as string, ...this.style.error));
             if(error instanceof CommandError && error.getBlockName()){
-                errors.set(error.getBlockName(), error.getBlockMessage());
+                errors.set((error as CommandError).getBlockName() ?? "Something", error.getBlockMessage());
             }
             config = null;
         }
@@ -424,7 +430,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
                 }catch(error){
                     if(error instanceof CommandError && error.getBlockName() && error.getBlockMessage()){
                         this.print(Command.format(error.message, ...this.style.error));
-                        errors.set(error.getBlockName(), error.getBlockMessage());
+                        errors.set(error.getBlockName() as string, error.getBlockMessage());
                     }else{
                         throw error;
                     }
@@ -461,8 +467,10 @@ export class Command<Config = {}> extends CommandBlock<{}>{
                 if(!this.blocks.has(pargs[i])){
                     throw new CommandError("Flag or Option '" + pargs[i]  + "' is not known.");
                 }
-                let block = this.blocks.get(pargs[i]);
-                i = block.process(pargs, i, config);
+                const block = this.blocks.get(pargs[i]);
+                if(block){
+                    i = block.process(pargs, i, config);
+                }
             }else{
                 let argument = this.arguments[argumentNumber];
                 i = argument.process(pargs, i, config);
@@ -485,7 +493,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
             this.print(this.manual);
         }
         for(const blockName in this.blockTypes){
-            for(const block of this[blockName].values()){
+            for(const block of this.blocksByType[blockName].values()){
                 if(block.getConfig().required){
                     let blockValue: string;
                     if(block instanceof ArgumentCommandBlock){
@@ -507,7 +515,7 @@ export class Command<Config = {}> extends CommandBlock<{}>{
                             ...this.style[blockName]); 
                 }
             }
-            if(this[blockName].size > 0){
+            if(this.blocksByType[blockName].size > 0){
                 const required = blockName == "commands" && !this.action;
                 usage += " " + Command.format(
                     (required ? "<" : "[") + 
@@ -528,10 +536,10 @@ export class Command<Config = {}> extends CommandBlock<{}>{
      * @param blockName 
      * @param errors 
      */
-    protected printHelpFor(blockName: string, errors?: Map<string, string>){
-        const blockType = this.blockTypes[blockName] as typeof CommandBlock;
-        if(this[blockName].length || this[blockName].size){
-            const blockList = this[blockName].values() as IterableIterator<CommandBlock>;
+    protected printHelpFor(blockName: string, errors: Map<string, string> = new Map()){
+        const blockType = this.blockTypes[blockName];
+        if(this.blocksByType[blockName].size){
+            const blockList = this.blocksByType[blockName].values() as IterableIterator<CommandBlock>;
             this.print(Command.format(blockType.title, ...this.style.title))
             for(const block of blockList){
                 const format = this.style.block.concat(this.style[blockName]);

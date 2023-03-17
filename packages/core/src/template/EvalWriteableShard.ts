@@ -4,8 +4,8 @@ import { Request, Response, RuntimeError } from "../index.js";
 
 export default class EvalWriteableShard extends WriteableShard {
 
-    protected compiledScript: Function = null;
-    protected fieldName: string = null;
+    protected compiledScript?: Function;
+    protected fieldName?: string;
     protected sourcePath: string;
 
     /**
@@ -39,13 +39,13 @@ export default class EvalWriteableShard extends WriteableShard {
     }
     
     public override render(engine: RenderEngine, request:Request, response:Response): void {
-        if(this.fieldName != null){
+        if(this.fieldName){
             let data = response.getData()[this.fieldName];
             if(data){
                 response.write(data);
             }
         }else{
-            response.write(this.compiledScript.call(response.getData()));
+            response.write(this.compiledScript?.call(response.getData()));
         }
     }
 }

@@ -1,6 +1,6 @@
 export default class EventHandler<E extends (...args: any) => any>{
 
-    eventListener: E[];
+    eventListener: E[] = [];
 
     add(eventListener: E): void{
         this.eventListener.push(eventListener);

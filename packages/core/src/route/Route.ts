@@ -10,11 +10,11 @@ export default class Route {
     protected path: string;
     protected routeBlocks = new Map<string, Block>();
     protected parameters = new Map<string, Type<any, any>>()
-    protected templateName: string;
-    protected name: string;
-    protected controller: Controller;
+    protected templateName: string | null;
+    protected name: string | null;
+    protected controller: Controller|null;
 
-    constructor(name: string, template: string, controller: Controller) {
+    constructor(name: string | null, template: string | null, controller: Controller|null) {
         this.name = name;
         this.path = '/' + (name || '');
         this.templateName = template;
@@ -29,8 +29,8 @@ export default class Route {
      * @param template Template of the block. Can be null for self.
      * @return Self for chaining functions.
      */
-    public addController(block: string, controller: Controller, template: string = null): this{
-        controller.setBlockPath(this.controller.getBlockPath(block));
+    public addController(block: string, controller: Controller, template: string|null = null): this{
+            controller.setBlockPath(this.controller?.getBlockPath(block) ?? "");
         this.routeBlocks.set(block, new Block(controller, template || this.templateName));
         return this;
     }
@@ -53,7 +53,7 @@ export default class Route {
      * @param type type of the parameter. This field is not required, if the entity has this parameter.
      * @returns self
      */
-    public addParameter(name: string, type: Type<any, any> = null){
+    public addParameter(name: string, type: Type<any, any>|null = null){
         if(type == null && this.controller instanceof ModelAwareController && this.controller.getModel().hasType(name)){
             type = this.controller.getModel().getType(name);
         }
@@ -70,8 +70,8 @@ export default class Route {
      * @param name Name of the targeted block in the view
      * @return Controller and the requred template
      */
-    getBlock(name: string): Block {
-        return this.routeBlocks.get(name);
+    getBlock(name: string): Block | null {
+        return this.routeBlocks.get(name) ?? null;
     }
 
     getBlocks(): Map<string, Block> {
@@ -95,11 +95,11 @@ export default class Route {
         return false;
     }
     
-    public getTemplate(): string {
+    public getTemplate(): string|null {
         return this.templateName;
     }
 
-    public getName(): string {
+    public getName(): string|null {
         return this.name;
     }
 

@@ -18,16 +18,16 @@ export default class DevelopmentServer{
         watchFramework: false,
         watchProject: true,
     };
-    protected config: DevelopmentServerConfig;
+    protected config?: DevelopmentServerConfig;
 
-    protected watcher: chokidar.FSWatcher;
-    protected childProcess: ChildProcess;
+    protected watcher?: chokidar.FSWatcher;
+    protected childProcess?: ChildProcess;
 
     public async start(config: DevelopmentServerConfig){
         this.config = Object.assign({}, this.defaultConfig, config);
         let watchPaths: string[] = [];
         //1. Watch file changes
-        if(this.config .watchProject){
+        if(this.config.watchProject){
             watchPaths.push(process.cwd());
         }
         if(this.config.watchFramework){
@@ -44,7 +44,7 @@ export default class DevelopmentServer{
         this.run();
         
         process.on("exit", (code) => {
-            this.childProcess.send({action: "exit", data: code});
+            this.childProcess?.send({action: "exit", data: code});
         });
     }
 
@@ -71,7 +71,7 @@ export default class DevelopmentServer{
         }
 
         if(Path.extname(path) == ".html"){
-            this.childProcess.send({
+            this.childProcess?.send({
                 action: "reload",
                 data: path
             });
@@ -79,7 +79,7 @@ export default class DevelopmentServer{
         }
 
         if(path.includes("asset")){
-            this.childProcess.send({
+            this.childProcess?.send({
                 action: "reload", 
                 data: path
             });

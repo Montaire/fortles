@@ -5,7 +5,7 @@ import * as url from "url";
 export class Asset{
     source: string;
     path: string;
-    mime: string;
+    mime: string|null;
     useRoot: boolean;
     /**
      * 
@@ -13,7 +13,7 @@ export class Asset{
      * @param path Path where the client can access the file.
      * @param mime Mime of the file.
      */
-    constructor(source: string, path:string = null, mime: string = null, useRoot = false){
+    constructor(source: string, path:string|null = null, mime: string|null = null, useRoot = false){
         if(source.startsWith("file:")){
             source = url.fileURLToPath(source);
         }
@@ -24,13 +24,13 @@ export class Asset{
     }
 }
 
-export class SourceAsset extends Asset{
-    hasMap: boolean;
-    place: RenderEngineContentPlace;
+export abstract class SourceAsset extends Asset{
+    hasMap: boolean = false;
+    place: RenderEngineContentPlace = RenderEngineContentPlace.AFTER_CONTENT;
 }
 
 export class ScriptAsset extends SourceAsset{
-    constructor(source:string, path:string = null, hasMap = true, place = RenderEngineContentPlace.AFTER_CONTENT){
+    constructor(source:string, path: string|null = null, hasMap = true, place = RenderEngineContentPlace.AFTER_CONTENT){
         source = Path.normalize(source);
         if(!path){
             path = "script/" + Path.basename(source);
@@ -42,7 +42,7 @@ export class ScriptAsset extends SourceAsset{
 }
 
 export class StyleAsset extends SourceAsset{
-    constructor(source:string, path:string = null, hasMap = true, place = RenderEngineContentPlace.HEADER){
+    constructor(source:string, path:string|null = null, hasMap = true, place = RenderEngineContentPlace.HEADER){
         if(!path){
             path = "style/" + Path.basename(source);
         }

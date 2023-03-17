@@ -3,7 +3,7 @@ import { TestRequest, TestResponse } from "@fortles/test-utility";
 
 export default class TestServerPlatform extends Platform{
     
-    application: Application;
+    application!: Application;
     
     public prepare(application: Application): void {
         this.application = application;

@@ -38,7 +38,7 @@ export abstract class TemplateRenderEngine extends ContentAvareRenderEngine{
 
     protected templates = new TemplateFactory();
 
-    public getTemplate(name: string): Template{
+    public getTemplate(name: string): Template|null{
         return this.templates.get(name);
     }
 

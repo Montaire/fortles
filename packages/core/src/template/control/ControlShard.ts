@@ -20,7 +20,7 @@ export const enum ControlShardCursorPosition{
 
 export default abstract class ControlShard extends TemplateShard {
 
-    protected attributes = new Map<string, string>();
+    protected attributes = new Map<string, string|null>();
 
     protected processAttributes: string[] = [];
 
@@ -54,7 +54,7 @@ export default abstract class ControlShard extends TemplateShard {
      * @return False if self closing.
      */
     prepareAttributes(reader: CharacterStreamReader): boolean {
-        let c: string;
+        let c: string|null;
         let state = ControlShardStates.VOID;
         let key = "";
         let value = "";
@@ -167,7 +167,7 @@ export default abstract class ControlShard extends TemplateShard {
         return false;
     }
 
-    protected setAttribute(name: string, value: string = null, isSingleQuote: boolean){
+    protected setAttribute(name: string, value: string|null = null, isSingleQuote: boolean){
         if(!this.processAttributes.length || this.processAttributes.includes(name)){
             this.attributes.set(name, value);
         }else{

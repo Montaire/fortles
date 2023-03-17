@@ -1,5 +1,5 @@
 import { IntegerType, StringType, Type } from "@fortles/model";
-import { MySqlMigratorConfig } from "../MySqlMigrator";
+import { MySqlMigratorConfig } from "../MySqlMigrator.js";
 
 
 export default abstract class MySqlMigratorTask{
@@ -40,8 +40,8 @@ export default abstract class MySqlMigratorTask{
 
     protected stringType(type: StringType, modifier: boolean = true): string{
         let result = "";
-        let length = type.getConfig().length ?? 80;
-        if(!length || length < this.config.charLength){
+        let length = type.getConfig().length;
+        if(!length || length < (this.config.charLength ?? 255)){
             result += type.getConfig().fixed ? " CHAR" : " VARCHAR";
         }else{
             result += " TEXT";

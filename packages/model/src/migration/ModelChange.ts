@@ -1,4 +1,4 @@
-import EntityDescriptor from "./EntityDescriptor";
+import { EntityDescriptor } from "../index.js";
 
 export enum ModelChangeType{
     CREATE,
@@ -8,8 +8,8 @@ export enum ModelChangeType{
 
 export class ModelChange{
 
-    readonly from: EntityDescriptor;
-    readonly to: EntityDescriptor;
+    readonly from: EntityDescriptor|null;
+    readonly to: EntityDescriptor|null;
 
     constructor(from: EntityDescriptor | null, to: EntityDescriptor | null){
         this.from = from;
@@ -30,7 +30,8 @@ export class ModelChange{
         return new ModelChange(this.to, this.from);
     }
 
-    public getEntityDescriptor(){
-        return this.to || this.from;
+    public getEntityDescriptor(): EntityDescriptor{
+        //At least one of them should exist
+        return this.to || this.from as EntityDescriptor;
     }
 }

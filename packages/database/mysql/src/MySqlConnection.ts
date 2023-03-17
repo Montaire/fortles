@@ -11,7 +11,7 @@ export default class MySqlConnection extends Connection{
         this.connection = mysql.createPool(config).promise();
     }
 
-    async execute(query: string, data: [] = null): Promise<any>{
+    async execute(query: string, data: []|null = null): Promise<any>{
         return this.connection.execute(query, data);
     }
 }

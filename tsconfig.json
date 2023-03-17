@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     //"resolveJsonModule": true,
     "esModuleInterop": true,
     "module": "ESNext",
-    //"outDir": "dist",
     "sourceMap": true,
     "rootDir": "packages",
     "declaration": true,  
-    //"baseUrl": "./src/",
-    //"incremental": true,
-    //"experimentalDecorators": true,
     "noImplicitOverride": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": true
     /*"plugins": [
       { "transform": "./dst/model/typescript-plugin/TranspilerQueryPlugin.js", "type": "raw" }
     ]*/

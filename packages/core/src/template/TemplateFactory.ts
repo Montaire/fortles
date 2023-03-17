@@ -6,9 +6,9 @@ export default class TemplateFactory{
 
 	protected templates: Map<string, Template> = new Map();
 
-    protected roots: {path: string, prefix:string}[] = [];
+    protected roots: {path: string, prefix:string|null}[] = [];
 
-    public build(path: string, prefix:string = null){
+    public build(path: string, prefix:string|null = null){
         this.roots.push({
             path: path,
             prefix: prefix
@@ -22,7 +22,7 @@ export default class TemplateFactory{
         }
     }
 
-    public transverseFolder(rootFolder: string, prefix:string = null, callback: (path: string, name: string) => void){
+    public transverseFolder(rootFolder: string, prefix: string|null = null, callback: (path: string, name: string) => void){
         let files = fs.readdirSync(rootFolder, {withFileTypes: true});
         for(let file of files){
             let name = prefix ? prefix + '/' + file.name : file.name;
@@ -36,7 +36,7 @@ export default class TemplateFactory{
         }
     }
 
-    public createTemplate(path:string, name:string = null){
+    public createTemplate(path:string, name:string|null = null){
         let reader = new FileCharacterStreamReader(path);
         if(!name){
             let result = path.match(/.+?template[\\\/](.+)\.[^/.]+$/);
@@ -48,11 +48,14 @@ export default class TemplateFactory{
         this.set(new Template(reader, name));
     }
 
-    public get(name: string): Template{
-        return this.templates.get(name);
+    public get(name: string): Template|null{
+        return this.templates.get(name) ?? null;
     }
 
     public set(template: Template): void{
-        this.templates.set(template.getName(), template);
+        if(!template.getName()){
+            throw new Error("Template has no name.");
+        }
+        this.templates.set(template.getName() as string, template);
     }
 }

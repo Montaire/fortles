@@ -5,14 +5,14 @@ import { Controller, Comperable, ChildResponse, Renderable, TemplateRenderEngine
  */
 export default class RouteBlock implements Comperable, Renderable{
 
-    private templateName: string;
-    private controller: Controller;
+    private templateName: string | null;
+    private controller: Controller | null;
     /**
      * Creates a new block.
      * @param controller for the block
      * @param template to render the data.
      */
-    constructor(controller: Controller,  template: string) {
+    constructor(controller: Controller | null,  template: string | null) {
         this.controller = controller;
         this.templateName = template;
     }
@@ -21,11 +21,11 @@ export default class RouteBlock implements Comperable, Renderable{
         return this.controller == other.controller && this.templateName == other.templateName;
     }
 
-    public getTemplate(): string{
+    public getTemplate(): string | null{
         return this.templateName;
     }
 
-    public getController(): Controller{
+    public getController(): Controller | null{
         return this.controller;
     }
 
@@ -36,7 +36,7 @@ export default class RouteBlock implements Comperable, Renderable{
             this.controller.render(engine, request, routedResponse);
         }else if(this.templateName){
             let template = engine.getTemplate(this.templateName);
-            template.render(engine, request, response);
+            template?.render(engine, request, response);
         }
     }
 }

@@ -5,6 +5,7 @@ import { TemplateRenderEngine, Controller, Request, RequestType, Route,
     Block, Response, Middleware, Addon, Platform, ServiceManager, Service, 
     ServiceType, RenderEngine, DummyRequest, Plugin, NotFoundError, Registrable } from "./index.js";
 import Locale from "./localization/Locale.js";
+import RouteBlock from "./route/Block.js";
 
 /**
  * Application is the main entrnance point.
@@ -19,7 +20,7 @@ export class Application{
     protected plugins = new Map<new() => Plugin, Plugin>();
     protected serviceManager: ServiceManager;
     protected static instance: Application;
-    protected model: Model = null;
+    protected model: Model|null = null;
 
     /**
      * Creates a new application for the given platform.
@@ -54,6 +55,10 @@ export class Application{
             }
         }
         let engine = this.getRenderEngine(request);
+        if(!engine){
+            response.close();
+            return;
+        }
         switch(request.getType()){
             case RequestType.FULL:
                 engine.beforeRender(request, response);
@@ -74,11 +79,11 @@ export class Application{
     }
 
     protected renderBlock(engine: RenderEngine, request: Request, response: Response): void{
-        let controller = this.mainController;
-        let block: Block = null;
+        let controller: Controller|null = this.mainController;
+        let block: Block|null = null;
         if(request.getBlockPath()){
             for(const name of request.getBlockPath().split("-")){
-                block = controller.getRouter().getRoute(request).getBlock(name);
+                block = controller?.getRouter().getRoute(request)?.getBlock(name) ?? null;
                 if(!block){
                     throw new NotFoundError("Block not found");
                 }
@@ -90,7 +95,7 @@ export class Application{
         if(block && engine instanceof TemplateRenderEngine){
             response.setBlockPath(request.getBlockPath());
             block.render(engine, request, response);
-        }else{
+        }else if(controller){
             response.setBlockPath(controller.getBlockPath());
             controller.render(engine, request, response);
         }
@@ -98,8 +103,8 @@ export class Application{
 
     protected renderPartial(engine: RenderEngine, request: Request, response: Response): void{
         let oldRequest = new DummyRequest(request.getReferer());
-        let newRoute: Route;
-        let oldRoute: Route;
+        let newRoute: Route|null;
+        let oldRoute: Route|null;
         let newController = this.mainController;
         let oldController = this.mainController;
         for(const name of request.getBlockPath().split("-")){
@@ -107,10 +112,10 @@ export class Application{
             oldRoute = oldController.getRouter().getRoute(oldRequest);
             if(newRoute != oldRoute){
                 //Check for block changes.
-                let changedBlock: Block = null;
-                let changedBlockName: string;
-                for(const [key, block] of newRoute.getBlocks()){
-                    if(!oldRoute.hasBlock(key) || !block.compare(oldRoute.getBlock(key))){
+                let changedBlock: Block|null = null;
+                let changedBlockName: string|null = null;
+                for(const [key, block] of newRoute?.getBlocks() ?? []){
+                    if(!oldRoute?.hasBlock(key) || !block.compare(oldRoute.getBlock(key) as RouteBlock)){
                         //If more than one block differs, render the whole controller.
                         if(changedBlock){
                             changedBlock = null;
@@ -122,7 +127,7 @@ export class Application{
                 }
                 //If only one block changed render only that one.
                 if(changedBlock && engine instanceof TemplateRenderEngine){
-                    response.setBlockPath(newController.getBlockPath(changedBlockName));
+                    response.setBlockPath(newController.getBlockPath(changedBlockName as string));
                     changedBlock.render(engine, request, response);
                 }else{
                     response.setBlockPath(newController.getBlockPath());
@@ -130,20 +135,23 @@ export class Application{
                 }
                 return;
             }
-            let newBlock = newRoute.getBlock(name);
-            let oldBlock = oldRoute.getBlock(name);
-            newController = newBlock.getController();
-            oldController = oldBlock.getController();
+            const newBlock = newRoute?.getBlock(name);
+            const oldBlock = oldRoute?.getBlock(name);
+            if(newBlock){
+                newController = newBlock.getController() as Controller;
+            }
+            if(oldBlock){
+                oldController = oldBlock.getController() as Controller;
+            }
         }
-        return null;
     }
 
     /**
      * Gets the render engine from the mime type
      * @param request 
      */
-    public getRenderEngine(request: Request): RenderEngine{
-        return this.renderEngines.get(request.getMime());
+    public getRenderEngine(request: Request): RenderEngine|null{
+        return this.renderEngines.get(request.getMime()) ?? null;
     }
 
     /**
@@ -190,10 +198,15 @@ export class Application{
     /**
      * Gets a service.
      * @see {@link ServiceManager}
-     * @returns An instance of the Service, or null if not loaded or not exists.
+     * @returns An instance of the Service.
+     * @throws Error if service does not exists.
      */
-    public getService<T extends Service>(serviceType: ServiceType<T>): T | null{
-        return this.serviceManager.get(serviceType) as T;
+    public getService<T extends Service<any>>(serviceType: {new(): T}): T{
+        const service = this.serviceManager.get(serviceType) as T;
+        if(!service){
+            throw new Error("Service '" + serviceType.name + "'not loaded or not exists");
+        }
+        return service;
     }
 
     /**
@@ -249,10 +262,10 @@ export class Application{
      * @param platform Platform to run on
      * @returns An application promise
      */
-    public static async create(platform: Platform = null, path: string = null): Promise<Application>{
+    public static async create(platform: Platform, path: string|null = null): Promise<Application>{
         let rootPath = process.cwd();
         let pathUrl = pathToFileURL(path ? resolve(rootPath, path) : rootPath);
-        let mainController: Controller = null;
+        let mainController: Controller|null = null;
         let configUrl = pathUrl + "/src/config.js";
         let config = null;
 
@@ -275,7 +288,7 @@ export class Application{
             }
         }
 
-        let application = new Application(platform, mainController);
+        let application = new Application(platform, mainController as Controller);
 
         if(config && config.default){
             config.default(application);

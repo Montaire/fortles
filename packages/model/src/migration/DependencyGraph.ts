@@ -18,7 +18,7 @@ export default class DependencyGraph<T>{
 }
 
 class DependencyGraphItem<T>{
-    item: T;
-    parents: T;
-    childrens: T;
+    item?: T;
+    parents?: T;
+    childrens?: T;
 };

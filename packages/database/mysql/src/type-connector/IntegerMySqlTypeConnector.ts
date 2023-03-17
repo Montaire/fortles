@@ -16,21 +16,24 @@ export default class IntegerMySqlTypeConnector extends TypeConnector<IntegerType
         if(config.unsigned){
             definition += "UNSIGNED ";
         }
-        switch(config.bytes){
-            case 1:
-                definition += "TINYINT";
-                break;
-            case 2:
-                definition += "SMALLINT";
-                break;
-            case 3:
-                definition += "MEDIUMINT";
-                break;
-            case 4:
-                definition += "INT";
-                break;
-        }
-        if(4 < config.bytes && config.bytes <= 8){
+        if(!config.bytes){
+            definition += "INT";
+        }else if(config.bytes <= 4){
+            switch(config.bytes){
+                case 1:
+                    definition += "TINYINT";
+                    break;
+                case 2:
+                    definition += "SMALLINT";
+                    break;
+                case 3:
+                    definition += "MEDIUMINT";
+                    break;
+                case 4:
+                    definition += "INT";
+                    break;
+            }
+        }else if(config.bytes <= 8){
             definition += "BIGINT";
         }else{
             throw new Error(config.bytes + " bytes not supported for '" + this.type.getName()) + "'";

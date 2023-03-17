@@ -8,7 +8,7 @@ export default class StringCharacterStreamReader implements CharacterStreamReade
     constructor(text: string){
         this.text = text;
     }
-    read(): string {
+    read(): string | null {
         if(this.index < this.text.length){
             let character = this.text[this.index++];
             if(character == "\n"){

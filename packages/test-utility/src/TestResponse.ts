@@ -3,8 +3,8 @@ import { Controller, Response } from "@fortles/core";
 export default class TestResponse extends Response{
 
     public body = '';
-    public target: string = null;
-    public blockPath: string = null;
+    public target?: string;
+    public blockPath?: string;
 
     constructor(controller = new Controller()){
         super(controller);

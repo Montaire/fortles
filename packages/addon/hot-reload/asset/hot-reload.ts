@@ -1,29 +1,31 @@
 
 if(Fortles.eventSource) {
 
-    Fortles.eventSource.addEventListener("reload", e => {
+    Fortles.eventSource.addEventListener("reload", (e : MessageEvent) => {
         location.reload();
     });
 
-    Fortles.eventSource.addEventListener("reload-block", e => {
+    Fortles.eventSource.addEventListener("reload-block", (e : MessageEvent) => {
         Fortles.loadBlock(e.data);
     });
 
-    Fortles.eventSource.addEventListener("reload-all", async e => {
+    Fortles.eventSource.addEventListener("reload-all", async (e : MessageEvent) => {
         document.open();
         document.write(await (await fetch(location.href)).text());
         document.close();
     });
 
-    Fortles.eventSource.addEventListener("reload-script", e => {
+    Fortles.eventSource.addEventListener("reload-script", (e : MessageEvent) => {
         let element = document.querySelector("script[src='"+ e.data +"']");
         let newElement = document.createElement("script");
-        element.after(newElement);
-        newElement.remove();
+        if(element){
+            element.after(newElement);
+            newElement.remove();
+        }
         //element.parentElement.replaceChild(newElement, element);
     });
 
-    Fortles.eventSource.addEventListener("reload-style", e => {
+    Fortles.eventSource.addEventListener("reload-style", (e : MessageEvent) => {
         let element = document.querySelector("link[href='"+ e.data +"']");
         let newElement = document.createElement("link");
         newElement.rel = "stylesheet";

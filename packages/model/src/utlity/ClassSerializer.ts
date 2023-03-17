@@ -16,7 +16,7 @@ export class ClassSerializer{
      * For deserialization, the constructor is needed to restore the data.
      * @param classType Consturctor of the class to deserialize.
      */
-    public static register(classType: new () => any){
+    public static register(classType: {new (...args: any[]): any}){
         if(!this.classMap.has(classType.name)){
             this.classMap.set(classType.name, classType);
         }
@@ -77,7 +77,7 @@ export class ClassSerializer{
     public static export(instance: Exportable | object): ExportedObject {
         let data = {};
         if((instance as Exportable).export){
-            data = (instance as Exportable).export();
+            data = (instance as any).export();
         }else{
             Object.assign(data, instance);
         }

@@ -40,7 +40,7 @@ export default class ModelDescriptor{
      * @param source Source of the entities
      * @returns 
      */
-    protected buildDescriptors(entityTypes: typeof Entity[], source: string = null): void{
+    protected buildDescriptors(entityTypes: typeof Entity[], source: string|null = null): void{
         for(const entityType of entityTypes){
             for(const descriptor of this.entityDescriptors){
                 if(descriptor.baseEntityType && new entityType instanceof descriptor.baseEntityType){
@@ -84,7 +84,7 @@ export default class ModelDescriptor{
      */
     public getChanges(fromModelDescriptor: ModelDescriptor): ModelChange[]{
         let current = Object.fromEntries(this.entityDescriptors.map(x => [x.getName(), x]));
-        let pervious = Object.fromEntries(fromModelDescriptor.entityDescriptors.map(x => [x.getName(), x]));
+        let pervious = Object.fromEntries(fromModelDescriptor.entityDescriptors.map(x => [x.getName(), x])) as {[key: string]: EntityDescriptor};
         let changes: ModelChange[] = [];
         let change: ModelChange;
         for(const key in current){
@@ -133,9 +133,11 @@ export default class ModelDescriptor{
         for(const entityDescriptor of modelDescriptor.getEntityDescriptors()){
             let sources = new Set(entityDescriptor.sourceMap.values());
             for(const source of sources){
-                const readStream = createReadStream(source);
-                readStream.pipe(writeStream);
-                readStream.destroy();
+                if(source){
+                    const readStream = createReadStream(source);
+                    readStream.pipe(writeStream);
+                    readStream.destroy();
+                }
             }
         }
         writeStream.end();
@@ -149,9 +151,9 @@ export default class ModelDescriptor{
     }
 
     public static fromObject(data: {[key: string]: any}): ModelDescriptor{
-        return new ModelDescriptor(
-            data.entityDescriptors.map(x => ClassSerializer.import(x)), 
-            data.sources);
+        return new ModelDescriptor(/*
+            data.entityDescriptors.map((x: EntityDescriptor) => ClassSerializer.import(x)), 
+            data.sources*/);
     }
 
     /**

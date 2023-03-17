@@ -6,11 +6,10 @@ import { RenderEngine, TemplateRenderEngine } from "../../render/index.js";
 export default class BlockControlShard extends ControlShard {
 
     /** Name of the current block */
-    protected name: string;
-    protected openingTag: string;
+    protected name: string|null = null;
 
     public initialize(reader: CharacterStreamReader): void {
-        this.name = this.attributes.get("name");
+        this.name = this.attributes.get("name") ?? null;
     }
 
     /**
@@ -24,7 +23,7 @@ export default class BlockControlShard extends ControlShard {
         let controller = response.getController();
         let router = controller.getRouter();
         let route = router.getRoute(request);
-        if (route != null) {
+        if (route != null && this.name) {
             let block = route.getBlock(this.name) || router.getDefaultRoute().getBlock(this.name);
             if (block != null) {
                 response.write('<div id="f-block-' + controller.getBlockPath(this.name) + '">');

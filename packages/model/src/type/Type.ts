@@ -1,7 +1,7 @@
 import { Entity, ErrorReporter, TypeUtility } from "../index.js";
 import { ClassSerializer, Exportable, ExportedData } from "../utlity/ClassSerializer.js";
 
-export type EntityFieldDecorator = (target: Entity, context: ClassFieldDecoratorContext) => void;
+export type EntityFieldDecorator = (value: any, context: ClassFieldDecoratorContext) => void;
 /**
  * Callable, that returns null on success, and the error message on fail.
  */
@@ -15,7 +15,7 @@ export type Validation<T> = (value: T) => string | null
 
 export abstract class Type<T,C> implements Exportable{
 
-    protected propertyMap = new Map<string, Object>();
+    protected propertyMap = new Map<string, any>();
 
     protected validations: Validation<T>[] = [];
 
@@ -35,7 +35,7 @@ export abstract class Type<T,C> implements Exportable{
         ClassSerializer.register(this.constructor as any);
     }
 
-    public setProperty(name: string, value: Object = null): void{
+    public setProperty(name: string, value: Object|null = null): void{
         this.propertyMap.set(name, value);
     }
 
@@ -118,19 +118,19 @@ export enum TypeProperty{
     NULLABLE = "nullable"
 }
 
-export function readonly(value: Entity, context: ClassFieldDecoratorContext, descriptor: PropertyDescriptor) {
+export function readonly(value: any, context: ClassFieldDecoratorContext, descriptor: PropertyDescriptor) {
     descriptor.writable = false;
     return descriptor;
 }  
 
-export function primaryKey(value: Entity, context: ClassFieldDecoratorContext): void{
+export function primaryKey(value: any, context: ClassFieldDecoratorContext): void{
     TypeUtility.setTypeProperty(value, context.name, TypeProperty.PRIMARY_KEY);
 }
 
-export function generated(value: Entity, context: ClassFieldDecoratorContext) {
+export function generated(value: any, context: ClassFieldDecoratorContext) {
     TypeUtility.setTypeProperty(value, context.name, TypeProperty.GENERATED);
 }
 
-export function nullable(value: Entity, context: ClassFieldDecoratorContext) {
+export function nullable(value: any, context: ClassFieldDecoratorContext) {
     TypeUtility.setTypeProperty(value, context.name, TypeProperty.NULLABLE);
 }

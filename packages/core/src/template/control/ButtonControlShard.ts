@@ -7,10 +7,10 @@ import { randomBytes } from 'crypto'
 
 export default class AnchorControlShard extends ControlShard {
 
-    protected action: string;
+    protected action: string|null = null;
 
     public initialize(reader: CharacterStreamReader): void {
-        this.action = this.attributes.get("action");
+        this.action = this.attributes.get("action") ?? null;
     }
 
     public getName(): string {

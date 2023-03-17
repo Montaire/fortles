@@ -7,5 +7,5 @@ export default class TestEntity extends Entity{
     public id: number = 0;
 
     @string()
-    public name: string;
+    public name?: string;
 }

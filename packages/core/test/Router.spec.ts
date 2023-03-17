@@ -26,14 +26,14 @@ describe("Router", function(){
     it("Default route is correct", function(){
         let request = new TestRequest('/');
         let route = router.getRoute(request);
-        assert.equal(route.getTemplate(), ".defaultTemplate", "Wrong template");
-        assert.equal(route.getBlock("block2").getTemplate(), "template2", "Wrong template for block");
+        assert.equal(route?.getTemplate(), ".defaultTemplate", "Wrong template");
+        assert.equal(route?.getBlock("block2")?.getTemplate(), "template2", "Wrong template for block");
     });
 
     it("Simple named route is correct", function(){
         let request = new TestRequest('/route1');
         let route = router.getRoute(request);
-        assert.equal(route.getTemplate(), "template1", "Wrong template");
-        assert.equal(route.getBlock("block1").getController().constructor.name, "TestController1", "Wrong controller routed to the block");
+        assert.equal(route?.getTemplate(), "template1", "Wrong template");
+        assert.equal(route?.getBlock("block1")?.getController()?.constructor.name, "TestController1", "Wrong controller routed to the block");
     });
 });

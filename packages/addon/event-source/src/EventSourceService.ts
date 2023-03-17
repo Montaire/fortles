@@ -1,13 +1,16 @@
-import { Addon, Application, AssetService, Request, Response, ScriptAsset, ServiceContainer } from "@fortles/core";
+import { Addon, Application, AssetService, DefaultServiceContainer, Request, Response, ScriptAsset, ServiceContainer } from "@fortles/core";
 import { ServerRequest, ServerResponse } from "@fortles/platform.server";
 import * as http from "http";
 
-export default class EventSourceService extends ServiceContainer implements Addon {
+export default class EventSourceService extends ServiceContainer<DefaultServiceContainer> implements Addon {
     
     protected clients: http.ServerResponse[] = [];
 
     public override async prepare(application: Application): Promise<void> {
         this.listenOnFullPath("event-source");
+        if(!import.meta.resolve){
+            throw Error("import.meta.resolve not enabled.");
+        }
         let asset = new ScriptAsset(await import.meta.resolve("../asset/event-source.js"));
         application.getService(AssetService).add(asset);
     }

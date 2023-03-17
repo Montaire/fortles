@@ -11,9 +11,9 @@ process.on("exit", (code) => {
     console.info("Development server stopped.");
 });
 
-let runtimeConfig = JSON.parse(argv.pop()) as DevelopmentServerConfig;
+let runtimeConfig = JSON.parse(argv.pop() ?? '{}') as DevelopmentServerConfig;
 
-let platform = new ServerPlatform(runtimeConfig.port, [process.cwd() + "/template"]);
+let platform = new ServerPlatform(runtimeConfig.port ?? 80, [process.cwd() + "/template"]);
 let application = await Application.create(platform, runtimeConfig.path);
 
 //Prepare watches
@@ -25,6 +25,9 @@ console.info("Development server started at http://localhost:" + runtimeConfig.p
 
 //Process messages form dev server
 process.on("message", (message: RunMessage) => {
+    if(!message.data){
+        return;
+    }
     switch(message.action){
         case "exit":
             console.info("Stopping development server.");

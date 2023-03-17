@@ -1,9 +1,9 @@
 export default class Locale{
-    constructor(language: string = null, region: string = null, guessed: boolean = false){
+    constructor(language: string|null = null, region: string|null = null, guessed: boolean = false){
         
     }
 
-    static get(locale: string): Locale{
+    static get(locale: string): Locale|null{
         return null;
     }
 }

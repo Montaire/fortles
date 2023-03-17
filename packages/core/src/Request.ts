@@ -1,38 +1,38 @@
-import { Locale } from "./localization";
-import { Cloneable } from "./utility";
+import { Locale } from "./localization/index.js";
+import { Cloneable } from "./utility/index.js";
 
 export default abstract class Request implements Cloneable{
     public abstract getType(): RequestType;
     public abstract getMime(): string;
-    public abstract getPath(): string;
-    public abstract getLocale(): Locale;
-    public abstract getReferer(): string;
+    public abstract getPath(): string|null;
+    public abstract getLocale(): Locale|null;
+    public abstract getReferer(): string|null;
     public abstract getBlockPath(): string;
     public abstract clone(): this;
 }
 
 export class DummyRequest extends Request {
     
-    path: string;
+    path: string | null;
     
-    constructor(path: string){
+    constructor(path: string|null){
         super();
         this.path = path;
     }
     
     public getType(): RequestType {
-        return null;
+        return RequestType.FULL;
     }
     public getMime(): string {
-        return null;
+        return 'application/text';
     }
-    public getPath(): string {
+    public getPath(): string|null {
         return this.path;
     }
-    public getLocale(): Locale {
+    public getLocale(): Locale|null{
         return null;
     }
-    public getReferer(): string {
+    public getReferer(): string|null {
         return null;
     }
     public getBlockPath(): string {

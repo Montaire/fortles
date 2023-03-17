@@ -1,16 +1,19 @@
 import { Entity, Type } from "../index.js";
-import { ClassSerializer, Exportable, ExportedData } from "../utlity/ClassSerializer.js";
+import { ClassSerializer, Exportable, ExportedData, ExportedObject } from "../utlity/ClassSerializer.js";
 
 /**
  * The largest set of the entities, it ucludes all connection, and extensions.
  */
 export default class EntityDescriptor implements Exportable{
-    baseEntityType: typeof Entity;
+    baseEntityType: typeof Entity | null;
     baseName: string;
     typeMap: Map<string, Type<any, any>>;
-    sourceMap: Map<string, string>;
+    sourceMap: Map<string, string|null>;
 
-    constructor(name: string = null, typeMap?: Map<string, Type<any, any>>, sourceMap: Map<string, string> = new Map<string, string>(), baseType: typeof Entity = null){
+    constructor(name: string, 
+        typeMap?: Map<string, Type<any, any>>, 
+        sourceMap: Map<string, string|null> = new Map<string, string>(), 
+        baseType: typeof Entity | null = null){
         this.baseName = name;
         this.typeMap = new Map(typeMap);
         this.sourceMap = sourceMap;
@@ -18,10 +21,10 @@ export default class EntityDescriptor implements Exportable{
         ClassSerializer.register(EntityDescriptor);
     }
 
-    public append(entityType: typeof Entity, source: string = null){
+    public append(entityType: typeof Entity, source: string|null = null){
         //Check if the given entityType is the base class of the current baseEntityType
         let isBase = false;
-        if(new this.baseEntityType instanceof entityType){
+        if(this.baseEntityType && new this.baseEntityType instanceof entityType){
             isBase = true;
         }
 
@@ -29,7 +32,7 @@ export default class EntityDescriptor implements Exportable{
             let override = true;
             if(this.typeMap.has(name)){
                 if(this.typeMap.get(name) !== type){
-                    throw new Error("Field '" + name + "' on '" + entityType.name + "' tries to overwrite '" + this.baseEntityType.name + "'");
+                    throw new Error("Field '" + name + "' on '" + entityType.name + "' tries to overwrite '" + this.baseEntityType?.name + "'");
                 }
                 if(!isBase){
                     override = false;
@@ -56,7 +59,7 @@ export default class EntityDescriptor implements Exportable{
         return this.baseName;
     }
 
-    public static create(entityType: typeof Entity, source: string = null){
+    public static create(entityType: typeof Entity, source: string|null = null){
         const typeMap = entityType.getTypeMap();
         const sourceMap = new Map(Array.from(typeMap, ([name, x]) => [name, source]));
         return new this(entityType.name, entityType.getTypeMap(), sourceMap, entityType);
@@ -73,7 +76,7 @@ export default class EntityDescriptor implements Exportable{
 
     public import(data: ExportedData): void{
         this.baseName = data.baseName, 
-        this.typeMap = new Map(data.typeMap.map(([key, value]) => [key, ClassSerializer.import(value)])), 
+        this.typeMap = new Map(data.typeMap.map(([key, value]: [string, ExportedObject]) => [key, ClassSerializer.import(value)])), 
         this.sourceMap = new Map(data.sourceMap);
     }
 }

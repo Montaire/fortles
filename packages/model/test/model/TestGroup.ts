@@ -3,8 +3,8 @@ import { TestUser } from "./TestUser.js";
 
 export class TestGroup extends Entity{
     @string()
-    name: string;
+    name!: string;
 
     @hasMany(() => TestUser)
-    users: TestUser[];
+    users?: TestUser[];
 }

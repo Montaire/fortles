@@ -5,7 +5,7 @@ import { ControlShard } from "../index.js";
 
 export default class AnchorControlShard extends ControlShard {
 
-    protected url: string;
+    protected url?: string;
 
     public initialize(reader: CharacterStreamReader): void {
         let canonicalUrl = this.attributes.get("href");
@@ -14,7 +14,9 @@ export default class AnchorControlShard extends ControlShard {
         }
         if(!canonicalUrl.includes(".")){
             let templatePrefix = this.getTemplateName();
-            templatePrefix = templatePrefix.substring(0, templatePrefix.lastIndexOf('.'));
+            if(templatePrefix){
+                templatePrefix = templatePrefix.substring(0, templatePrefix.lastIndexOf('.'));
+            }
             canonicalUrl = templatePrefix + "." + canonicalUrl;
         }
         this.url = canonicalUrl.substring(0, canonicalUrl.indexOf('(')).replace(".", "/");

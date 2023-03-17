@@ -9,14 +9,14 @@ export class TestUser extends Entity{
     @primaryKey
     @generated
     @uuid()
-    readonly id: Readonly<string>;
+    readonly id?: Readonly<string>;
 
     @email()
-    email: string;
+    email?: string;
 
     @withMany(() => TestGroup)
-    groups: TestGroup[];
+    groups?: TestGroup[];
 
     @string()
-    name: string;
+    name?: string;
 }

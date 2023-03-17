@@ -4,7 +4,7 @@ export default abstract class Query<T> implements Iterable<T>{
 
     abstract where(condition: (item: T) => boolean): this;
 
-    first(condition?: (item: T) => boolean): T{
+    first(condition?: (item: T) => boolean): T|null{
         if(condition){
             this.where(condition);
         }

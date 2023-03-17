@@ -24,13 +24,13 @@ describe("ModelDescriptor", function(){
         assert(testUserChange, "Create change for thrs user should exists.");
         assert.equal(testUserChange.getType(), ModelChangeType.CREATE);
         assert.equal(testUserChange.from, null);
-        assert.equal(testUserChange.to.baseEntityType, TestUser);
+        assert.equal(testUserChange.to?.baseEntityType, TestUser);
 
         const testGroupChange = changes.find(x => x.getEntityDescriptor().baseEntityType == TestUser);
         assert(testGroupChange, "Create change for thrs user should exists.");
         assert.equal(testGroupChange.getType(), ModelChangeType.CREATE);
         assert.equal(testGroupChange.from, null);
-        assert.equal(testGroupChange.to.baseEntityType, TestUser);
+        assert.equal(testGroupChange.to?.baseEntityType, TestUser);
     });
 
     it("Serializes and deserializes", async function(){

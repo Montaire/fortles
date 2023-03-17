@@ -15,7 +15,7 @@ export default class FormatControlShard extends ControlShard{
         if(this.shards.length == 1 && this.shards[0] instanceof WriteableShard){
             let textShard = this.shards[0];
             this.text = textShard.toString();
-            delete this.shards;
+            this.shards = [];
         }else{
             throw new InvalidTemplateError("A Format shard should contain only text", reader);
         }

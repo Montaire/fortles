@@ -28,7 +28,10 @@ export default class HtmlRenderEngine extends TemplateRenderEngine{
             if(!route){
                 throw new NotFoundError("Route not found");
             }
-            let template = this.templates.get(route.getTemplate());
+            if(!route.getTemplate()){
+                throw new Error('Template can not be found for "' + route.getName + '"');
+            }
+            let template = this.templates.get(route.getTemplate() as string);
             if(!template){
                 throw new Error('Template can not be found "' + route.getTemplate() + '"');
             }

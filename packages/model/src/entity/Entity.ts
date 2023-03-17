@@ -9,7 +9,7 @@ export class Entity{
         if(!this.modelInfoMap.has(this.name)){
             this.modelInfoMap.set(this.name, new EntityModelInfo());
         }
-        return this.modelInfoMap.get(this.name);
+        return this.modelInfoMap.get(this.name) as EntityModelInfo;
     }
 
     static getPrimaryKeys(): string[] | null{
@@ -20,8 +20,8 @@ export class Entity{
         }
     }
 
-    static getType(name: string): Type<any, any>{
-        return this.getModelInfo().typeMap.get(name);
+    static getType(name: string): Type<any, any> | null{
+        return this.getModelInfo().typeMap.get(name) ?? null;
     }
 
     static hasType(name: string): boolean{

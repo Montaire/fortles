@@ -4,7 +4,9 @@ export default class SitemapRenderEngine extends RenderEngine{
     public dispatch(request: Request, response: Response): void {
         let router = response.getController().getRouter();
         for(let route of router.getRoutes()){
-            this.render(route.getName(), response);
+            if(route.getName()){
+                this.render(route.getName() as string, response);
+            }
         }
     }
 

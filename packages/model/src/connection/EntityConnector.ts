@@ -42,6 +42,6 @@ export abstract class EntityConnector<E extends Entity = Entity>{
     abstract exportAlterDefinition(old: this): string
 
     public getName(): string{
-        return null;
+        return "nyeh";
     }
 }

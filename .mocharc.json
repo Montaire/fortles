@@ -4,6 +4,5 @@
     "spec": "./packages/**/test/*.spec.js",
     "watch-files": ".packages/**/*.js",
     "slow": "40",
-    "timeout": "1000",
-    "node-option": "allow-natives-syntax"
+    "timeout": "1000"
 }

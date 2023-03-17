@@ -3,14 +3,14 @@ import { Request, Response, Service, ServiceManager } from "../index.js";
 /**
  * A service contaner can hold multiple services, and runs the shared code.s
  */
-export default class ServiceContainer<SC extends ServiceContainer<any> | null = ServiceManager> extends Service<SC>{
+export default class ServiceContainer<SC extends ServiceContainer<any> = ServiceContainer<any>> extends Service<SC>{
 
     protected fullPathMap = new Map<string, Service>();
     protected partialPathMap = new Map<string, Service>();
 
     public override onRequest(request: Request, response: Response, path: string, partialPath: string): void {
         if(path && this.fullPathMap.has(path)){
-            let service = this.fullPathMap.get(path);
+            let service = this.fullPathMap.get(path) as Service;
             service.onRequest(request, response, path, path);
             return;
         }
@@ -18,7 +18,7 @@ export default class ServiceContainer<SC extends ServiceContainer<any> | null = 
         if(pos != -1){
             let partialPath = path.substring(1, pos);
             if(this.partialPathMap.has(partialPath)){
-                let service = this.partialPathMap.get(partialPath);
+                let service = this.partialPathMap.get(partialPath) as Service;
                 service.onRequest(request, response, path.substring(pos + 1), partialPath);
             }
         }
@@ -36,20 +36,20 @@ export default class ServiceContainer<SC extends ServiceContainer<any> | null = 
         return this.partialPathMap.keys();
     }
 
-    public override listenOnPartialPath(path: string, target: Service = null): void {
+    public override listenOnPartialPath(path: string, target: Service|null = null): void {
         if(target || !this.container){
-            this.partialPathMap.set(path, target);
+            this.partialPathMap.set(path, target as Service);
         }else{
             this.container.listenOnPartialPath(path, this);
         }
     }
 
-    public override listenOnFullPath(path: string, useRoot: boolean = false, target: Service = null): void {
+    public override listenOnFullPath(path: string, useRoot: boolean = false, target: Service|null = null): void {
         if((useRoot || !target) && this.container){
             //If container has parent, send the listener to the root ServiceManager
             this.container.listenOnFullPath(path, useRoot, target || this);
         }else{
-            this.fullPathMap.set(path, target);
+            this.fullPathMap.set(path, target as Service);
         }
     }
 }

@@ -37,9 +37,9 @@ var Fortles: {[k: string]: any} = {
         return document.getElementById("block-" + path);
     },
 
-    getBlockParent: function(element : HTMLElement): HTMLElement|null{
+    getBlockParent: function(element : HTMLElement|null): HTMLElement|null{
         while(!(element instanceof HTMLBodyElement)){
-            element = element.parentElement;
+            element = element?.parentElement ?? null;
         }
         return element;
     },

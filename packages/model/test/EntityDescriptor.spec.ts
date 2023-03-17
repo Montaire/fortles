@@ -5,7 +5,7 @@ import { ClassSerializer } from "../src/utlity/ClassSerializer.js";
 
 class TestUserExtended extends TestUser{
     @string()
-    extended: string
+    extended?: string
 }
 
 class TestUserWronglyExtended extends TestUser{

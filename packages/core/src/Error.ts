@@ -1,7 +1,7 @@
 import { CharacterStreamReader } from "./index.js";
 
 export class HttpError extends Error{
-    protected code: number;
+    protected code: number = 500;
 
     public getCode(): number{
         return this.code;

@@ -5,7 +5,7 @@ import DatabseVersion from "./model/DatabaseVersion.js";
 export class Migartor{
 
     protected model: Model;
-    protected modelDescriptorSnapshot: ModelDescriptor;
+    protected modelDescriptorSnapshot: ModelDescriptor|null = null;
     protected basePath: string = "./migartion";
 
     constructor(model: Model){
@@ -22,8 +22,8 @@ export class Migartor{
         if(!databaseVersion){
             //TODO Separate version to all connections.
             //Create database version into the default connection
-            const change = new ModelChange(new EntityDescriptor(), EntityDescriptor.create(DatabseVersion));
-            this.model.getConnections().get("default").applyChange(change);
+            const change = new ModelChange(new EntityDescriptor('nyeh'), EntityDescriptor.create(DatabseVersion));
+            this.model.getConnections().get("default")?.applyChange(change);
         }
         //Upgrade database to the latest version
         //TODO: get folders from the model!
@@ -36,7 +36,10 @@ export class Migartor{
                 const migration = await import(file) as Migration;
                 //Run migration
                 for(const change of migration.getChanges()){
-                    const connection = change.getEntityDescriptor().baseEntityType.getConnection();
+                    const connection = change.getEntityDescriptor().baseEntityType?.getConnection();
+                    if(!connection){
+                        throw Error("Connection missing for" + change.getEntityDescriptor().getName());
+                    }
                     connection.applyChange(change);
                 }
             }
@@ -83,8 +86,11 @@ export class Migartor{
      * @returns 
      */
     createMigration(): Migration{
+        if(!this.modelDescriptorSnapshot){
+            return new Migration([]);
+        }
         const changes = this.model.getModelDescriptor().getChanges(this.modelDescriptorSnapshot);
         const migration = new Migration(changes);
-        return null;
+        return migration;
     }
 }
