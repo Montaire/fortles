@@ -1,5 +1,5 @@
-import { Application, Controller, Renderable, StringCharacterStreamReader, Template } from "@fortles/core";
-import { TestServerPlatform, TestRenderEngine, TestRequest, TestResponse, TestApplication } from "@fortles/test-utility";
+import { Controller, Renderable, StringCharacterStreamReader, Template } from "@fortles/core";
+import { TestServerPlatform, TestRenderEngine, TestRequest, TestResponse, TestApplication } from "./index.js";
 
 export default class TestUtility{
 

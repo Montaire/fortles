@@ -5,6 +5,8 @@ export class Entity{
 
     protected static modelInfoMap = new Map<string, EntityModelInfo>();
 
+    public static lastTarget: typeof Entity|null = this;
+
     static getModelInfo(): EntityModelInfo{
         if(!this.modelInfoMap.has(this.name)){
             this.modelInfoMap.set(this.name, new EntityModelInfo());

@@ -35,6 +35,6 @@ export class IntegerType extends Type<number, IntegerTypeConfig>{
 
 export function integer(config?: IntegerTypeConfig): EntityFieldDecorator {
     return function(target: Entity|undefined, context: ClassFieldDecoratorContext): void{
-        TypeUtility.setType(target as Entity, context.name,  new IntegerType(context.name, config));
+        TypeUtility.setType(null, context.name,  new IntegerType(context.name, config));
     };
 }

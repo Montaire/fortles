@@ -21,6 +21,6 @@ export class UuidType extends StringType{
 
 export function uuid(config?: UuidTypeConfig): EntityFieldDecorator {
     return function(value: Entity, context: ClassFieldDecoratorContext): void{
-        TypeUtility.setType(value, context.name, new UuidType(context.name, config));
+        TypeUtility.setType(null, context.name, new UuidType(context.name, config));
     };
 }

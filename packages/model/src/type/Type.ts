@@ -123,14 +123,23 @@ export function readonly(value: any, context: ClassFieldDecoratorContext, descri
     return descriptor;
 }  
 
-export function primaryKey(value: any, context: ClassFieldDecoratorContext): void{
-    TypeUtility.setTypeProperty(value, context.name, TypeProperty.PRIMARY_KEY);
+export function primaryKey<T = any>(value: undefined, context: ClassFieldDecoratorContext){
+    return function(this: Entity, value: T): T{
+        TypeUtility.setTypeProperty(this, context.name, TypeProperty.PRIMARY_KEY);
+        return value;
+    };
 }
 
-export function generated(value: any, context: ClassFieldDecoratorContext) {
-    TypeUtility.setTypeProperty(value, context.name, TypeProperty.GENERATED);
+export function generated<T = any>(value: undefined, context: ClassFieldDecoratorContext) {
+    return function(this: Entity, value: T): T{
+        TypeUtility.setTypeProperty(this, context.name, TypeProperty.GENERATED);
+        return value;
+    };
 }
 
-export function nullable(value: any, context: ClassFieldDecoratorContext) {
-    TypeUtility.setTypeProperty(value, context.name, TypeProperty.NULLABLE);
+export function nullable<T = any>(value: undefined, context: ClassFieldDecoratorContext) {
+    return function(this: Entity, value: T){
+        TypeUtility.setTypeProperty(this, context.name, TypeProperty.NULLABLE);
+        return value;
+    };
 }

@@ -1,4 +1,4 @@
-import {  Asset, TemplateRenderEngine, Request, Response, Template, NotFoundError } from "@fortles/core";
+import { Asset, TemplateRenderEngine, Request, Response, Template, NotFoundError } from "@fortles/core";
 
 export default class TestRenderEngine extends TemplateRenderEngine{
     

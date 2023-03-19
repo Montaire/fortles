@@ -2,16 +2,7 @@ import assert from "assert";
 import { Command } from "../src/index.js";
 
 class TestCommand extends Command{
-    override style = {
-        arguments: [],
-        block: [],
-        commands: [],
-        description: [],
-        error: [],
-        flags: [],
-        options: [],
-        title: [],
-    };
+    override style = {};
 
     printResult: string = "";
 
@@ -51,7 +42,7 @@ describe("Command", function(){
         it("Prints help", function(){
             command.addCommand("one", "Command One");
             command.run(["-h"]);
-            assert.match(command.getPrinted(), /Commands/, "Help should contain Commands section");
+            assert.match(command.getPrinted(), /Commands/, "Help should contain a Commands section: " + command.getPrinted());
             assert.match(command.getPrinted(), /one Command One/, "Help should contain the full path to call the subcommand, and the description.");
             command.run(["one", "-h"]);
             console.log(command.getPrinted());

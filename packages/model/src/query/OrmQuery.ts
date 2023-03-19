@@ -1,4 +1,4 @@
-import { Query } from "../index.js";
+import { Entity, Query } from "../index.js";
 
 export default class OrmQuery<T> extends Query<T>{
 
@@ -30,7 +30,9 @@ export default class OrmQuery<T> extends Query<T>{
 }
 
 export function orm(value: Function, context: ClassMethodDecoratorContext) {
-    let original = value.toString();
-    original = original.replace('where(x => x.id == id)', 'where(x => x.id == id,[id])');
-    eval("descriptor.value = function " + original);
+    return function(this: Entity){
+        let original = value.toString();
+        original = original.replace('where(x => x.id == id)', 'where(x => x.id == id,[id])');
+        eval("descriptor.value = function " + original);
+    }
 }

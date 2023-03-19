@@ -8,6 +8,10 @@ class TestClass{
     }
 }
 
+class TestClass2{
+    public pox = 3;
+}
+
 describe("ClassSerializer", function(){
     it("Can serialize and deserialize simple class", function(){
         let serializableClass = new TestClass();
@@ -20,7 +24,7 @@ describe("ClassSerializer", function(){
     });
 
     it("Throws if not registered the class", function(){
-        let serializableClass = new TestClass();
+        let serializableClass = new TestClass2();
         assert.throws(() => ClassSerializer.import(ClassSerializer.export(serializableClass)));
     });
 });

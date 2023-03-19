@@ -24,6 +24,6 @@ export class DateType extends Type<string, DateTypeConfig>{
 
 export function date(config?: DateTypeConfig): EntityFieldDecorator {
     return function(value: Entity, context: ClassFieldDecoratorContext): void{
-        TypeUtility.setType(value, context.name, new DateType(context.name, config));
+        TypeUtility.setType(null, context.name, new DateType(context.name, config));
     };
 }

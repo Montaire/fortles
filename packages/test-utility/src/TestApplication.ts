@@ -1,5 +1,5 @@
 import { Application, Platform, Controller } from "@fortles/core";
-import { TestRenderEngine, TestRequest, TestResponse } from "@fortles/test-utility";
+import { TestRenderEngine, TestRequest, TestResponse } from "./index.js";
 
 export default class TestApplication extends Application{
 

@@ -24,6 +24,6 @@ export class EmailType extends StringType{
 
 export function email(config?: EmailTypeConfig): EntityFieldDecorator {
     return function(value: Entity, context: ClassFieldDecoratorContext): void{
-        TypeUtility.setType(value, context.name, new EmailType(context.name, config));
+        TypeUtility.setType(null, context.name, new EmailType(context.name, config));
     };
 }

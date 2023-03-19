@@ -215,15 +215,8 @@ export class ArgumentCommandBlock<T> extends VariableCommandBlock<T, ArgumentCon
  */
 export class Command<Config = {}> extends CommandBlock<Config>{
     static override title = "Commands";
-    protected commands = new Map<string, Command>();
-    protected flags = new Map<string, CommandBlock<FlagConfig>>();
-    protected options = new Map<string, CommandBlock<OptionConfig<any>>>();
     protected arguments: CommandBlock<ArgumentConfig<any>>[] = [];
-    protected blocksByType: {[key: string]: Map<string, CommandBlock>} = {
-        commands: new Map<string, Command>(),
-        flags: new Map<string, CommandBlock<FlagConfig>>(),
-        options: new Map<string, CommandBlock<OptionConfig<any>>>()
-    };
+    protected commands =  new Map<string, Command>();
     protected blocks =  new Map<string, CommandBlock>();
     protected descriptionText: string|null = null;
     protected parent: Command|null;
@@ -240,22 +233,22 @@ export class Command<Config = {}> extends CommandBlock<Config>{
         title: [CommandFormat.Underscore, CommandFormat.Bright],
         block: [CommandFormat.Bright],
         description: [],
-        commands: [CommandFormat.FgYellow],
-        flags:  [CommandFormat.FgCyan],
-        options:  [CommandFormat.FgBlue],
-        arguments:  [CommandFormat.FgGreen],
+        Command: [CommandFormat.FgYellow],
+        FlagCommandBlock:  [CommandFormat.FgCyan],
+        OptionCommandBlock:  [CommandFormat.FgBlue],
+        ArgumentCommandBlock:  [CommandFormat.FgGreen],
         error: [CommandFormat.Bright, CommandFormat.FgRed]
     };
     
     /**
      * Types and the classes of the different building blocks.
      */
-    public blockTypes: {[key: string]: any} = {
-        commands: Command,
-        flags: FlagCommandBlock,
-        options: OptionCommandBlock,
-        arguments: ArgumentCommandBlock
-    };
+    public blockTypes: (typeof CommandBlock<any> | typeof Command)[] = [
+        Command,
+        FlagCommandBlock,
+        OptionCommandBlock,
+        ArgumentCommandBlock
+    ];
     
     /**
      * Creates a new Command.
@@ -278,7 +271,7 @@ export class Command<Config = {}> extends CommandBlock<Config>{
      */
     public addCommand(name: string, description?: string): Command{
         let command = new Command(name, this);
-        this.blocksByType.commands.set(name, command);
+        this.commands.set(name, command);
         if(description){
             command.setDescription(description);
         }
@@ -294,7 +287,6 @@ export class Command<Config = {}> extends CommandBlock<Config>{
      */
     public addOption<Name extends string, Type = String>(name: Name, description: string, config: OptionConfig<Type> = {}): Command<Config & {[name in Name]: Type}>{
         const block = new OptionCommandBlock<Type>(name, description, config)
-        this.blocksByType.options.set(name, block);
         this.blocks.set((name.length == 1 ? "-" : "--") +  name, block);
         if(config.short){
             this.blocks.set("-" + config.short, block);
@@ -312,7 +304,6 @@ export class Command<Config = {}> extends CommandBlock<Config>{
      */
     public addFlag<Name extends string>(name: Name, description: string, short?: string): Command<Config & {[name in Name]: Boolean}>{
         const block = new FlagCommandBlock(name, description, {short: short});
-        this.blocksByType.flags.set(name, block);
         this.blocks.set((name.length == 1 ? "-" : "--") +  name, block);
         if(short){
             this.blocks.set("-" + short, block);
@@ -370,14 +361,14 @@ export class Command<Config = {}> extends CommandBlock<Config>{
         if(!args){
             args = process.argv.splice(2);
         }
-        if(this.blocksByType.commands.has(args[0])){
-            const command = this.blocksByType.commands.get(args[0]) as Command;
+        if(this.commands.has(args[0])){
+            const command = this.commands.get(args[0]) as Command;
             command.run(args.splice(1));
             return null;
         }
         if((!this.isEmptyCallable || this.parent) && !this.action){
             if(this.isEmptyFails){
-                this.print(Command.format(this.getFullName() + " needs a command!\n", ...this.style.error));
+                this.print(Command.format(this.getFullName() + " needs a command!\n", ...this.style.error ?? []));
             }
             this.printHelp();
             return null;
@@ -388,7 +379,7 @@ export class Command<Config = {}> extends CommandBlock<Config>{
         try{
             config = this.processArguments(args);
         }catch(error){
-            this.print(Command.format(error as string, ...this.style.error));
+            this.print(Command.format(error as string, ...this.style.error ?? []));
             if(error instanceof CommandError && error.getBlockName()){
                 errors.set((error as CommandError).getBlockName() ?? "Something", error.getBlockMessage());
             }
@@ -414,7 +405,7 @@ export class Command<Config = {}> extends CommandBlock<Config>{
                     this.print(
                         Command.format("Error: " + missingBlocks.map(x => x.getName()).join(", ") + 
                         (missingBlocks.length > 1 ? " are" : " is") + " required", 
-                        ...this.style.error));
+                        ...this.style.error ?? []));
                 }
                 config = null;
             }
@@ -429,7 +420,7 @@ export class Command<Config = {}> extends CommandBlock<Config>{
                     this.action(config);
                 }catch(error){
                     if(error instanceof CommandError && error.getBlockName() && error.getBlockMessage()){
-                        this.print(Command.format(error.message, ...this.style.error));
+                        this.print(Command.format(error.message, ...this.style.error ?? []));
                         errors.set(error.getBlockName() as string, error.getBlockMessage());
                     }else{
                         throw error;
@@ -484,7 +475,7 @@ export class Command<Config = {}> extends CommandBlock<Config>{
      * @param errors If there is an arror that related to a field pass here.
      */
     protected printHelp(errors: Map<string, string> = new Map<string, string>()){
-        this.print(Command.format(this.getTitle(), ...this.style.block));
+        this.print(Command.format(this.getTitle(), ...this.style.block ?? []));
         if(this.description){
             this.print(this.description);
         }
@@ -492,8 +483,8 @@ export class Command<Config = {}> extends CommandBlock<Config>{
         if(this.manual){
             this.print(this.manual);
         }
-        for(const blockName in this.blockTypes){
-            for(const block of this.blocksByType[blockName].values()){
+        for(const blockType of this.blockTypes){
+            for(const block of this.getBlocksByType(blockType)){
                 if(block.getConfig().required){
                     let blockValue: string;
                     if(block instanceof ArgumentCommandBlock){
@@ -512,22 +503,22 @@ export class Command<Config = {}> extends CommandBlock<Config>{
                          
                         usage += Command.format(
                             blockValue,
-                            ...this.style[blockName]); 
+                            ...this.style[blockType.name] ?? []); 
                 }
             }
-            if(this.blocksByType[blockName].size > 0){
-                const required = blockName == "commands" && !this.action;
+            if(this.getBlocksByType(blockType).length > 0){
+                const required = blockType.name == "Command" && !this.action;
                 usage += " " + Command.format(
                     (required ? "<" : "[") + 
-                    this.blockTypes[blockName].title.toLowerCase() + 
+                    blockType.title.toLowerCase() + 
                     (required ? ">" : "]"), 
-                    ...this.style[blockName]);
+                    ...this.style[blockType.name] ?? []);
             }
         }
         this.print(usage);
-        this.print(Command.format(this.getDescription(), ...this.style.description));
-        for(const blockName in this.blockTypes){  
-            this.printHelpFor(blockName, errors);
+        this.print(Command.format(this.getDescription(), ...this.style.description ?? []));
+        for(const blockType of this.blockTypes){  
+            this.printHelpFor(blockType, errors);
         }
     }
 
@@ -536,13 +527,12 @@ export class Command<Config = {}> extends CommandBlock<Config>{
      * @param blockName 
      * @param errors 
      */
-    protected printHelpFor(blockName: string, errors: Map<string, string> = new Map()){
-        const blockType = this.blockTypes[blockName];
-        if(this.blocksByType[blockName].size){
-            const blockList = this.blocksByType[blockName].values() as IterableIterator<CommandBlock>;
-            this.print(Command.format(blockType.title, ...this.style.title))
+    protected printHelpFor(blockType: typeof CommandBlock | typeof Command, errors: Map<string, string> = new Map()){
+        const blockList = this.getBlocksByType(blockType);
+        if(blockList.length){
+            this.print(Command.format(blockType.title, ...this.style.title ?? []))
             for(const block of blockList){
-                const format = this.style.block.concat(this.style[blockName]);
+                const format = this.style.block?.concat(this.style[blockType.name]) ?? this.style[blockType.name] ?? [];
                 let line = Command.format(" " + block.getHelpName(),  ...format);
                 line += " " + block.getDescription();
                 if(block.getConfig().variableFormat){
@@ -552,7 +542,7 @@ export class Command<Config = {}> extends CommandBlock<Config>{
                     line += "  Example: " + block.getConfig().variableExample;
                 }
                 if(errors.has(block.getName())){
-                    line += Command.format(" (" + errors.get(block.getName()) + ")", ...this.style.error);
+                    line += Command.format(" (" + errors.get(block.getName()) + ")", ...this.style.error ?? []);
                 }
                 this.print(line);
             }
@@ -613,6 +603,16 @@ export class Command<Config = {}> extends CommandBlock<Config>{
     public setEmptyCallable(isCallable: boolean){
         this.isEmptyCallable = isCallable;
         return this;
+    }
+
+    protected getBlocksByType(blockType: typeof CommandBlock | typeof Command): (CommandBlock | Command)[]{
+        if(blockType === ArgumentCommandBlock){
+            return this.arguments;
+        }else if(blockType === Command){
+            return Array.from(this.commands.values());
+        }else{
+            return Array.from(this.blocks.values()).filter(x => x instanceof blockType);
+        }
     }
 
     /**

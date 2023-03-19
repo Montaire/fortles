@@ -1,5 +1,5 @@
 import { Platform, Application } from "@fortles/core";
-import { TestRequest, TestResponse } from "@fortles/test-utility";
+import { TestRequest, TestResponse } from "./index.js";
 
 export default class TestServerPlatform extends Platform{
     
