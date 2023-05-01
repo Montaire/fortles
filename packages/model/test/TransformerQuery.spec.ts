@@ -16,7 +16,6 @@ class TestController{
 describe("TransformerQuery", function(){
     it("Where processed correctly", function(){
         let controller = new TestController();
-        console.log(controller.view);
         controller.view();
     });
 });

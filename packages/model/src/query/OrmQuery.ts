@@ -21,7 +21,6 @@ export default class OrmQuery<T> extends Query<T>{
         }
         let argument = parts[0].trim();
         let code = parts[1].replace(/^\s*(.+)\s*$/, "$1");
-
     }
 
     [Symbol.iterator](): Iterator<T, any, undefined> {
@@ -33,6 +32,7 @@ export function orm(value: Function, context: ClassMethodDecoratorContext) {
     return function(this: Entity){
         let original = value.toString();
         original = original.replace('where(x => x.id == id)', 'where(x => x.id == id,[id])');
-        eval("descriptor.value = function " + original);
+        console.log(original);
+        return eval("function " + original);
     }
 }
