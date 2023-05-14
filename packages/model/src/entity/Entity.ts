@@ -1,4 +1,4 @@
-import { Connection, Type } from "../index.js";
+import { Connection, Query, Type } from "../index.js";
 import { EntityModelInfo } from "./EntityModelInfo.js";
 
 export class Entity{
@@ -36,5 +36,9 @@ export class Entity{
     
     static getConnection(): Connection{
         return this.getModelInfo().connection;
+    }
+
+    static query<T extends Entity>(this: {new(): T}): Query<T> {
+        return (this as unknown as typeof Entity).getConnection().createQuery(this);
     }
 }

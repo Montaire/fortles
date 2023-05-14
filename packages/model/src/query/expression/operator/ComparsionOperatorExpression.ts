@@ -11,6 +11,9 @@ export enum ComparsionOperatorExpressionType{
 
 export abstract class ComparsionOperatorExpression extends OperatorExpression{
     abstract readonly type: ComparsionOperatorExpressionType;
+    override getSign(): string {
+        return this.getSign();
+    }
 }
 
 export class EquialOperatorExpression extends ComparsionOperatorExpression{

@@ -13,7 +13,7 @@ enum ExpressionBuilderState{
 
 export class ExpressionBuilder{
 
-    protected operatorRanking: typeof OperatorExpression[][] = [
+    protected operatorRanking: (new(builder: ExpressionBuilder, left: string, right: string) => OperatorExpression)[][] = [
         [
             EquialOperatorExpression, 
             NotEquialOperatorExpression,
@@ -50,10 +50,10 @@ export class ExpressionBuilder{
         this.operatorTree = this.buildOperatorTree(this.operatorRanking.flat());
     }
 
-    protected buildOperatorTree(operators: typeof OperatorExpression[]){
+    protected buildOperatorTree(operators: (new(builder: ExpressionBuilder, left: string, right: string) => OperatorExpression)[]){
         const operatorTree: any = {};
         for(const operator of operators){
-            const sign = ""; new operator(this, "", "").getSign();
+            const sign =  new operator(this, "", "").getSign();
             let operatorBranch = operatorTree;
             for(const c of sign){
                 if(!operatorBranch[c]){

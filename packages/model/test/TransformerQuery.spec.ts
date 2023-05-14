@@ -8,8 +8,8 @@ class TestController{
     @orm
     view(){
         let id = 5;
-        let query = new OrmQuery<TestEntity>();
-        query.where(x => x.id == id);
+        //let query = new OrmQuery<TestEntity>();
+        //query.where(x => x.id == id);
     }
 }
 

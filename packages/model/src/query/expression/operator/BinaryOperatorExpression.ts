@@ -10,6 +10,9 @@ export enum BinaryOperatorExpressionType{
 
 export abstract class BinaryOperatorExpression extends OperatorExpression{
     abstract readonly type: BinaryOperatorExpressionType;
+    override getSign(): string {
+        return this.type;
+    }
 }
 
 export class AndOperatorExpression extends BinaryOperatorExpression{

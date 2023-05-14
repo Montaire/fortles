@@ -28,11 +28,29 @@ export default class OrmQuery<T> extends Query<T>{
     }
 }
 
+function processLambda(functionList: string[], input: string): string {
+    const pattern = /([a-zA-Z_$][0-9a-zA-Z_$]*(?:\[\d+\])?(?:\.[a-zA-Z_$][0-9a-zA-Z_$]*(?:\[\d+\])?)*[^"'])/g;
+
+    return input.replace(/(\w+)\((.*?)\)/g, (match, func, args) => {
+        if (!functionList.includes(func)) return match;
+
+        const [lambdaVar, expr] = args.split('=>').map((s: any) => s.trim());
+
+        let params = Array.from(expr.matchAll(pattern))
+            .map((m: any) => m[0])
+            .filter(v => v !== func && !v.startsWith(lambdaVar + '.') && v !== lambdaVar && isNaN(Number(v)))
+            .reduce((obj, v) => ({ ...obj, [v]: v }), {});
+
+        return `${func}(${args}, ${JSON.stringify(params)})`;
+    });
+}
+
 export function orm(value: Function, context: ClassMethodDecoratorContext) {
     return function(this: Entity){
-        let original = value.toString();
-        original = original.replace('where(x => x.id == id)', 'where(x => x.id == id,[id])');
-        console.log(original);
-        return eval("function " + original);
+        const input = value.toString();
+        const functionList = ["where"];
+        const result = processLambda(functionList, input);
+        console.log(result);
+        return eval("function " + result);
     }
 }
