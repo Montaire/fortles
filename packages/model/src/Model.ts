@@ -1,7 +1,7 @@
-import { Connection, ModelDescriptor, Query, Migartor } from "./index.js";
+import { Connection, ModelDescriptor, Query, Migartor, Entity } from "./index.js";
 
 
-export default class Model{
+export class Model{
 
     protected modelDescriptor: ModelDescriptor;
     protected connections: Map<string, Connection>;
@@ -24,7 +24,7 @@ export default class Model{
         return this.modelDescriptor;
     }
 
-    query<T>(type: new() => T): Query<T>{
+    query<T extends Entity>(type: new() => T): Query<T>{
         throw Error("Not implemented");
     }
 }

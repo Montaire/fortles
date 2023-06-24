@@ -1,6 +1,5 @@
 import { Type } from "@fortles/model";
 import { Controller, Request, RuntimeError, ModelAwareController, Block} from "../index.js"
-//import { Type } from "../type/index.js";
 
 /**
  * Route defines the structure, and the navigation in the application.

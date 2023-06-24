@@ -1,9 +1,9 @@
-import { Entity, Query, Connection, EntityConnector } from "../index.js";
+import {Query, Connection, EntityAdapter, Entity } from "../index.js";
 
 /**
  * Connects the whole model (all entities) to a given database.
  */
-export abstract class ModelConnector<C extends Connection>{
+export abstract class ShemaAdapter<C extends Connection>{
 
     protected connection: C;
 
@@ -17,13 +17,13 @@ export abstract class ModelConnector<C extends Connection>{
 
     //protected entityConnectorMap = new Map<typeof Entity, EntityConnector>;
     
-    abstract create(entityConnector: EntityConnector): void;
+    abstract create(entityConnector: EntityAdapter): void;
 
-    abstract drop(entityConnector: EntityConnector): void;
+    abstract drop(entityConnector: EntityAdapter): void;
 
-    abstract alter(entityConnector: EntityConnector): void;
+    abstract alter(entityConnector: EntityAdapter): void;
 
-    query<T>(entityType: new() => T): Query<T>{
+    query<E extends Entity>(entityType: new() => E): Query<E>{
         throw Error("Not Implemented");
     }
 }

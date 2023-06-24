@@ -1,4 +1,4 @@
-export default class ErrorReporter{
+export class ErrorReporter{
     error(message: string){
 
     }

@@ -1,7 +1,4 @@
-import { Type, EntityFieldDecorator, TypeUtility } from "./index.js";
-import { Entity } from "../index.js";
-import { StringType } from "./StringType.js";
-import ErrorReporter from "../ErrorReporter.js";
+import { EntityFieldDecorator, TypeUtility, Entity, ErrorReporter, StringType } from "../index.js";
 
 export type EmailTypeConfig = {
     length?: number,

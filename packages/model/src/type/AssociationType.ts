@@ -1,6 +1,5 @@
-import { Entity, EntityFieldDecorator, Type } from "../index.js";
+import { Entity, EntityFieldDecorator, Type, TypeUtility } from "../index.js";
 import { ClassSerializer, ExportedData } from "../utlity/ClassSerializer.js";
-import TypeUtility from "./TypeUtility.js";
 
 export type AssociationTypeConfig = {
 

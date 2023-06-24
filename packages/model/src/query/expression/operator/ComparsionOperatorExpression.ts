@@ -1,4 +1,4 @@
-import { OperatorExpression } from "../index.js";
+import { OperatorExpression } from "../../../index.js";
 
 export enum ComparsionOperatorExpressionType{
     Equial = "==",
@@ -10,10 +10,8 @@ export enum ComparsionOperatorExpressionType{
 }
 
 export abstract class ComparsionOperatorExpression extends OperatorExpression{
-    abstract readonly type: ComparsionOperatorExpressionType;
-    override getSign(): string {
-        return this.getSign();
-    }
+    static readonly type: ComparsionOperatorExpressionType;
+    
 }
 
 export class EquialOperatorExpression extends ComparsionOperatorExpression{

@@ -1,15 +1,15 @@
 import { dirname, extname, resolve } from "path";
 import { pathToFileURL } from "url";
-import { Entity, EntityDescriptor, ModelChange, Type } from "./index.js";
 import { createReadStream, createWriteStream, mkdirSync, readdirSync } from "fs";
-import { Readable, Stream, Writable } from "stream";
+
 import { ClassSerializer } from "./utlity/ClassSerializer.js";
+import { Entity, EntityDescriptor, ModelChange } from "./index.js";
 
 /**
  * Describes how the model looks.
  * It contains all the entities as well.
  */
-export default class ModelDescriptor{
+export class ModelDescriptor{
     
     protected entityDescriptors: EntityDescriptor[];
     protected sources: string[];

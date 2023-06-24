@@ -1,6 +1,4 @@
-import { EntityFieldDecorator, Type, TypeUtility } from "./index.js";
-import { Entity } from "../index.js";
-import ErrorReporter from "../ErrorReporter.js";
+import { EntityFieldDecorator, Type, TypeUtility, Entity, ErrorReporter } from "../index.js";
 
 type IntegerTypeConfig = {
     min?: number,

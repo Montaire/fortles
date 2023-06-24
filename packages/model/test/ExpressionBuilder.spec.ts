@@ -1,9 +1,7 @@
-import { orm } from "../src/index.js";
 import { TestUser } from "./model/TestUser.js";
-
 class TestQuery{
     // We mark the function to be processed by the query translator engne.
-    @orm
+    //@expression
     getSimpleQuery() {
         let asd = {
             pox: "asd"

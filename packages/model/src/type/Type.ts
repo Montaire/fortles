@@ -1,5 +1,5 @@
 import { Entity, ErrorReporter, TypeUtility } from "../index.js";
-import { ClassSerializer, Exportable, ExportedData } from "../utlity/ClassSerializer.js";
+import { Exportable, ExportedData, ClassSerializer } from "../utlity/ClassSerializer.js";
 
 export type EntityFieldDecorator = (value: any, context: ClassFieldDecoratorContext) => void;
 /**

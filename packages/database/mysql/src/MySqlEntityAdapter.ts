@@ -1,6 +1,6 @@
-import { Entity, EntityConnector } from "@fortles/model";
+import { Entity, EntityAdapter } from "@fortles/model";
 
-export default class MySqlEntityConnector extends EntityConnector{
+export default class MySqlEntityAdatper extends EntityAdapter{
 
     importEntity(data: object): Entity {
         throw new Error("Method not implemented.");

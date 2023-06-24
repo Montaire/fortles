@@ -1,6 +1,4 @@
-import { Type, EntityFieldDecorator, TypeUtility } from "./index.js";
-import { Entity } from "../index.js";
-import ErrorReporter from "../ErrorReporter.js";
+import { Type, EntityFieldDecorator, TypeUtility, Entity, ErrorReporter } from "../index.js";
 
 export enum DateMode{
     Date,

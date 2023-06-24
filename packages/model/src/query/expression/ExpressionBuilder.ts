@@ -1,7 +1,9 @@
-import { OperatorExpression, Expression } from "../index.js";
-import { IdentifierExpression } from "./IdentifierExpression.js";
-import { LiteralExpression } from "./LiteralExpression.js";
-import { AddOperatorExpression, AndOperatorExpression, DivideOperatorExpression, EquialOperatorExpression, GreaterOperatorExpression, GreaterOrEquialOperatorExpression, LessOperatorExpression, LessOrEquialOperatorExpression, MultiplyOperatorExpression, NotEquialOperatorExpression, OrOperatorExpression, SubtractOperatorExpression, XorOperatorExpression } from "./operator/index.js";
+import { 
+    OperatorExpression, Expression, AddOperatorExpression, AndOperatorExpression, DivideOperatorExpression, 
+    EquialOperatorExpression, GreaterOperatorExpression, GreaterOrEquialOperatorExpression, LessOperatorExpression, 
+    LessOrEquialOperatorExpression, MultiplyOperatorExpression, NotEquialOperatorExpression, OrOperatorExpression, 
+    SubtractOperatorExpression, XorOperatorExpression, IdentifierExpression, LiteralExpression,
+} from "../../index.js";
 
 enum ExpressionBuilderState{
     Idle,
@@ -13,7 +15,7 @@ enum ExpressionBuilderState{
 
 export class ExpressionBuilder{
 
-    protected operatorRanking: (new(builder: ExpressionBuilder, left: string, right: string) => OperatorExpression)[][] = [
+    protected operatorRanking: ( any)[][] = [
         [
             EquialOperatorExpression, 
             NotEquialOperatorExpression,
@@ -36,7 +38,6 @@ export class ExpressionBuilder{
             SubtractOperatorExpression
         ],
     ];
-
     protected operatorAsd = [];
 
     protected operatorTree: {[k: string]: {[k: string]: typeof Expression}};
@@ -47,13 +48,15 @@ export class ExpressionBuilder{
     constructor(variableName: string, context: {[key: string]: any}){
         this.variableName = variableName;
         this.context = context;
+        this.operatorRanking = [];
+
         this.operatorTree = this.buildOperatorTree(this.operatorRanking.flat());
     }
 
-    protected buildOperatorTree(operators: (new(builder: ExpressionBuilder, left: string, right: string) => OperatorExpression)[]){
+    protected buildOperatorTree(operators: (typeof OperatorExpression)[]){
         const operatorTree: any = {};
         for(const operator of operators){
-            const sign =  new operator(this, "", "").getSign();
+            const sign = '?'; // operator.getSign();
             let operatorBranch = operatorTree;
             for(const c of sign){
                 if(!operatorBranch[c]){
@@ -89,8 +92,8 @@ export class ExpressionBuilder{
         let isFound = false;
         let stringCharacter: null|string = null;
         let isEscape = false;
-        let operatorType: (new() => OperatorExpression)|null = null;
-        let highestOperatorType: (new() => OperatorExpression)|null = null;
+        let operatorType: (typeof OperatorExpression & (new() => OperatorExpression))|null = null;
+        let highestOperatorType: (typeof OperatorExpression & (new() => OperatorExpression))|null = null;
         let bracketCount = 0;
         for(const c of expressionText){
             if(c == '"' || c == '"' && !stringCharacter){
@@ -137,6 +140,7 @@ export class ExpressionBuilder{
             }
         }
         if(highestOperatorType){
+            //@ts-ignore
             return new highestOperatorType();
         }else{
             return null;

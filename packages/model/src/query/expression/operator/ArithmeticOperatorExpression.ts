@@ -1,4 +1,4 @@
-import { OperatorExpression } from "../index.js";
+import { OperatorExpression } from "../../../index.js";
 
 export enum ArithmeticOperatorExpressionType{
     Add = "+",

@@ -1,5 +1,4 @@
-import { Connection, Query, Type } from "../index.js";
-import { EntityModelInfo } from "./EntityModelInfo.js";
+import { Connection, Query, Type, EntityModelInfo } from "../index.js";
 
 export class Entity{
 

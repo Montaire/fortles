@@ -4,7 +4,7 @@ import { Entity } from "../index.js";
  * Connects an Entity to the given database.
  * Handles how the definition made, and importing and exporting the data as well.
  */
-export abstract class EntityConnector<E extends Entity = Entity>{
+export abstract class EntityAdapter<E extends Entity = Entity>{
 
     protected entityType: new() => E;
 

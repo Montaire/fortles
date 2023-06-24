@@ -4,7 +4,7 @@ import { ClassSerializer, Exportable, ExportedData, ExportedObject } from "../ut
 /**
  * The largest set of the entities, it ucludes all connection, and extensions.
  */
-export default class EntityDescriptor implements Exportable{
+export class EntityDescriptor implements Exportable{
     baseEntityType: typeof Entity | null;
     baseName: string;
     typeMap: Map<string, Type<any, any>>;

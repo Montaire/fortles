@@ -1,6 +1,4 @@
-import { EntityFieldDecorator, TypeUtility, StringType, StringTypeConfig } from "./index.js";
-import { Entity } from "../index.js";
-import { generated } from "./Type.js";
+import { EntityFieldDecorator, TypeUtility, StringType, Entity } from "../index.js";
 import { randomUUID } from "crypto";
 
 export type UuidTypeConfig = {

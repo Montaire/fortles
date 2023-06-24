@@ -1,5 +1,5 @@
 import assert from "assert";
-import { EntityDescriptor, integer, string, StringType } from "../src/index.js";
+import { EntityDescriptor, string, StringType } from "../src/index.js";
 import { TestUser } from "./model/index.js";
 import { ClassSerializer } from "../src/utlity/ClassSerializer.js";
 

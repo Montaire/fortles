@@ -1,5 +1,5 @@
-import { StringType, TypeConnector } from "@fortles/model";
-
+import { StringType } from "@fortles/model";
+/*
 export default class StringMySqlTypeConnector extends TypeConnector<StringType, string, string>{
     
     override exportData(value: string): string {
@@ -32,4 +32,4 @@ export default class StringMySqlTypeConnector extends TypeConnector<StringType, 
         throw new Error("Method not implemented.");
     }
 
-}
+}*/

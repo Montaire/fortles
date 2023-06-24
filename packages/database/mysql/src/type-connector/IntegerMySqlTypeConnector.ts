@@ -1,4 +1,4 @@
-import { IntegerType, TypeConnector } from "@fortles/model";
+/*import { IntegerType, TypeConnector } from "@fortles/model";
 
 export default class IntegerMySqlTypeConnector extends TypeConnector<IntegerType, number, number>{
 
@@ -45,4 +45,4 @@ export default class IntegerMySqlTypeConnector extends TypeConnector<IntegerType
         throw new Error("Method not implemented.");
     }
 
-}
+}*/

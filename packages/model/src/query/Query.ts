@@ -1,16 +1,25 @@
-export default abstract class Query<T> implements Iterable<T>{
+import { Connection, Entity, QueryAdapter } from "../index.js";
 
-    protected entityType: new() => T;
+export class Query<E extends Entity, C extends Connection = Connection> implements Iterable<E>{
 
-    constructor(entityType: new() => T){
+    protected entityType: new() => E;
+    protected queryAdapter: QueryAdapter<C>
+
+    constructor(entityType: new() => E, queryAdapter: QueryAdapter<C>){
         this.entityType = entityType;
+        this.queryAdapter = queryAdapter;
     }
 
-    abstract [Symbol.iterator](): Iterator<T, any, undefined>;
+    [Symbol.iterator](): Iterator<E, any, undefined>{
+        throw "Not implemented";
+    }
 
-    abstract where(condition: (item: T) => boolean): this;
+    where(condition: (item: E) => boolean): this{
 
-    first(condition?: (item: T) => boolean): T|null{
+        return this;
+    }
+
+    first(condition?: (item: E) => boolean): E|null{
         if(condition){
             this.where(condition);
         }
@@ -20,7 +29,9 @@ export default abstract class Query<T> implements Iterable<T>{
         return null;
     }
 
-    abstract orderBy(field: (item:T) => any): this;
+    orderBy(field: (item:E) => any): this{
+        return this;
+    }
     
     
 }

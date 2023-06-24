@@ -1,2 +1,3 @@
 export * from "./Entity.js";
-export { default as EntityDescriptor } from "./EntityDescriptor.js";
+export * from "./EntityDescriptor.js";
+export * from "./EntityModelInfo.js";
