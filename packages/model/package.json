@@ -8,5 +8,8 @@
     "version": "0.1.0",
     "requireDev": {
         "@fortles/cli": "workspace:*"
+    },
+    "dependencies": {
+        "reflect-metadata": "^0.1.13"
     }
 }

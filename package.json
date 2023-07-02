@@ -39,11 +39,11 @@
   "devDependencies": {
     "@fortles/test-utility": "workspace:*",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.13.0",
+    "@types/node": "^20.3.1",
     "mocha": "^10.2.0",
     "mocha-steps": "^1.3.0",
     "source-map-support": "^0.5.21",
-    "typescript": "^5.0.2"
+    "typescript": "^5.1.3"
   },
   "private": true,
   "packageManager": "yarn@4.0.0-rc.40"

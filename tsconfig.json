@@ -10,7 +10,7 @@
     "declaration": true,  
     "noImplicitOverride": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
     /*"plugins": [
       { "transform": "./dst/model/typescript-plugin/TranspilerQueryPlugin.js", "type": "raw" }
     ]*/

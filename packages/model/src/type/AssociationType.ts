@@ -20,6 +20,10 @@ export class AssociationType<C extends AssociationTypeConfig> extends Type<Entit
         return this.source;
     }
 
+    public setSource(source: typeof Entity){
+        this.source = source;
+    }
+
     /**
      * Gets the target type (other site) of the association
      * @returns The Type of the target.
@@ -60,24 +64,24 @@ export class HasManyAssociationType extends OneAssociationType<AssociationTypeCo
 
 export function hasOne(targetType: () => typeof Entity, config: AssociationTypeConfig = {}): EntityFieldDecorator {
     return (value: Entity, context: ClassFieldDecoratorContext) => {
-        TypeUtility.setType(null, context.name, new HasOneAssociationType(targetType, value.constructor as typeof Entity, context.name, config));
+        TypeUtility.setType(null, context.name, new HasOneAssociationType(targetType, Entity, context.name, config));
     }
 }
 
 export function hasMany(targetType: () => typeof Entity, config: AssociationTypeConfig = {}): EntityFieldDecorator {
     return (value: Entity, context: ClassFieldDecoratorContext) => {
-        TypeUtility.setType(null, context.name, target => new HasManyAssociationType(targetType, target, context.name, config));
+        TypeUtility.setType(null, context.name, target => new HasManyAssociationType(targetType, Entity, context.name, config));
     }
 }
 
 export function withOne(targetType: () => typeof Entity, config: AssociationTypeConfig = {}): EntityFieldDecorator {
     return (value: Entity, context: ClassFieldDecoratorContext) => {
-        TypeUtility.setType(null, context.name, target => new WithOneAssociationType(targetType, target, context.name, config));
+        TypeUtility.setType(null, context.name, target => new WithOneAssociationType(targetType, Entity, context.name, config));
     }
 }
 
 export function withMany(targetType: () => typeof Entity, config: AssociationTypeConfig = {}): EntityFieldDecorator {
     return (value: Entity, context: ClassFieldDecoratorContext) => {
-        TypeUtility.setType(null, context.name, target => new WithManyAssociationType(targetType, target, context.name, config));
+        TypeUtility.setType(null, context.name, target => new WithManyAssociationType(targetType, Entity, context.name, config));
     }
 }

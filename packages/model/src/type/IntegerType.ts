@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { EntityFieldDecorator, Type, TypeUtility, Entity, ErrorReporter } from "../index.js";
 
 type IntegerTypeConfig = {

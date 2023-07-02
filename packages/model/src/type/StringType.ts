@@ -17,9 +17,7 @@ export class StringType extends Type<string, StringTypeConfig>{
 }
 
 export function string(config?: StringTypeConfig): EntityFieldDecorator {
-    return function(value: undefined, context: ClassFieldDecoratorContext):  (initialValue: unknown) => unknown | void{
-        return function(this: Entity){
-            TypeUtility.setType(this as Entity, context.name, new StringType(context.name, config));
-        };
+    return function(value: undefined, context: ClassFieldDecoratorContext): void{
+        TypeUtility.setType(null, context.name, new StringType(context.name, config));
     };
 }

@@ -1,13 +1,12 @@
-import { Entity, Type } from "../index.js";
+import { Entity, EntityModelInfo, Type } from "../index.js";
 
 export default class TypeUtility{
     public static setTypeProperty(target: Entity, name: string | symbol, propertyKey: string, propertyValue?: Object): void{
-        const targetType = (target?.constructor ?? Entity.lastTarget) as typeof Entity;
-        const modelInfo = targetType.getModelInfo();
+        const modelInfo = (target.constructor as typeof Entity).getModelInfo();
         modelInfo.primaryKeys.push(name.toString());
         let type = modelInfo.typeMap.get(name.toString()) as Type<any, any>;
         if(!type){
-            throw new Error("'" + targetType.name + "' for '" + name.toString() + "' needs a type decorator at the last position.");
+            throw new Error("'" + (target?.constructor.name ?? "Entity") + "' for '" + name.toString() + "' needs a type decorator at the last position.");
         }
         type.setProperty(propertyKey, propertyValue);
     }

@@ -1,4 +1,24 @@
-import { Connection, Query, Type, EntityModelInfo } from "../index.js";
+import { Connection, Query, Type, EntityModelInfo, AssociationType } from "../index.js";
+
+export function connection(connection: Connection){
+    return function(target: typeof Entity, context: ClassDecoratorContext): void{
+        target.getModelInfo().connection = connection;
+    };
+}
+
+/** 
+ * Temproary hack to solve the lack of metadata in the current implementation of decorators.
+ */
+export function model(target: typeof Entity, context: ClassDecoratorContext){
+    if(EntityModelInfo.temporary){
+        target.setModelInfo(EntityModelInfo.temporary);
+    }
+    for(const type of target.getModelInfo().typeMap.values()){
+        if(type instanceof AssociationType){
+            type.setSource(target);
+        }
+    }
+}
 
 export class Entity{
 
@@ -11,6 +31,14 @@ export class Entity{
             this.modelInfoMap.set(this.name, new EntityModelInfo());
         }
         return this.modelInfoMap.get(this.name) as EntityModelInfo;
+    }
+
+    static hasModelInfo(): boolean{
+        return this.modelInfoMap.has(this.name);
+    }
+
+    static setModelInfo(modelInfo: EntityModelInfo){
+        this.modelInfoMap.set(this.name, modelInfo);
     }
 
     static getPrimaryKeys(): string[] | null{
@@ -33,11 +61,15 @@ export class Entity{
         return this.getModelInfo().typeMap;
     }
     
-    static getConnection(): Connection{
-        return this.getModelInfo().connection;
+    static getConnection(): Connection | null{
+        return this.getModelInfo().connection ?? null;
     }
 
     static query<T extends Entity>(this: {new(): T}): Query<T> {
-        return (this as unknown as typeof Entity).getConnection().createQuery(this);
+        const connection = (this as unknown as typeof Entity).getConnection();
+        if(!connection){
+            throw new Error(this.name + " has no default connection!");
+        }
+        return connection.createQuery(this);
     }
 }

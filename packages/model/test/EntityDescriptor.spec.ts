@@ -15,6 +15,7 @@ class TestUserWronglyExtended extends TestUser{
 
 describe("EntityDescriptor", function(){
     it("Can be extended in any order", function(){
+        const testUser = new TestUser();
         const entityDescriptor = EntityDescriptor.create(TestUser, "base.js");
         entityDescriptor.append(TestUserExtended, "extended.js");
         assert(entityDescriptor.typeMap.get("extended") instanceof StringType, "Extended field should be avaliable.");

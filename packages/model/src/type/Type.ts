@@ -2,17 +2,17 @@ import { Entity, ErrorReporter, TypeUtility } from "../index.js";
 import { Exportable, ExportedData, ClassSerializer } from "../utlity/ClassSerializer.js";
 
 export type EntityFieldDecorator = (value: any, context: ClassFieldDecoratorContext) => void;
+
 /**
  * Callable, that returns null on success, and the error message on fail.
  */
 export type Validation<T> = (value: T) => string | null
+
 /**
  * - Validation
  * - Conversion (serialization, deserialization, sql->extendable)
  * - Formatting
  */
-
-
 export abstract class Type<T,C> implements Exportable{
 
     protected propertyMap = new Map<string, any>();
