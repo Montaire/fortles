@@ -86,6 +86,10 @@ export class ClassSerializer{
             data: data
         };
     }
+
+    public static serializable(classType: {new (...args: any[]): any} , context: ClassDecoratorContext){
+        ClassSerializer.register(classType);
+    }
 }
 
 /**

@@ -1,24 +1,27 @@
-import { Entity, Type } from "../index.js";
+import { AssociationType, Connection, Entity, Model, ModelDescriptor, Type } from "../index.js";
 import { ClassSerializer, Exportable, ExportedData, ExportedObject } from "../utlity/ClassSerializer.js";
 
 /**
  * The largest set of the entities, it ucludes all connection, and extensions.
  */
+@ClassSerializer.serializable
 export class EntityDescriptor implements Exportable{
     baseEntityType: typeof Entity | null;
     baseName: string;
     typeMap: Map<string, Type<any, any>>;
     sourceMap: Map<string, string|null>;
 
-    constructor(name: string, 
+    constructor(
+        name: string,
+        modelDescriptor: ModelDescriptor,
         typeMap?: Map<string, Type<any, any>>, 
         sourceMap: Map<string, string|null> = new Map<string, string>(), 
-        baseType: typeof Entity | null = null){
+        baseType: typeof Entity | null = null
+    ){
         this.baseName = name;
         this.typeMap = new Map(typeMap);
         this.sourceMap = sourceMap;
         this.baseEntityType = baseType;
-        ClassSerializer.register(EntityDescriptor);
     }
 
     public append(entityType: typeof Entity, source: string|null = null){
@@ -40,6 +43,10 @@ export class EntityDescriptor implements Exportable{
             }
             //If the property already defined in a base, do not override it.
             if(override){
+                //If assoication type, the source and target should transfered to the corresponding EntityDescriptors.
+                if(type instanceof AssociationType){
+
+                }
                 this.typeMap.set(name, type);
                 if(source){
                     this.sourceMap.set(name, source);
@@ -55,14 +62,23 @@ export class EntityDescriptor implements Exportable{
         ClassSerializer.register(entityType);
     }
 
+    public getConnection(): Connection{
+        const connection = this.baseEntityType?.getModelInfo().connection;
+        if(connection){
+            return connection;
+        }else{
+            return Model.getDefaultConnection();
+        }
+    }
+
     public getName(): string{
         return this.baseName;
     }
 
-    public static create(entityType: typeof Entity, source: string|null = null){
+    public static create(entityType: typeof Entity, modelDescriptor: ModelDescriptor, source: string|null = null){
         const typeMap = entityType.getTypeMap();
         const sourceMap = new Map(Array.from(typeMap, ([name, x]) => [name, source]));
-        return new this(entityType.name, entityType.getTypeMap(), sourceMap, entityType);
+        return new this(entityType.name, modelDescriptor, entityType.getTypeMap(), sourceMap, entityType);
     }
 
     public export(): object{

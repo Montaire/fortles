@@ -1,7 +1,8 @@
 import assert from "assert";
 import { before } from "mocha";
-import { ModelChangeType, ModelDescriptor } from "../src/index.js";
+import { Model, ModelChangeType, ModelDescriptor } from "../src/index.js";
 import { TestGroup, TestUser } from "./model/index.js";
+import { TestModelDescriptor } from "./utility/TestModelDescriptor.js";
 
 describe("ModelDescriptor", function(){
     let modelDescriptor: ModelDescriptor;
@@ -18,7 +19,7 @@ describe("ModelDescriptor", function(){
     });
 
     it("Detects create changes", function(){
-        const changes = modelDescriptor.getChanges(new ModelDescriptor());
+        const changes = modelDescriptor.getChanges(new TestModelDescriptor());
 
         const testUserChange = changes.find(x => x.getEntityDescriptor().baseEntityType == TestUser);
         assert(testUserChange, "Create change for thrs user should exists.");
@@ -35,8 +36,8 @@ describe("ModelDescriptor", function(){
 
     it("Serializes and deserializes", async function(){
         const path = "./temp/serialized-model-descriptor.js";
-        ModelDescriptor.serialize2(modelDescriptor, path);
-        const deserialized = await ModelDescriptor.deserialize2(path);
+        await ModelDescriptor.serialize(modelDescriptor, path);
+        const deserialized = await ModelDescriptor.deserialize(path);
         //BaseEntityType is needed for building up the model descriptor only.
         //It makes no sense, or even exits when a snapshot is loaded, deserialized.
         for(const entityDescriptor of modelDescriptor.getEntityDescriptors()){

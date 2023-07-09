@@ -15,9 +15,9 @@ describe("Model", function(){
         let model: Model;
         let connection: TestConnection;
         this.beforeAll("Preapre Model", async function(){
+            model = new Model();
             const modelDescriptor = await ModelDescriptor.create(['./packages/model/test/model']);
-            model = new Model(modelDescriptor);
-            connection = new TestConnection()
+            connection = new TestConnection();
             model.getConnections().set("test", connection);
 
         });

@@ -1,9 +1,10 @@
-import { Entity, primaryKey, generated, uuid, email, withMany, string } from "../../src/index.js";
+import { Entity, primaryKey, generated, uuid, email, withMany, string, model } from "../../src/index.js";
 import { TestGroup } from "./index.js";
 
 /**
  * Test users goal is to simulate all possible connection types.
  */
+@model
 export class TestUser extends Entity{
     //Redefining the primaray key with an auto generated uuid
     @primaryKey

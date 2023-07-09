@@ -3,7 +3,8 @@ import { pathToFileURL } from "url";
 import { createReadStream, createWriteStream, mkdirSync, readdirSync } from "fs";
 
 import { ClassSerializer } from "./utlity/ClassSerializer.js";
-import { Entity, EntityDescriptor, ModelChange } from "./index.js";
+import { Connection, Entity, EntityDescriptor, Model, ModelChange } from "./index.js";
+import { readFile, writeFile } from "fs/promises";
 
 /**
  * Describes how the model looks.
@@ -48,7 +49,7 @@ export class ModelDescriptor{
                     break;
                 }
             }
-            this.entityDescriptors.push(EntityDescriptor.create(entityType, source));
+            this.entityDescriptors.push(EntityDescriptor.create(entityType, this, source));
         }
     }
 
@@ -118,52 +119,24 @@ export class ModelDescriptor{
      * @param modelDescriptor 
      * @returns 
      */
-    public static serialize(modelDescriptor: ModelDescriptor): string{
+    /*public static serialize(modelDescriptor: ModelDescriptor): string{
         const data = this.toObject(modelDescriptor);
         return JSON.stringify(data);
-    }
+    }*/
 
     protected static createFolder(path: string){
         mkdirSync(dirname(path), {recursive: true});
     }
 
-    public static serialize2(modelDescriptor: ModelDescriptor, path: string): void{
+    public static async serialize(modelDescriptor: ModelDescriptor, path: string){
         this.createFolder(path);
-        const writeStream = createWriteStream(path);
-        for(const entityDescriptor of modelDescriptor.getEntityDescriptors()){
-            let sources = new Set(entityDescriptor.sourceMap.values());
-            for(const source of sources){
-                if(source){
-                    const readStream = createReadStream(source);
-                    readStream.pipe(writeStream);
-                    readStream.destroy();
-                }
-            }
-        }
-        writeStream.end();
+        const data = ClassSerializer.serialize(modelDescriptor);
+        await writeFile(path, data);
     }
 
-    public static async deserialize2(path:string): Promise<ModelDescriptor>{
-        const entityTypes = await this.collectEntityTypesFromFile(path);
-        const modelDescriptor = new this([], [path]);
-        modelDescriptor.buildDescriptors(entityTypes);
-        return modelDescriptor;
-    }
-
-    public static fromObject(data: {[key: string]: any}): ModelDescriptor{
-        return new ModelDescriptor(/*
-            data.entityDescriptors.map((x: EntityDescriptor) => ClassSerializer.import(x)), 
-            data.sources*/);
-    }
-
-    /**
-     * Deserializes a model from the given JSON
-     * @param rawData
-     * @returns 
-     */
-    public static deserialize(rawData: string): ModelDescriptor{
-        const data = JSON.parse(rawData);
-        return this.fromObject(data);
+    public static async deserialize(path: string): Promise<ModelDescriptor>{
+        const data = await readFile(path);
+        return ClassSerializer.deserialize<ModelDescriptor>(data.toString());
     }
 
     /**

@@ -70,18 +70,18 @@ export function hasOne(targetType: () => typeof Entity, config: AssociationTypeC
 
 export function hasMany(targetType: () => typeof Entity, config: AssociationTypeConfig = {}): EntityFieldDecorator {
     return (value: Entity, context: ClassFieldDecoratorContext) => {
-        TypeUtility.setType(null, context.name, target => new HasManyAssociationType(targetType, Entity, context.name, config));
+        TypeUtility.setType(null, context.name, () => new HasManyAssociationType(targetType, Entity, context.name, config));
     }
 }
 
 export function withOne(targetType: () => typeof Entity, config: AssociationTypeConfig = {}): EntityFieldDecorator {
     return (value: Entity, context: ClassFieldDecoratorContext) => {
-        TypeUtility.setType(null, context.name, target => new WithOneAssociationType(targetType, Entity, context.name, config));
+        TypeUtility.setType(null, context.name, () => new WithOneAssociationType(targetType, Entity, context.name, config));
     }
 }
 
 export function withMany(targetType: () => typeof Entity, config: AssociationTypeConfig = {}): EntityFieldDecorator {
     return (value: Entity, context: ClassFieldDecoratorContext) => {
-        TypeUtility.setType(null, context.name, target => new WithManyAssociationType(targetType, Entity, context.name, config));
+        TypeUtility.setType(null, context.name, () => new WithManyAssociationType(targetType, Entity, context.name, config));
     }
 }

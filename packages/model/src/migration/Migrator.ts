@@ -22,8 +22,8 @@ export class Migartor{
         if(!databaseVersion){
             //TODO Separate version to all connections.
             //Create database version into the default connection
-            const change = new ModelChange(new EntityDescriptor('nyeh'), EntityDescriptor.create(DatabseVersion));
-            this.model.getConnections().get("default")?.applyChange(change);
+            //const change = new ModelChange(new EntityDescriptor(), EntityDescriptor.create(DatabseVersion));
+            //this.model.getConnections().get("default")?.applyChange(change);
         }
         //Upgrade database to the latest version
         //TODO: get folders from the model!
@@ -48,7 +48,7 @@ export class Migartor{
             return;
         }
         //Detect changes from the last migration
-        let latestSnapshot = this.loadSnapshot(".snapshot-latest");
+        let latestSnapshot = await this.loadSnapshot(".snapshot-latest");
         if(!latestSnapshot){
             latestSnapshot = new ModelDescriptor();
         }
@@ -67,16 +67,16 @@ export class Migartor{
      * Saves snapshot from the current model descriptor.
      * @param path Save the snapshot to this location.
      */
-    public saveSnapshot(name: string = ".snapshot", basePath: string = this.basePath): void{
+    public async saveSnapshot(name: string = ".snapshot", basePath: string = this.basePath): Promise<void>{
         this.modelDescriptorSnapshot = this.model.getModelDescriptor().clone();
-        writeFileSync(basePath + "/" + name, ModelDescriptor.serialize(this.modelDescriptorSnapshot));
+        ModelDescriptor.serialize(this.modelDescriptorSnapshot, basePath + "/" + name);
     }
 
     /**
      * Loads a snapshot from a file
      * @param path 
      */
-    public loadSnapshot(name: string = ".snapshot", basePath: string = this.basePath): ModelDescriptor{
+    public async loadSnapshot(name: string = ".snapshot", basePath: string = this.basePath): Promise<ModelDescriptor>{
         const rawData = readFileSync(basePath + "/" + name);
         return ModelDescriptor.deserialize(rawData.toString());
     }

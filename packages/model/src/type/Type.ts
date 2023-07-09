@@ -28,7 +28,7 @@ export abstract class Type<T,C> implements Exportable{
         config: C, propertyMap: Map<string, Object> = new Map<string, Object>(), 
         validations: Validation<T>[] = []
     ){
-        this.name = name.toString();
+        this.name = name && name.toString();
         this.config = config;
         this.propertyMap = propertyMap;
         this.validations = validations;
@@ -123,23 +123,14 @@ export function readonly(value: any, context: ClassFieldDecoratorContext, descri
     return descriptor;
 }  
 
-export function primaryKey<T = any>(value: undefined, context: ClassFieldDecoratorContext){
-    return function(this: Entity, value: T): T{
-        TypeUtility.setTypeProperty(this, context.name, TypeProperty.PRIMARY_KEY);
-        return value;
-    };
+export function primaryKey(value: undefined, context: ClassFieldDecoratorContext){
+    TypeUtility.setTypeProperty(null, context.name, TypeProperty.PRIMARY_KEY);
 }
 
-export function generated<T = any>(value: undefined, context: ClassFieldDecoratorContext) {
-    return function(this: Entity, value: T): T{
-        TypeUtility.setTypeProperty(this, context.name, TypeProperty.GENERATED);
-        return value;
-    };
+export function generated(value: undefined, context: ClassFieldDecoratorContext) {
+    TypeUtility.setTypeProperty(null, context.name, TypeProperty.GENERATED);
 }
 
-export function nullable<T = any>(value: undefined, context: ClassFieldDecoratorContext) {
-    return function(this: Entity, value: T){
-        TypeUtility.setTypeProperty(this, context.name, TypeProperty.NULLABLE);
-        return value;
-    };
+export function nullable(value: undefined, context: ClassFieldDecoratorContext) {
+    TypeUtility.setTypeProperty(null, context.name, TypeProperty.NULLABLE);
 }

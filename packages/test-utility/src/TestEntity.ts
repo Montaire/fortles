@@ -1,5 +1,6 @@
-import { Entity, primaryKey, generated, integer, string } from "@fortles/model";
+import { Entity, primaryKey, generated, integer, string, model } from "@fortles/model";
 
+@model
 export default class TestEntity extends Entity{
     @primaryKey
     @generated

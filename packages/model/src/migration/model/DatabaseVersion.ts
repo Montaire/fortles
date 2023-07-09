@@ -1,5 +1,6 @@
-import { date, Entity, primaryKey, string } from "../../index.js";
+import { date, Entity, model, primaryKey, string } from "../../index.js";
 
+@model
 export default class DatabseVersion extends Entity{
     @primaryKey
     @string()

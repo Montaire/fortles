@@ -1,12 +1,13 @@
 import assert from "assert";
-import { string, integer, primaryKey, generated, Entity, connection, IntegerType, StringType } from "../src/index.js"
+import { string, integer, primaryKey, generated, Entity, connection, IntegerType, StringType, model } from "../src/index.js"
 import { ExpressionTestConnection } from "./utility/ExpressionTestConnection.js";
 
 @connection(new ExpressionTestConnection())
+@model
 class TestEntity extends Entity{
-    @integer()
     @primaryKey
     @generated
+    @integer()
     public id: number = 0;
 
     @string()
@@ -14,16 +15,15 @@ class TestEntity extends Entity{
 }
 
 describe("Entity", function(){
-    let entity: TestEntity|null = null;
-    before("Create new Entity", function(){
-        //entity = new TestEntity();
+
+    it("Has coorect primary keys", function(){
+        const modelInfo = TestEntity.getModelInfo();
+        assert.deepStrictEqual(modelInfo.primaryKeys, ["id"], "Only [id] primary key should exist. It has [" + modelInfo.primaryKeys.toString() + "]");
     });
 
     it("Has correct types", function(){
         const modelInfo = TestEntity.getModelInfo();
-        console.log(modelInfo.primaryKeys);
-        assert(modelInfo.typeMap.get("id") instanceof IntegerType);
-        assert(modelInfo.typeMap.get("name") instanceof StringType);
-        assert.deepStrictEqual(modelInfo.primaryKeys, ["id"]);
+        assert(modelInfo.typeMap.get("id") instanceof IntegerType, "Id should have an integer type. It has " + modelInfo.typeMap.get("id")?.constructor.name);
+        assert(modelInfo.typeMap.get("name") instanceof StringType, "Name should have an integer type. It has " + modelInfo.typeMap.get("id")?.constructor.name);
     });
 });

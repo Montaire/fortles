@@ -2,6 +2,9 @@ import { Connection, Query, Type, EntityModelInfo, AssociationType } from "../in
 
 export function connection(connection: Connection){
     return function(target: typeof Entity, context: ClassDecoratorContext): void{
+        if(!target.hasModelInfo()){
+            throw Error("@model decorator should be present after @connection.");
+        }
         target.getModelInfo().connection = connection;
     };
 }
@@ -12,6 +15,7 @@ export function connection(connection: Connection){
 export function model(target: typeof Entity, context: ClassDecoratorContext){
     if(EntityModelInfo.temporary){
         target.setModelInfo(EntityModelInfo.temporary);
+        EntityModelInfo.temporary = null;
     }
     for(const type of target.getModelInfo().typeMap.values()){
         if(type instanceof AssociationType){
@@ -22,23 +26,21 @@ export function model(target: typeof Entity, context: ClassDecoratorContext){
 
 export class Entity{
 
-    protected static modelInfoMap = new Map<string, EntityModelInfo>();
-
-    public static lastTarget: typeof Entity|null = this;
+    protected static modelInfoMap = new Map<typeof Entity, EntityModelInfo>();
 
     static getModelInfo(): EntityModelInfo{
-        if(!this.modelInfoMap.has(this.name)){
-            this.modelInfoMap.set(this.name, new EntityModelInfo());
+        if(!this.modelInfoMap.has(this)){
+            this.modelInfoMap.set(this, new EntityModelInfo());
         }
-        return this.modelInfoMap.get(this.name) as EntityModelInfo;
+        return this.modelInfoMap.get(this) as EntityModelInfo;
     }
 
     static hasModelInfo(): boolean{
-        return this.modelInfoMap.has(this.name);
+        return this.modelInfoMap.has(this);
     }
 
     static setModelInfo(modelInfo: EntityModelInfo){
-        this.modelInfoMap.set(this.name, modelInfo);
+        this.modelInfoMap.set(this, modelInfo);
     }
 
     static getPrimaryKeys(): string[] | null{
