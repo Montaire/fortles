@@ -50,6 +50,13 @@ it("Can be serialized and deserialzed", function(){
         //Base entity only needed for building up the descriptors, for finding the base class.
         //When loading, it is possible that the base class is altered, so it should be ignored in this test.
         entityDescriptor.baseEntityType = null;
+        //Validation functions are not equial even if the are the same string vise.
+        for(const typeName in entityDescriptor.typeMap){
+            //@ts-ignore
+            entityDescriptor.typeMap.get(typeName).validations = null;
+            //@ts-ignore
+            imported.typeMap.get(typeName).validations = null;
+        }
         assert.deepEqual(imported, entityDescriptor);
     });    
 });

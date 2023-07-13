@@ -10,6 +10,7 @@ import { readFile, writeFile } from "fs/promises";
  * Describes how the model looks.
  * It contains all the entities as well.
  */
+@ClassSerializer.serializable
 export class ModelDescriptor{
     
     protected entityDescriptors: EntityDescriptor[];

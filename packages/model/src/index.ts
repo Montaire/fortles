@@ -6,3 +6,4 @@ export * from "./migration/index.js";
 export * from "./ErrorReporter.js";
 export * from "./ModelDescriptor.js";
 export * from "./Model.js";
+export * from "./adapter/index.js";

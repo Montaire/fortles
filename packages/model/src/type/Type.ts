@@ -88,6 +88,22 @@ export abstract class Type<T,C> implements Exportable{
         return errors;
     }
 
+    /**
+     * Returns the custom properties for the given type.
+     * @returns Property map
+     */
+    public getPropertyMap(){
+        return this.propertyMap;
+    }
+
+    /**
+     * Returns the validations of the give type.
+     * @returns Array of validations.
+     */
+    public getValidations(): Validation<T>[]{
+        return this.validations;
+    }
+
     public export(): ExportedData {
         return{
             type: this.constructor.name,
