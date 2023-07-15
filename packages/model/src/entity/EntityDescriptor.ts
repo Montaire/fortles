@@ -90,7 +90,7 @@ export class EntityDescriptor implements Exportable{
         if(connection){
             return connection;
         }else{
-            return Model.getDefaultConnection();
+            return Model.getConnection();
         }
     }
 

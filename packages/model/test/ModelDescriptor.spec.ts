@@ -46,6 +46,6 @@ describe("ModelDescriptor", function(){
         //@ts-ignore
         //console.log(modelDescriptor.getEntityDescriptors()[0].typeMap, deserialized.getEntityDescriptors()[0].typeMap);
         console.log(TestUser.toString());
-        assert.deepEqual(modelDescriptor, deserialized);
+        assert.equal(modelDescriptor, deserialized);
     });
 });

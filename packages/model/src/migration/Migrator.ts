@@ -18,7 +18,7 @@ export class Migartor{
      */
     async migrate(toLatest: boolean = false){
         //Get database version
-        const databaseVersion = this.model.query(DatabseVersion)?.first();
+        const databaseVersion = DatabseVersion.query().first();
         if(!databaseVersion){
             //TODO Separate version to all connections.
             //Create database version into the default connection
@@ -40,6 +40,7 @@ export class Migartor{
                     if(!connection){
                         throw Error("Connection missing for" + change.getEntityDescriptor().getName());
                     }
+                    
                     connection.applyChange(change);
                 }
             }

@@ -12,8 +12,9 @@ export class Model{
         this.connections = connections;
         if(connections.has("default")){
             this.defaultConnection = connections.get("default") as Connection;
+        }else{
+            throw Error("Default connection must be defined.");
         }
-        throw Error("At least one connection must be defined.");
     }
 
     public migrate(): void{
@@ -37,8 +38,11 @@ export class Model{
         }
     }
 
-    public static getDefaultConnection(): Connection{
-        throw "Not Implemented";
+    public static getConnection(name?: string): Connection{
+        if(!name){
+            return this.getInstance().getConnection(name);
+        }
+        return this.getInstance().defaultConnection;
     }
 
     public getConnection(name?: string): Connection{
@@ -55,7 +59,7 @@ export class Model{
         return this.modelDescriptor;
     }
 
-    query<T extends Entity>(type: new() => T): Query<T>{
-        throw Error("Not implemented");
+    public static getInstance(): Model{
+        return new Model();
     }
 }

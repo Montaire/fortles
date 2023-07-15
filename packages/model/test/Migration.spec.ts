@@ -2,23 +2,15 @@ import assert from "assert";
 import { Connection, Model, ModelChange, ModelDescriptor } from "../src/index.js";
 import { TestUser } from "./model/index.js";
 import { TestGroup } from "./model/TestGroup.js";
-
-class TestConnection extends Connection{
-    public changes: ModelChange[] = [];
-    public override applyChange(change: ModelChange): void {
-        this.changes.push(change);
-    }
-}
+import { TestDriver, TestSchemaAdapter } from "./utility/TestDriver.js";
 
 describe("Model", function(){
     describe("Migration", function(){
         let model: Model;
-        let connection: TestConnection;
+        let connection = new Connection(new TestDriver());
         this.beforeAll("Preapre Model", async function(){
-            model = new Model();
             const modelDescriptor = await ModelDescriptor.create(['./packages/model/test/model']);
-            connection = new TestConnection();
-            model.getConnections().set("test", connection);
+            model = new Model(modelDescriptor, new Map([["default", connection]]));
 
         });
         it("Model descriptor is correct", function(){
@@ -26,16 +18,17 @@ describe("Model", function(){
             assert(entityDescriptors.find(x => x.baseEntityType == TestGroup), "TestGroup is missing.");
             assert(entityDescriptors.find(x => x.baseEntityType == TestUser), "TestUser is missing.");
         });
-        it("Creates new model", function(){
+        it("Creates new tables", function(){
             model.migrate();
-            assert.notEqual(connection.changes.length, 0, "There should be changes.");
+            const schemaAdapter = connection.getDriver().getSchemaAdapter() as TestSchemaAdapter;
+            assert.notEqual(schemaAdapter.altered.length, 0, "There should be changes.");
             
-            const testGroupChange = connection.changes[0];
-            assert.equal(testGroupChange.getEntityDescriptor().baseEntityType, TestGroup, 
+            const testGroupChange = schemaAdapter.altered[0];
+            assert.equal(testGroupChange, TestGroup, 
                 "TestGroup should be created first.");
 
-            const testUserChange = connection.changes[0];
-            assert.equal(testUserChange.getEntityDescriptor().baseEntityType, TestUser, 
+            const testUserChange = schemaAdapter.altered[1];
+            assert.equal(testUserChange, TestUser, 
                 "TestUser should be created secondly.");
 
         });

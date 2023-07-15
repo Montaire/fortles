@@ -51,7 +51,7 @@ it("Can be serialized and deserialzed", function(){
         //When loading, it is possible that the base class is altered, so it should be ignored in this test.
         entityDescriptor.baseEntityType = null;
         //Validation functions are not equial even if the are the same string vise.
-        for(const typeName in entityDescriptor.typeMap){
+        for(const typeName of entityDescriptor.typeMap.keys()){
             //@ts-ignore
             entityDescriptor.typeMap.get(typeName).validations = null;
             //@ts-ignore

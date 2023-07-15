@@ -4,7 +4,7 @@ import { Type } from "../index.js";
  * Handles how the type definitions from the Entity exported to the database,
  * and handles the export import from the databases native types.
  */
-export abstract class TypeAdapter<T extends Type<I,any>, I, O>{
+export abstract class TypeAdapter<T extends Type<I,any>, I, O, S>{
 
     constructor(protected type: T){
 
@@ -25,11 +25,11 @@ export abstract class TypeAdapter<T extends Type<I,any>, I, O>{
     /**
      * Export the definition from an Entity field to the databases DDL.
      */
-    abstract exportSchema(): string;
+    abstract exportSchema(): S;
 
     /**
      * Import a definition from the databases DDL to an Entity type.
      * @param definition The DDL from the database to the given type.
      */
-    abstract importSchema(definition: string): T;
+    abstract importSchema(definition: S): T;
 }

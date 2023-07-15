@@ -1,10 +1,11 @@
-import { Connection, Query, Type, EntityModelInfo, AssociationType } from "../index.js";
+import { Connection, Query, Type, EntityModelInfo, AssociationType, Model } from "../index.js";
 
-export function connection(connection: Connection){
+export function connection(name: string){
     return function(target: typeof Entity, context: ClassDecoratorContext): void{
         if(!target.hasModelInfo()){
             throw Error("@model decorator should be present after @connection.");
         }
+        const connection = Model.getConnection(name);
         target.getModelInfo().connection = connection;
     };
 }
@@ -70,8 +71,8 @@ export class Entity{
     static query<T extends Entity>(this: {new(): T}): Query<T> {
         const connection = (this as unknown as typeof Entity).getConnection();
         if(!connection){
-            throw new Error(this.name + " has no default connection!");
+            return Model.getConnection().query(this);
         }
-        return connection.createQuery(this);
+        return connection.query(this);
     }
 }
