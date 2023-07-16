@@ -2,7 +2,7 @@ import { opendirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { Connection, ModelChange, Model, ModelDescriptor, Migration, EntityDescriptor} from "../index.js";
 import DatabseVersion from "./model/DatabaseVersion.js";
 
-export class Migartor{
+export class MigrationRunner{
 
     protected model: Model;
     protected modelDescriptorSnapshot: ModelDescriptor|null = null;
@@ -86,12 +86,12 @@ export class Migartor{
      * Creates a new migration from the last snapshot
      * @returns 
      */
-    createMigration(): Migration{
+    createMigrations(connection: Connection): Map<Connection, Migration>{
         if(!this.modelDescriptorSnapshot){
-            return new Migration([]);
+            return new Map<Connection, Migration>();
         }
         const changes = this.model.getModelDescriptor().getChanges(this.modelDescriptorSnapshot);
-        const migration = new Migration(changes);
+        const migration = new Map(changes.entries());
         return migration;
     }
 }

@@ -1,4 +1,4 @@
-import { Connection, ModelDescriptor, Query, Migartor, Entity } from "./index.js";
+import { Connection, ModelDescriptor, Query, MigrationRunner, Entity } from "./index.js";
 
 
 export class Model{
@@ -18,7 +18,7 @@ export class Model{
     }
 
     public migrate(): void{
-        const migrator = new Migartor(this);
+        const migrator = new MigrationRunner(this);
         migrator.migrate();
     }
 

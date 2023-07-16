@@ -1,24 +1,23 @@
-import { AlterSchemaChange, CreateSchemaChange, Driver, Entity, Query, SchemaChange } from "./index.js";
+import { AlterSchemaChange, CreateSchemaChange, Driver, Entity, Query, SchemaAdapter, SchemaChange } from "./index.js";
 import { DropSchemaChange } from "./schema/DropSchema.js";
 
 export class Connection<D extends Driver = Driver>{
 
     protected driver: D;
 
-    constructor(driver: D){
+    protected name: string;
+
+    constructor(name: string, driver: D){
+        this.name = name;
         this.driver = driver;
     }
 
-    public async create(schema: CreateSchemaChange): Promise<void>{
-        this.driver.getSchemaAdapter().create(schema);
+    public getName(){
+        return this.name;
     }
 
-    public async alter(schema: AlterSchemaChange): Promise<void>{
-        this.driver.getSchemaAdapter().alter(schema);
-    }
-
-    public async drop(schema: DropSchemaChange): Promise<void>{
-        this.driver.getSchemaAdapter().drop(schema);
+    public getSchema(): SchemaAdapter{
+        return this.driver.getSchemaAdapter();
     }
 
     public query<E extends Entity>(entityType: new() => E): Query<E, this>{

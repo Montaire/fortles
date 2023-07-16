@@ -104,6 +104,11 @@ export abstract class Type<T,C> implements Exportable{
         return this.validations;
     }
 
+    public equials(type: Type<any,any>): boolean{
+        //TODO We should do some better checking here
+        return this == type;
+    }
+
     public export(): ExportedData {
         return{
             type: this.constructor.name,

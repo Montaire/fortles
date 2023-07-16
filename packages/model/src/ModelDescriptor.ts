@@ -3,7 +3,7 @@ import { pathToFileURL } from "url";
 import { createReadStream, createWriteStream, mkdirSync, readdirSync } from "fs";
 
 import { ClassSerializer } from "./utlity/ClassSerializer.js";
-import { Connection, Entity, EntityDescriptor, Model, ModelChange } from "./index.js";
+import { AlterSchemaChange, Connection, CreateSchemaChange, DropSchemaChange, Entity, EntityDescriptor, Model, ModelChange, SchemaChange } from "./index.js";
 import { readFile, writeFile } from "fs/promises";
 
 /**
@@ -84,26 +84,36 @@ export class ModelDescriptor{
      * @param fromModelDescriptor Detect changes from this Descriptor.
      * @returns Array of the changes
      */
-    public getChanges(fromModelDescriptor: ModelDescriptor): ModelChange[]{
+    public getChanges(fromModelDescriptor: ModelDescriptor): Map<Connection, SchemaChange[]>{
         let current = Object.fromEntries(this.entityDescriptors.map(x => [x.getName(), x]));
         let pervious = Object.fromEntries(fromModelDescriptor.entityDescriptors.map(x => [x.getName(), x])) as {[key: string]: EntityDescriptor};
-        let changes: ModelChange[] = [];
-        let change: ModelChange;
+        const changes =  new Map<Connection, SchemaChange[]>();
         for(const key in current){
+            const connection = current[key].getConnection();
+            if(!changes.has(connection)){
+                changes.set(connection, []);
+            }
             if(pervious[key]){
                 //Modified
-                change = new ModelChange(pervious[key], current[key]);
-                delete pervious[key];
+                const change = AlterSchemaChange.createFromEntityDescriptor(pervious[key], current[key]);
+                if(change){
+                    changes.get(connection)?.push(change);
+                    delete pervious[key];
+                }
             }else{
                 //Created
-                change = new ModelChange(null, current[key]);
+                const change = CreateSchemaChange.createFromEntityDescriptor(current[key]);
+                changes.get(connection)?.push(change);
             }
-            changes.push(change);
         }
         //Deleted
         for(const key in pervious){
-            let change = new ModelChange(pervious[key], null);
-            changes.push(change);
+            const connection = pervious[key].getConnection();
+            const change = DropSchemaChange.createFromEntityDescriptor(current[key]);
+            if(!changes.has(connection)){
+                changes.set(connection, []);
+            }
+            changes.get(connection)?.push(change);
         }
         return changes;
     }

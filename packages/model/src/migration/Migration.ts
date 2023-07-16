@@ -1,13 +1,14 @@
 import { Connection, SchemaChange, CreateSchemaChange, DropSchemaChange } from "../index.js";
 import { CustomShemaChange } from "../schema/CustomSchemaChange.js";
 
-class Migration {
+export class Migration {
     private connection: Connection;
-    private schemaChanges: SchemaChange[] = [];
+    private schemaChanges: SchemaChange[];
     private isUp: boolean = true;  // set this according to your migration direction logic
   
-    constructor(connection: Connection) {
+    constructor(connection: Connection, schemaChanges: SchemaChange[] = []) {
       this.connection = connection;
+      this.schemaChanges = schemaChanges;
     }
   
     public create(name: string): CreateSchemaChange {
