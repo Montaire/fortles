@@ -1,5 +1,5 @@
 import { AlterSchema } from "../../src/adapter/Schema.js";
-import { CreateSchemaChange, Driver, Entity, EntityAdapter, SchemaChange, SchemaAdapter } from "../../src/index.js";
+import { CreateSchemaChange, Driver, Entity, EntityAdapter, SchemaChange, SchemaAdapter, Connection } from "../../src/index.js";
 import { DropSchemaChange } from "../../src/schema/DropSchema.js";
 
 export class TestSchemaAdapter extends SchemaAdapter<TestDriver>{
@@ -21,6 +21,9 @@ export class TestSchemaAdapter extends SchemaAdapter<TestDriver>{
 }
 
 export class TestDriver extends Driver{
+    public override createConnection(): Connection<this> {
+            return new Connection("default", this);
+    }
     protected override schemaAdapter = new TestSchemaAdapter(this);
 
 }

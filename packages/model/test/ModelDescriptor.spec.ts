@@ -1,6 +1,6 @@
 import assert from "assert";
 import { before } from "mocha";
-import { Model, ModelChangeType, ModelDescriptor } from "../src/index.js";
+import { CreateSchemaChange, Model, ModelChangeType, ModelDescriptor } from "../src/index.js";
 import { TestGroup, TestUser } from "./model/index.js";
 import { TestModelDescriptor } from "./utility/TestModelDescriptor.js";
 
@@ -21,17 +21,13 @@ describe("ModelDescriptor", function(){
     it("Detects create changes", function(){
         const changes = modelDescriptor.getChanges(new TestModelDescriptor());
 
-        const testUserChange = changes.find(x => x.getEntityDescriptor().baseEntityType == TestUser);
+        const testUserChange = changes.get("default")?.find(x => x.getName() == "TestUser");
         assert(testUserChange, "Create change for thrs user should exists.");
-        assert.equal(testUserChange.getType(), ModelChangeType.CREATE);
-        assert.equal(testUserChange.from, null);
-        assert.equal(testUserChange.to?.baseEntityType, TestUser);
+        assert(testUserChange instanceof CreateSchemaChange, "We are creating the user.");
 
-        const testGroupChange = changes.find(x => x.getEntityDescriptor().baseEntityType == TestUser);
+        const testGroupChange = changes.get("default")?.find(x => x.getName() == "TestGroup");
         assert(testGroupChange, "Create change for thrs user should exists.");
-        assert.equal(testGroupChange.getType(), ModelChangeType.CREATE);
-        assert.equal(testGroupChange.from, null);
-        assert.equal(testGroupChange.to?.baseEntityType, TestUser);
+        assert(testGroupChange instanceof CreateSchemaChange, "We are creating the user.");
     });
 
     it("Serializes and deserializes", async function(){

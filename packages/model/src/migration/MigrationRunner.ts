@@ -35,14 +35,7 @@ export class MigrationRunner{
                 }
                 const migration = await import(file) as Migration;
                 //Run migration
-                for(const change of migration.getChanges()){
-                    const connection = change.getEntityDescriptor().baseEntityType?.getConnection();
-                    if(!connection){
-                        throw Error("Connection missing for" + change.getEntityDescriptor().getName());
-                    }
-                    
-                    connection.applyChange(change);
-                }
+                migration.apply();
             }
         }
         if(!toLatest){
@@ -86,12 +79,19 @@ export class MigrationRunner{
      * Creates a new migration from the last snapshot
      * @returns 
      */
-    createMigrations(connection: Connection): Map<Connection, Migration>{
+    createMigrations(): Migration[]{
         if(!this.modelDescriptorSnapshot){
-            return new Map<Connection, Migration>();
+            return []
         }
-        const changes = this.model.getModelDescriptor().getChanges(this.modelDescriptorSnapshot);
-        const migration = new Map(changes.entries());
-        return migration;
+        const changeMap = Model.getInstance().getModelDescriptor().getChanges(this.modelDescriptorSnapshot);
+        const migrations: Migration[] = [];
+        for(const [name, changes] of changeMap.entries()){
+            const migration = new Migration(
+                Model.getConnection(name),
+                changes
+            );
+            migrations.push(migration);
+        }
+        return migrations;
     }
 }

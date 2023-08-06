@@ -4,6 +4,8 @@ import { AlterSchema } from "./Schema.js";
 
 /**
  * Connects the whole model (all entities) to a given database.
+ * 
+ * Concerned with DDL (Data Definition Language) operations such as 'CREATE DATABASE', 'DROP DATABASE', 'CREATE TABLE', 'DROP TABLE', etc.
  */
 export abstract class SchemaAdapter<D extends Driver = Driver>{
 

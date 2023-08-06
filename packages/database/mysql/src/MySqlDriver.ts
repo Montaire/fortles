@@ -1,5 +1,5 @@
 import { PoolOptions, Pool, createPool } from "mysql2/promise"
-import { Driver, SchemaAdapter } from "@fortles/model";
+import { Connection, Driver, SchemaAdapter } from "@fortles/model";
 import { MySqlSchemaAdapter } from "./adapter/MySqlSchemaAdapter.js";
 
 export  class MySqlDriver extends Driver{
@@ -15,5 +15,9 @@ export  class MySqlDriver extends Driver{
 
     async execute(query: string, data: []|null = null): Promise<any>{
         return this.mySqlPromisePool.execute(query, data);
+    }
+
+    public override createConnection(): Connection<this> {
+        throw new Error("Method not implemented.");
     }
 }

@@ -35,6 +35,11 @@ export class ModelDescriptor{
         return modelDescriptor;
     }
 
+    public async addFolder(rootFolder: string): Promise<void>{
+        const entityTypes = await ModelDescriptor.collectEntityTypesFromFolder(rootFolder);
+        this.buildDescriptors(entityTypes, rootFolder);
+    }
+
     /**
      * Builds all the EntityDescriptors from the given entities.
      * It will include the techincal helper tables, and al the extenensions for the tables.
@@ -84,36 +89,36 @@ export class ModelDescriptor{
      * @param fromModelDescriptor Detect changes from this Descriptor.
      * @returns Array of the changes
      */
-    public getChanges(fromModelDescriptor: ModelDescriptor): Map<Connection, SchemaChange[]>{
+    public getChanges(fromModelDescriptor: ModelDescriptor): Map<string, SchemaChange[]>{
         let current = Object.fromEntries(this.entityDescriptors.map(x => [x.getName(), x]));
         let pervious = Object.fromEntries(fromModelDescriptor.entityDescriptors.map(x => [x.getName(), x])) as {[key: string]: EntityDescriptor};
-        const changes =  new Map<Connection, SchemaChange[]>();
+        const changes =  new Map<string, SchemaChange[]>();
         for(const key in current){
-            const connection = current[key].getConnection();
-            if(!changes.has(connection)){
-                changes.set(connection, []);
+            const connectionName = current[key].getConnection().getName();
+            if(!changes.has(connectionName)){
+                changes.set(connectionName, []);
             }
             if(pervious[key]){
                 //Modified
                 const change = AlterSchemaChange.createFromEntityDescriptor(pervious[key], current[key]);
                 if(change){
-                    changes.get(connection)?.push(change);
+                    changes.get(connectionName)?.push(change);
                     delete pervious[key];
                 }
             }else{
                 //Created
                 const change = CreateSchemaChange.createFromEntityDescriptor(current[key]);
-                changes.get(connection)?.push(change);
+                changes.get(connectionName)?.push(change);
             }
         }
         //Deleted
         for(const key in pervious){
-            const connection = pervious[key].getConnection();
+            const connectionName = pervious[key].getConnection().getName();
             const change = DropSchemaChange.createFromEntityDescriptor(current[key]);
-            if(!changes.has(connection)){
-                changes.set(connection, []);
+            if(!changes.has(connectionName)){
+                changes.set(connectionName, []);
             }
-            changes.get(connection)?.push(change);
+            changes.get(connectionName)?.push(change);
         }
         return changes;
     }

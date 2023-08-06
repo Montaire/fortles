@@ -1,11 +1,11 @@
-import { Connection, Entity, QueryAdapter } from "../index.js";
+import { Connection, Entity, TransactionAdapter } from "../index.js";
 
 export class Query<E extends Entity, C extends Connection = Connection> implements Iterable<E>{
 
     protected entityType: new() => E;
-    protected queryAdapter: QueryAdapter<C>
+    protected queryAdapter: TransactionAdapter<C>
 
-    constructor(entityType: new() => E, queryAdapter: QueryAdapter<C>){
+    constructor(entityType: new() => E, queryAdapter: TransactionAdapter<C>){
         this.entityType = entityType;
         this.queryAdapter = queryAdapter;
     }

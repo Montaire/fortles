@@ -7,5 +7,9 @@ export abstract class SchemaChange{
         this.name = name;
     }
 
+    public getName(){
+        return this.name;
+    }
+
     public abstract applyTo(connection: Connection): Promise<void>;
 }
