@@ -1,4 +1,6 @@
+import { Model } from "../src/Model.js";
 import { TestUser } from "./model/TestUser.js";
+import { TestDriver } from "./utility/TestDriver.js";
 class TestQuery{
     // We mark the function to be processed by the query translator engne.
     //@expression
@@ -14,6 +16,11 @@ class TestQuery{
 const testQuery = new TestQuery();
 
 describe("ExpressionBuilder", function(){
+
+    this.beforeAll("Prepare Model", function(){
+        Model.getInstance().setDriver("default", new TestDriver());
+    });
+
     it("Translates a simple query.", function(){
         const query = testQuery.getSimpleQuery();
         

@@ -21,8 +21,8 @@ export class TestSchemaAdapter extends SchemaAdapter<TestDriver>{
 }
 
 export class TestDriver extends Driver{
-    public override createConnection(): Connection<this> {
-            return new Connection("default", this);
+    public override createConnection(name: string = "default"): Connection<this> {
+            return new Connection(name, this);
     }
     protected override schemaAdapter = new TestSchemaAdapter(this);
 

@@ -2,7 +2,7 @@ import { PoolOptions, Pool, createPool } from "mysql2/promise"
 import { Connection, Driver, SchemaAdapter } from "@fortles/model";
 import { MySqlSchemaAdapter } from "./adapter/MySqlSchemaAdapter.js";
 
-export  class MySqlDriver extends Driver{
+export class MySqlDriver extends Driver{
 
     protected override schemaAdapter = new MySqlSchemaAdapter(this);
 

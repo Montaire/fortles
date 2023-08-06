@@ -1,5 +1,4 @@
-import { Connection, SchemaChange, CreateSchemaChange, DropSchemaChange } from "../index.js";
-import { CustomShemaChange } from "../schema/CustomSchemaChange.js";
+import { Connection, SchemaChange, CreateSchemaChange, DropSchemaChange, CustomShemaChange } from "../index.js";
 
 export class Migration {
     private connection: Connection;

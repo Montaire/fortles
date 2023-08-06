@@ -2,13 +2,17 @@ import assert from "assert";
 import { Model } from "../src/index.js";
 import { TestUser } from "./model/index.js";
 import { TestGroup } from "./model/TestGroup.js";
-import { TestSchemaAdapter } from "./utility/TestDriver.js";
+import { TestDriver, TestSchemaAdapter } from "./utility/TestDriver.js";
 
 describe("Model", function(){
+
+    this.beforeAll("Preapre connection", function(){
+        Model.getInstance().setDriver("default", new TestDriver());
+    });
+
     describe("Migration", function(){
         this.beforeAll("Preapre Model", async function(){
             await Model.getInstance().getModelDescriptor().addFolder("./packages/model/test/model");
-
         });
         it("Model descriptor is correct", function(){
             const entityDescriptors = Model.getInstance().getModelDescriptor().getEntityDescriptors();

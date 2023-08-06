@@ -1,4 +1,4 @@
-import { Connection, Driver, SchemaChange } from "../index.js";
+import { Connection, SchemaChange } from "../index.js";
 
 export class CustomShemaChange extends SchemaChange{
 

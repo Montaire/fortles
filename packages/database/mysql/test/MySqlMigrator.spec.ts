@@ -1,20 +1,13 @@
-import { TestEntity } from "@fortles/test-utility";
-import { MySqlMigrator } from "../src/index.js";
-
-class TestConnection{
-    protected queryString = "";
-    query(queryString: string){
-        this.queryString = queryString;
-    }
-    toString(){
-        return this.queryString;
-    }
-}
+import { Model } from "@fortles/model";
+import { TestDriver } from "@fortles/model/test/utility/TestDriver.js";
 
 describe("Orm.MySql.Migration", function(){
+
+    this.beforeAll("Preapre tables", function(){
+        Model.getInstance().setDriver("default", new TestDriver());
+    });
+
     it("Can create tables", function(){
-        let connection = new TestConnection();
-        let migrator = new MySqlMigrator(connection);
-        migrator.create([TestEntity]);
+        Model.getInstance().migrate();
     });
 });

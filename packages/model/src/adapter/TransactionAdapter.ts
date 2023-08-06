@@ -1,4 +1,4 @@
-import { Connection, Entity, Query } from "../index.js";
+import { Driver, Entity, Query } from "../index.js";
 
 /**
  *  Handles DML (Data Manipulation Language) operations and transactions,
@@ -6,15 +6,23 @@ import { Connection, Entity, Query } from "../index.js";
  * as well as transaction control commands like 'START TRANSACTION',
  * 'COMMIT', 'ROLLBACK', etc.
  */
-export abstract class TransactionAdapter<C extends Connection>{
+export abstract class TransactionAdapter<D extends Driver>{
 
-    protected connection: C;
+    protected driver: D;
 
-    constructor(connection: C){
-        this.connection = connection;
+    constructor(driver: D){
+        this.driver = driver;
     }
 
-    public createQuery<E extends Entity>(entityType: new() => E): Query<E>{
+    public createQuery<E extends Entity>(entityType: new() => E): Query<E, D>{
         throw "Not implemented";
+    }
+
+    public beginTransaction(): void{
+
+    }
+
+    public endTransaction(): void{
+
     }
 }

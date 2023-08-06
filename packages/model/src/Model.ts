@@ -5,15 +5,14 @@ declare const modelContext: ModelContext|undefined;
 
 export class Model{
 
+    protected static instance?: Model;
+
     protected modelDescriptor: ModelDescriptor;
     protected driverMap: Map<string, Driver>;
 
     constructor(modelDescriptor: ModelDescriptor = new ModelDescriptor(), driverMap = new  Map<string, Driver>()){
         this.modelDescriptor = modelDescriptor;
         this.driverMap = driverMap;
-        if(!driverMap.has("default")){
-            throw Error("Default connection must be defined.");
-        }
     }
 
     public migrate(): void{
@@ -30,11 +29,12 @@ export class Model{
     }
 
     public static getConnection(name: string = "default"): Connection{
-        if(modelContext){
+        return this.getInstance().createConnection(name);
+        /*if(modelContext){
             return modelContext.getConnection(name);
         }else{
             return this.getInstance().createConnection(name);
-        }
+        }*/
     }
 
     public createConnection(name: string = "default"): Connection{
@@ -54,6 +54,9 @@ export class Model{
     }
 
     public static getInstance(): Model{
-        return new Model();
+        if(!this.instance){
+            this.instance = new Model();
+        }
+        return this.instance;
     }
 }

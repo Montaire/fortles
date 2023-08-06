@@ -20,8 +20,8 @@ export class Connection<D extends Driver = Driver>{
         return this.driver.getSchemaAdapter();
     }
 
-    public query<E extends Entity>(entityType: new() => E): Query<E, this>{
-        throw "changing";
+    public query<E extends Entity>(entityType: new() => E): Query<E, D>{
+        return this.getDriver().getTransactionAdapter().createQuery(entityType);
     }
 
     public getDriver(): D{
@@ -29,10 +29,10 @@ export class Connection<D extends Driver = Driver>{
     }
 
     public beginTransaction(): void{
-
+        this.getDriver().getTransactionAdapter().beginTransaction();
     }
 
     public endTransaction(): void{
-
+        this.getDriver().getTransactionAdapter().endTransaction();
     }
 }

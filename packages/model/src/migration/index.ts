@@ -1,3 +1,3 @@
 export * from "./Migration.js";
-export * from "./Migrator.js";
+export * from "./MigrationRunner.js";
 export * from "./ModelChange.js";
