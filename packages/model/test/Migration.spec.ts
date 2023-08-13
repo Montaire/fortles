@@ -7,7 +7,7 @@ import { TestDriver, TestSchemaAdapter } from "./utility/TestDriver.js";
 describe("Model", function(){
 
     this.beforeAll("Preapre connection", function(){
-        Model.getInstance().setDriver("default", new TestDriver());
+        Model.getInstance().setDriver(new TestDriver("default"));
     });
 
     describe("Migration", function(){

@@ -1,6 +1,6 @@
-import { Entity, Query } from "../index.js";
+import { Driver, Entity, Query } from "../index.js";
 
-export default class ExpressionQuery<E extends Entity> extends Query<E>{
+export default class ExpressionQuery<E extends Entity, D extends Driver<any>> extends Query<E, D>{
 
     public override where(condition: (item: E) => boolean): this {
         const variables = arguments[1];

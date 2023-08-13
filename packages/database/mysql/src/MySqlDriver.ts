@@ -1,23 +1,25 @@
-import { PoolOptions, Pool, createPool } from "mysql2/promise"
-import { Connection, Driver, SchemaAdapter } from "@fortles/model";
-import { MySqlSchemaAdapter } from "./adapter/MySqlSchemaAdapter.js";
+import { PoolOptions, Pool, createPool, PoolConnection } from "mysql2/promise"
+import { Connection, Driver, EntityAdapter, SchemaAdapter, TransactionAdapter } from "@fortles/model";
+import { MySqlSchemaAdapter, MySqlTransactionAdapter, MySqlEntityAdatper } from "./adapter/index.js";
 
-export class MySqlDriver extends Driver{
-
-    protected override schemaAdapter = new MySqlSchemaAdapter(this);
+export class MySqlDriver extends Driver<PoolConnection>{
 
     protected mySqlPromisePool: Pool;
 
-    constructor(config: PoolOptions){
-        super();
+    constructor(name: string, config: PoolOptions){
+        super(name);
         this.mySqlPromisePool = createPool(config);
     }
 
-    async execute(query: string, data: []|null = null): Promise<any>{
-        return this.mySqlPromisePool.execute(query, data);
-    }
-
-    public override createConnection(): Connection<this> {
-        throw new Error("Method not implemented.");
+    public override async createConnection(): Promise<Connection<PoolConnection, MySqlDriver>> {
+        const mysqlConnection = await  this.mySqlPromisePool.getConnection();
+        const connection = new Connection(
+            this,
+            mysqlConnection,
+            new MySqlSchemaAdapter(mysqlConnection),
+            new MySqlTransactionAdapter(mysqlConnection),
+            new MySqlEntityAdatper()
+        );
+        return connection;
     }
 }

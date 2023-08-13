@@ -4,7 +4,7 @@ import { TestDriver } from "@fortles/model/test/utility/TestDriver.js";
 describe("Orm.MySql.Migration", function(){
 
     this.beforeAll("Preapre tables", function(){
-        Model.getInstance().setDriver("default", new TestDriver());
+        Model.getInstance().setDriver(new TestDriver());
     });
 
     it("Can create tables", function(){

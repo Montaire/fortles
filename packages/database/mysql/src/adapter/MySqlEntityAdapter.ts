@@ -1,6 +1,7 @@
 import { Entity, EntityAdapter } from "@fortles/model";
+import { MySqlDriver } from "../MySqlDriver.js";
 
-export default class MySqlEntityAdatper extends EntityAdapter{
+export class MySqlEntityAdatper extends EntityAdapter{
 
     importEntity(data: object): Entity {
         throw new Error("Method not implemented.");
@@ -11,7 +12,7 @@ export default class MySqlEntityAdatper extends EntityAdapter{
     }
 
     exportCreateDefinition(): string {
-        let definition = "CREATE TABLE `" + this.getName() + "` (";
+        let definition = "CREATE TABLE `" + "` (";
 
         definition += ");";
         return definition;

@@ -1,6 +1,6 @@
 import { Connection, Driver, Entity, TransactionAdapter } from "../index.js";
 
-export class Query<E extends Entity, D extends Driver> implements Iterable<E>{
+export class Query<E extends Entity, D extends Driver<any> = Driver<any>> implements Iterable<E>{
 
     protected entityType: new() => E;
     protected queryAdapter: TransactionAdapter<D>

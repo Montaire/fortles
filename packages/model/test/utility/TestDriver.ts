@@ -1,5 +1,6 @@
+import { Test } from "mocha";
 import { AlterSchema } from "../../src/adapter/Schema.js";
-import { CreateSchemaChange, Driver, Entity, EntityAdapter, SchemaChange, SchemaAdapter, Connection } from "../../src/index.js";
+import { CreateSchemaChange, Driver, Entity, EntityAdapter, SchemaChange, SchemaAdapter, Connection, TransactionAdapter } from "../../src/index.js";
 import { DropSchemaChange } from "../../src/schema/DropSchema.js";
 
 export class TestSchemaAdapter extends SchemaAdapter<TestDriver>{
@@ -20,10 +21,29 @@ export class TestSchemaAdapter extends SchemaAdapter<TestDriver>{
 
 }
 
-export class TestDriver extends Driver{
-    public override createConnection(name: string = "default"): Connection<this> {
-            return new Connection(name, this);
+export class TestTransactionAdapter extends TransactionAdapter<TestDriver>{
+
+}
+
+export class TestEntityAdapter extends EntityAdapter{
+    override importEntity(data: object): Entity {
+        throw new Error("Method not implemented.");
     }
-    protected override schemaAdapter = new TestSchemaAdapter(this);
+    override exportEntity(entity: Entity): object {
+        throw new Error("Method not implemented.");
+    }
+}
+
+export class TestDriver extends Driver<any>{
+
+    public override async createConnection(): Promise<Connection<TestDriver>>{
+            return new Connection<TestDriver>(
+                this,
+                this,
+                new TestSchemaAdapter(this),
+                new TestTransactionAdapter(this),
+                new TestEntityAdapter()
+            );
+    }
 
 }

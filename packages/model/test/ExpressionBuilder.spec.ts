@@ -17,8 +17,8 @@ const testQuery = new TestQuery();
 
 describe("ExpressionBuilder", function(){
 
-    this.beforeAll("Prepare Model", function(){
-        Model.getInstance().setDriver("default", new TestDriver());
+    this.beforeAll("Prepare Model", async function(){
+        await Model.getInstance().setDriver(new TestDriver());
     });
 
     it("Translates a simple query.", function(){

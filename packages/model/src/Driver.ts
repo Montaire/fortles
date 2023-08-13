@@ -1,29 +1,22 @@
 import { Connection, Entity, EntityAdapter, SchemaAdapter, TransactionAdapter } from "./index.js";
 
-export abstract class Driver<Config = Record<string, any>>{
+export type ExtractNativeConnection<D> = D extends Driver<infer NativeConnection> ? NativeConnection : never;
 
-    protected abstract schemaAdapter: SchemaAdapter;
+export abstract class Driver<NativeConnection = any, Config = Record<string, any>>{
 
-    protected abstract transactionAdapter: TransactionAdapter<this>;
+    protected name: string;
 
-    protected abstract entityAdapter: EntityAdapter;
-
-    /**
-     * Gives a unified interface 
-     * @returns 
-     */
-    public getSchemaAdapter(): SchemaAdapter{
-        return this.schemaAdapter;
+    constructor(name: string = "default"){
+        this.name = name;
     }
 
-    public getTransactionAdapter(): TransactionAdapter<this>{
-        return this.transactionAdapter;
+    public getName(): string{
+        return this.name;
     }
-
     /**
      * Creates a new connection.
      * All created connection should have a different session, 
      * so on concurrent enviroments, each execution should create a connection.
      */
-    public abstract createConnection(): Connection<this>;
+    public abstract createConnection(): Promise<Connection>;
 }

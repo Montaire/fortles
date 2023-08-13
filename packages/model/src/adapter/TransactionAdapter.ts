@@ -6,15 +6,15 @@ import { Driver, Entity, Query } from "../index.js";
  * as well as transaction control commands like 'START TRANSACTION',
  * 'COMMIT', 'ROLLBACK', etc.
  */
-export abstract class TransactionAdapter<D extends Driver>{
+export abstract class TransactionAdapter<NativeConnection>{
 
-    protected driver: D;
+    protected nativeConnection: NativeConnection;
 
-    constructor(driver: D){
-        this.driver = driver;
+    constructor(nativeConnection: NativeConnection){
+        this.nativeConnection = nativeConnection;
     }
 
-    public createQuery<E extends Entity>(entityType: new() => E): Query<E, D>{
+    public createQuery<E extends Entity>(entityType: new() => E): Query<E>{
         throw "Not implemented";
     }
 

@@ -9,10 +9,12 @@ export class Model{
 
     protected modelDescriptor: ModelDescriptor;
     protected driverMap: Map<string, Driver>;
+    protected globalContext: ModelContext;
 
     constructor(modelDescriptor: ModelDescriptor = new ModelDescriptor(), driverMap = new  Map<string, Driver>()){
         this.modelDescriptor = modelDescriptor;
         this.driverMap = driverMap;
+        this.globalContext = new ModelContext();
     }
 
     public migrate(): void{
@@ -24,25 +26,28 @@ export class Model{
         return this.driverMap;
     }
 
-    public setDriver(name: string, driver: Driver): void{
-        this.driverMap.set(name, driver);
+    /**
+     * Sets a driver with its name and create a connection for it in the global context.
+     * @param driver Driver to add
+     */
+    public async setDriver(driver: Driver): Promise<void>{
+        this.driverMap.set(driver.getName(), driver);
+        await this.globalContext.createConnection(driver);
     }
 
+    /**
+     * Gets a connection by its name. If a local context is present it will be served,
+     * othervise the global conttext will be used.
+     * A connection is always immutable.
+     * @param name Name of the connection.
+     * @returns The connection instance.
+     */
     public static getConnection(name: string = "default"): Connection{
-        return this.getInstance().createConnection(name);
-        /*if(modelContext){
+        if(typeof modelContext !== "undefined" && modelContext){
             return modelContext.getConnection(name);
         }else{
-            return this.getInstance().createConnection(name);
-        }*/
-    }
-
-    public createConnection(name: string = "default"): Connection{
-        const driver = this.driverMap.get(name);
-        if(!driver){
-            throw new Error("Database driver for \"" + name + "\" was not found.");
+            return this.getInstance().globalContext.getConnection(name);
         }
-        return driver.createConnection();
     }
 
     public getDriver(name: string = "default"): Driver|undefined{

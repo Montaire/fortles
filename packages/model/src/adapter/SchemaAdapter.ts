@@ -7,18 +7,14 @@ import { AlterSchema } from "./Schema.js";
  * 
  * Concerned with DDL (Data Definition Language) operations such as 'CREATE DATABASE', 'DROP DATABASE', 'CREATE TABLE', 'DROP TABLE', etc.
  */
-export abstract class SchemaAdapter<D extends Driver = Driver>{
+export abstract class SchemaAdapter<NativeConnection>{
 
-    protected driver: D;
+    protected nativeConnection: NativeConnection;
 
-    constructor(driver: D){
-        this.driver = driver;
+    constructor(nativeConnection: NativeConnection){
+        this.nativeConnection = nativeConnection;
     }
 
-    public getDriver(): D{
-        return this.driver;
-    }
-    
     abstract create(schema: CreateSchemaChange): Promise<void>;
 
     abstract drop(name: DropSchemaChange): Promise<void>;

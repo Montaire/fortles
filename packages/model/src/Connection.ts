@@ -1,38 +1,48 @@
-import { AlterSchemaChange, CreateSchemaChange, Driver, Entity, Query, SchemaAdapter, SchemaChange } from "./index.js";
-import { DropSchemaChange } from "./schema/DropSchema.js";
+import { Driver, Entity, EntityAdapter, Query, SchemaAdapter, TransactionAdapter } from "./index.js";
 
-export class Connection<D extends Driver = Driver>{
+export class Connection<NativeConnection = any, D extends Driver<NativeConnection> = Driver<NativeConnection>>{
 
     protected driver: D;
+    protected schemaAdapter: SchemaAdapter<NativeConnection>;
+    protected transactionAdapter: TransactionAdapter<NativeConnection>;
+    protected entityAdapter: EntityAdapter;
+    protected nativeConnection: NativeConnection;
 
-    protected name: string;
-
-    constructor(name: string, driver: D){
-        this.name = name;
+    constructor(
+        driver: D,
+        nativeConnection: NativeConnection,
+        schemaAdapter: SchemaAdapter<NativeConnection>, 
+        transactionAdapter: TransactionAdapter<NativeConnection>, 
+        entityAdapter: EntityAdapter
+    ){
         this.driver = driver;
+        this.nativeConnection = nativeConnection;
+        this.schemaAdapter = schemaAdapter;
+        this.transactionAdapter = transactionAdapter;
+        this.entityAdapter = entityAdapter;
     }
 
-    public getName(){
-        return this.name;
-    }
-
-    public getSchema(): SchemaAdapter{
-        return this.driver.getSchemaAdapter();
+    public getSchema(): SchemaAdapter<NativeConnection>{
+        return this.schemaAdapter;
     }
 
     public query<E extends Entity>(entityType: new() => E): Query<E, D>{
-        return this.getDriver().getTransactionAdapter().createQuery(entityType);
+        return this.transactionAdapter.createQuery(entityType) as Query<E, D>;
     }
 
     public getDriver(): D{
         return this.driver;
     }
 
+    public getNativeConnection(): NativeConnection{
+        return this.nativeConnection;
+    }
+
     public beginTransaction(): void{
-        this.getDriver().getTransactionAdapter().beginTransaction();
+        this.transactionAdapter.beginTransaction();
     }
 
     public endTransaction(): void{
-        this.getDriver().getTransactionAdapter().endTransaction();
+        this.transactionAdapter.endTransaction();
     }
 }

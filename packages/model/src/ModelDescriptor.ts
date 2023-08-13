@@ -94,7 +94,7 @@ export class ModelDescriptor{
         let pervious = Object.fromEntries(fromModelDescriptor.entityDescriptors.map(x => [x.getName(), x])) as {[key: string]: EntityDescriptor};
         const changes =  new Map<string, SchemaChange[]>();
         for(const key in current){
-            const connectionName = current[key].getConnection().getName();
+            const connectionName = current[key].getConnection().getDriver().getName();
             if(!changes.has(connectionName)){
                 changes.set(connectionName, []);
             }
@@ -113,7 +113,7 @@ export class ModelDescriptor{
         }
         //Deleted
         for(const key in pervious){
-            const connectionName = pervious[key].getConnection().getName();
+            const connectionName = pervious[key].getConnection().getDriver().getName();
             const change = DropSchemaChange.createFromEntityDescriptor(current[key]);
             if(!changes.has(connectionName)){
                 changes.set(connectionName, []);

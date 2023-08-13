@@ -1,4 +1,4 @@
-import { Connection, Query, Type, EntityModelInfo, AssociationType, Model } from "../index.js";
+import { Connection, Query, Type, EntityModelInfo, AssociationType, Model, Driver } from "../index.js";
 
 export function connection(name: string){
     return function(target: typeof Entity, context: ClassDecoratorContext): void{
