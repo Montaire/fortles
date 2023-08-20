@@ -3,8 +3,10 @@ import { AlterSchema } from "../../src/adapter/Schema.js";
 import { CreateSchemaChange, Driver, Entity, EntityAdapter, SchemaChange, SchemaAdapter, Connection, TransactionAdapter } from "../../src/index.js";
 import { DropSchemaChange } from "../../src/schema/DropSchema.js";
 
+/**
+ * Stores the changes itself in the public created, dropped altered arrays.
+ */
 export class TestSchemaAdapter extends SchemaAdapter<TestDriver>{
-
     public created: CreateSchemaChange[] = [];
     public dropped: DropSchemaChange[] = [];
     public altered: AlterSchema[] = [];

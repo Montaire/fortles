@@ -47,7 +47,7 @@ export class ModelDescriptor{
      * @param source Source of the entities
      * @returns 
      */
-    protected buildDescriptors(entityTypes: typeof Entity[], source: string|null = null): void{
+    public buildDescriptors(entityTypes: typeof Entity[], source: string|null = null): void{
         for(const entityType of entityTypes){
             for(const descriptor of this.entityDescriptors){
                 if(descriptor.baseEntityType && new entityType instanceof descriptor.baseEntityType){

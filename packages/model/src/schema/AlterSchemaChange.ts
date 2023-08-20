@@ -20,6 +20,21 @@ export class AlterSchemaChange extends SchemaChange{
         return connection.getSchema().alter(this);
     }
 
+    
+    public getCreateFieldMap(): Map<string, Type<any, any>>{
+        return this.createFieldMap;
+    }
+    public getAlterFieldMap(): Map<string, Type<any, any>>{
+        return this.alterFieldMap;
+    }
+    public getDropFields(): string[]{
+        return this.dropFields;
+    }
+
+    public getNewName(): string|null{
+        return this.newName;
+    }
+
     public static createFromEntityDescriptor(from: EntityDescriptor, to: EntityDescriptor): AlterSchemaChange | null{
         const schemaChange = new this(from.getName(), to.getName());
         const fieldNames = new Set([...from.typeMap.keys(), ...to.typeMap.keys()]);

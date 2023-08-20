@@ -16,4 +16,8 @@ export class ModelContext{
         const connection = await driver.createConnection();
         this.connectionMap.set(driver.getName(), connection);
     }
+
+    public getAllConnections(): Iterable<Connection>{
+        return this.connectionMap.values();
+    }
 }

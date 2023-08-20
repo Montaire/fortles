@@ -12,4 +12,5 @@ export abstract class SchemaChange{
     }
 
     public abstract applyTo(connection: Connection): Promise<void>;
+    
 }

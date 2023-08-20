@@ -1,15 +1,23 @@
-import { Connection, Driver, EntityDescriptor, SchemaChange, Type, TypeProperty, primaryKey } from "../index.js";
+import { Connection, EntityDescriptor, SchemaChange, Type, TypeProperty } from "../index.js";
 
 export class CreateSchemaChange extends SchemaChange{
 
     protected createFieldMap = new Map<string, Type<any, any>>();
 
     public addField(name: string, type: Type<any, any>){
-        return new AddFieldSchemaOperation (this, type);
+        return new AddFieldSchemaOperation(this, type);
+    }
+
+    public getCreateFieldMap(){
+        return this.createFieldMap;
     }
 
     public override async applyTo(connection: Connection): Promise<void> {
         return connection.getSchema().create(this);
+    }
+
+    public override toString(){
+        
     }
     
     public static createFromEntityDescriptor(entityDescriptor: EntityDescriptor): CreateSchemaChange{
@@ -34,6 +42,13 @@ export class AddFieldSchemaOperation<S extends SchemaChange> {
         return this;
     }
 
+    /**
+     * Adds a new field to the table.
+     * It moves back from the operation the the schema change.
+     * @param name Name of the new field
+     * @param type Type of the new field
+     * @returns The operation of the new field.
+     */
     public addField(name: string, type: Type<any, any>){
         return this.schemaChange.addField(name, type);
     }

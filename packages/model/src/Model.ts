@@ -50,6 +50,10 @@ export class Model{
         }
     }
 
+    public getAllGlobalConnections(): Iterable<Connection>{
+        return this.globalContext.getAllConnections();
+    }
+
     public getDriver(name: string = "default"): Driver|undefined{
         return this.driverMap.get(name);
     }

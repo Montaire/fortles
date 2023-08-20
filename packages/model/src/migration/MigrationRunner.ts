@@ -1,5 +1,6 @@
-import { opendirSync, readdirSync, readFileSync, writeFileSync } from "fs";
-import { Connection, ModelChange, Model, ModelDescriptor, Migration, EntityDescriptor} from "../index.js";
+import { readdir } from "fs/promises";
+import { existsSync } from "fs";
+import { Connection, Model, ModelDescriptor, Migration, EntityDescriptor, CreateSchemaChange} from "../index.js";
 import DatabseVersion from "./model/DatabaseVersion.js";
 
 export class MigrationRunner{
@@ -7,91 +8,103 @@ export class MigrationRunner{
     protected model: Model;
     protected modelDescriptorSnapshot: ModelDescriptor|null = null;
     protected basePath: string = "./migartion";
+    protected databaseVersionMap = new Map<string, DatabseVersion>;
 
     constructor(model: Model){
         this.model = model;
+    }
+
+    async migrate(){
+        for(const connection of this.model.getAllGlobalConnections()){
+            this.migrateConnection(connection);
+        }
     }
 
     /**
      * Runs the migartions against all the databases in the connection list.
      * @param paths Array of paths
      */
-    async migrate(toLatest: boolean = false){
+    async migrateConnection(connection: Connection){
         //Get database version
-        const databaseVersion = DatabseVersion.query().first();
-        if(!databaseVersion){
-            //TODO Separate version to all connections.
-            //Create database version into the default connection
-            //const change = new ModelChange(new EntityDescriptor(), EntityDescriptor.create(DatabseVersion));
-            //this.model.getConnections().get("default")?.applyChange(change);
+        let databaseVersion = new DatabseVersion();
+        try{
+            databaseVersion = connection.query(DatabseVersion).first() ?? new DatabseVersion();
+        }catch(error){
+            //TODO check error
+            //If there is no database version for this connection, add to the database.
+            const entityDescriptor = EntityDescriptor.create(DatabseVersion, this.model.getModelDescriptor());
+            const createSchemaChange = CreateSchemaChange.createFromEntityDescriptor(entityDescriptor);
+            createSchemaChange.applyTo(connection);
         }
         //Upgrade database to the latest version
         //TODO: get folders from the model!
         for(const folder of this.model.getModelDescriptor().getSources()){
-            for(const file of readdirSync(folder)){
+            for(const file of await readdir(folder)){
                 if(databaseVersion && databaseVersion.version && file.startsWith(databaseVersion.version)){
                     //Skip to the current version
                     continue;
                 }
                 const migration = await import(file) as Migration;
                 //Run migration
-                migration.apply();
+                migration.applyTo(connection);
             }
         }
-        if(!toLatest){
-            return;
-        }
+    }
+
+    public async migrateConnectionToSnapshot(name: string = ".snapshot-latest"){
         //Detect changes from the last migration
-        let latestSnapshot = await this.loadSnapshot(".snapshot-latest");
+        const path = this.basePath + "/" + name;
+
+        let latestSnapshot = await this.loadSnapshot(path);
         if(!latestSnapshot){
             latestSnapshot = new ModelDescriptor();
         }
-        //const baseSnapshot = this.loadSnapshot(".snapshot-" + databaseVersion.version);
 
-        const changes = this.model.getModelDescriptor().getChanges(latestSnapshot);
+        const changesMap = this.model.getModelDescriptor().getChanges(latestSnapshot);
 
         //Apply changes
-        for(const change of changes){
-            
+        for(const [connectionName, changes] of changesMap.entries()){
+            const connection = Model.getConnection(connectionName);
+            for(const change of changes){
+                change.applyTo(connection);
+            }
         }
 
-        this.saveSnapshot(".snapshot-latest");
+        this.saveSnapshot(path);
     }
+
     /**
      * Saves snapshot from the current model descriptor.
      * @param path Save the snapshot to this location.
      */
-    public async saveSnapshot(name: string = ".snapshot", basePath: string = this.basePath): Promise<void>{
+    public async saveSnapshot(path: string): Promise<void>{
         this.modelDescriptorSnapshot = this.model.getModelDescriptor().clone();
-        ModelDescriptor.serialize(this.modelDescriptorSnapshot, basePath + "/" + name);
+        ModelDescriptor.serialize(this.modelDescriptorSnapshot, path);
     }
 
     /**
      * Loads a snapshot from a file
      * @param path 
      */
-    public async loadSnapshot(name: string = ".snapshot", basePath: string = this.basePath): Promise<ModelDescriptor>{
-        const rawData = readFileSync(basePath + "/" + name);
-        return ModelDescriptor.deserialize(rawData.toString());
+    public async loadSnapshot(path: string): Promise<ModelDescriptor>{
+        return ModelDescriptor.deserialize(path);
     }
 
-    /**
-     * Creates a new migration from the last snapshot
-     * @returns 
-     */
-    createMigrations(): Migration[]{
+    public async createBaseSnapshot(): Promise<void>{
+        ModelDescriptor.serialize(this.model.getModelDescriptor(), this.basePath + "/.snapshot-base");
+    }
+
+    public async createMigrationFromSnapshot(name: string): Promise<void>{
+        const baseSnapshot = await this.loadSnapshot(this.basePath + "/.snapshot-base");
         if(!this.modelDescriptorSnapshot){
-            return []
+            return;
         }
-        const changeMap = Model.getInstance().getModelDescriptor().getChanges(this.modelDescriptorSnapshot);
-        const migrations: Migration[] = [];
-        for(const [name, changes] of changeMap.entries()){
-            const migration = new Migration(
-                Model.getConnection(name),
-                changes
-            );
-            migrations.push(migration);
+        const changesMap = baseSnapshot.getChanges(this.modelDescriptorSnapshot);
+        for(const [connectionName, changes] of changesMap){
+            const migartion = new Migration(changes);
+            const version = this.databaseVersionMap.get(connectionName)?.version ?? 1;
+            migartion.save(this.basePath + "/" + connectionName + "/" + version + "_" + name);
+            //TODO: Save version to the database.
         }
-        return migrations;
     }
 }

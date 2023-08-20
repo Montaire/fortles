@@ -15,6 +15,10 @@ export type Validation<T> = (value: T) => string | null
  */
 export abstract class Type<T,C> implements Exportable{
 
+    /**
+     * Property map, the key is the type of the property,
+     * and the value as an arbitary objext that holds the information of the property.
+     */
     protected propertyMap = new Map<string, any>();
 
     protected validations: Validation<T>[] = [];
