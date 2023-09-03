@@ -1,4 +1,4 @@
-import { Connection, EntityDescriptor, SchemaChange, Type, TypeProperty } from "../index.js";
+import { Connection, DropSchemaChange, EntityDescriptor, SchemaChange, Type, TypeProperty } from "../index.js";
 
 export class CreateSchemaChange extends SchemaChange{
 
@@ -23,6 +23,7 @@ export class CreateSchemaChange extends SchemaChange{
     public static createFromEntityDescriptor(entityDescriptor: EntityDescriptor): CreateSchemaChange{
         const schemaChanage = new this(entityDescriptor.getName());
         schemaChanage.createFieldMap = entityDescriptor.typeMap;
+        schemaChanage.reversed = new DropSchemaChange(entityDescriptor.getName());
         return schemaChanage;
     }
 }

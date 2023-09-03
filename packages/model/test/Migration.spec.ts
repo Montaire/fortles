@@ -1,9 +1,9 @@
 import assert from "assert";
-import { CreateSchemaChange, Model, ModelChange, ModelDescriptor, SchemaChange } from "../src/index.js";
+import { CreateSchemaChange, Model, ModelDescriptor, SchemaChange } from "../src/index.js";
 import { TestUser } from "./model/index.js";
 import { TestGroup } from "./model/TestGroup.js";
 import { TestDriver, TestSchemaAdapter } from "./utility/TestDriver.js";
-import { CreateSchema } from "../src/schema/CreateSchema.js";
+import DatabseVersion from "../src/migration/model/DatabaseVersion.js";
 
 describe("Model", function(){
 
@@ -16,7 +16,7 @@ describe("Model", function(){
             await Model.getInstance().getModelDescriptor().addFolder("./packages/model/test/model");
         });
 
-        it("Model descriptor is correct", function(){
+        it("Has correct descriptors", function(){
             const entityDescriptors = Model.getInstance().getModelDescriptor().getEntityDescriptors();
             assert(entityDescriptors.find(x => x.baseEntityType == TestGroup), "TestGroup is missing.");
             assert(entityDescriptors.find(x => x.baseEntityType == TestUser), "TestUser is missing.");
@@ -30,18 +30,28 @@ describe("Model", function(){
             assert(changes[0] instanceof CreateSchemaChange, "We should have create change");
         });
 
+        it("Can save the migration", function(){
+            Model.getInstance().getMigrationRunner();
+        });
+
         it("Runs migration, creates new tables", function(){
             Model.getInstance().migrate();
-            const schemaAdapter = Model.getConnection().getSchema() as TestSchemaAdapter;
-            assert.notEqual(schemaAdapter.altered.length, 0, "There should be changes.");
             
-            const testGroupChange = schemaAdapter.altered[0];
-            assert.equal(testGroupChange, TestGroup, 
-                "TestGroup should be created first.");
+            const schemaAdapter = Model.getConnection().getSchema() as TestSchemaAdapter;
+            assert.notEqual(schemaAdapter.created.length, 0, 
+                "There should be changes.");
+            
+            const databaseVersionChange = schemaAdapter.created[1];
+            assert.equal(databaseVersionChange.getName(), DatabseVersion.name, 
+                "DatabaseVerison should be created first.");
+            
+            const testGroupChange = schemaAdapter.created[1];
+            assert.equal(testGroupChange.getName(), TestGroup.name, 
+                "TestGroup should be created second.");
 
-            const testUserChange = schemaAdapter.altered[1];
-            assert.equal(testUserChange, TestUser, 
-                "TestUser should be created secondly.");
+            const testUserChange = schemaAdapter.created[2];
+            assert.equal(testUserChange.getName(), TestUser.name, 
+                "TestUser should be created third.");
 
         });
     });

@@ -1,4 +1,4 @@
-import { Connection, Driver, EntityDescriptor, SchemaChange } from "../index.js";
+import { Connection, CreateSchemaChange, Driver, EntityDescriptor, SchemaChange } from "../index.js";
 
 export class DropSchemaChange extends SchemaChange{
     public override async applyTo(connection: Connection): Promise<void> {
@@ -6,6 +6,7 @@ export class DropSchemaChange extends SchemaChange{
     }
     static createFromEntityDescriptor(entityDescriptor: EntityDescriptor){
         const schemaChanage = new this(entityDescriptor.getName());
+        schemaChanage.reversed = CreateSchemaChange.createFromEntityDescriptor(entityDescriptor);
         return schemaChanage;
     }
 }

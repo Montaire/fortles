@@ -10,16 +10,21 @@ export class Model{
     protected modelDescriptor: ModelDescriptor;
     protected driverMap: Map<string, Driver>;
     protected globalContext: ModelContext;
+    protected migrartionRunner: MigrationRunner;
 
     constructor(modelDescriptor: ModelDescriptor = new ModelDescriptor(), driverMap = new  Map<string, Driver>()){
         this.modelDescriptor = modelDescriptor;
         this.driverMap = driverMap;
         this.globalContext = new ModelContext();
+        this.migrartionRunner = new MigrationRunner(this);
     }
 
     public migrate(): void{
-        const migrator = new MigrationRunner(this);
-        migrator.migrate();
+        this.migrartionRunner.migrate();
+    }
+
+    public getMigrationRunner(): MigrationRunner{
+        return this.migrartionRunner;
     }
 
     public getDriverMap(): Map<string, Driver>{

@@ -35,7 +35,7 @@ export class AlterSchemaChange extends SchemaChange{
         return this.newName;
     }
 
-    public static createFromEntityDescriptor(from: EntityDescriptor, to: EntityDescriptor): AlterSchemaChange | null{
+    public static createFromEntityDescriptor(from: EntityDescriptor, to: EntityDescriptor, reverse: boolean = true): AlterSchemaChange | null{
         const schemaChange = new this(from.getName(), to.getName());
         const fieldNames = new Set([...from.typeMap.keys(), ...to.typeMap.keys()]);
         let isChanged = from.getName() != to.getName();
@@ -48,7 +48,7 @@ export class AlterSchemaChange extends SchemaChange{
                     schemaChange.alterFieldMap.set(fieldName, to.typeMap.get(fieldName) as Type<any, any>);
                     isChanged = true;
                 }
-            //Create
+                //Create
             }else if(to.typeMap.has(fieldName)){
                 schemaChange.createFieldMap.set(fieldName, to.typeMap.get(fieldName) as Type<any, any>);
                 isChanged = true;
@@ -57,6 +57,9 @@ export class AlterSchemaChange extends SchemaChange{
                 schemaChange.dropFields.push(fieldName);
                 isChanged = true;
             }
+        }
+        if(isChanged && reverse){
+            schemaChange.reversed = this.createFromEntityDescriptor(to, from, false);
         }
         return isChanged ? schemaChange : null;
     }

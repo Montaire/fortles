@@ -1,6 +1,6 @@
 import { MySqlDriver } from "../src/index.js";
 
-describe("Orm.MySql.Connection", function(){
+describe("Database.MySql.Connection", function(){
     it("Can connect to the database", async function(){
         const driver = new MySqlDriver("default", {
             port: 3307,

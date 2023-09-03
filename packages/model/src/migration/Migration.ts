@@ -1,9 +1,8 @@
-import { Connection, SchemaChange, CreateSchemaChange, DropSchemaChange, CustomShemaChange, AlterSchemaChange, TypeProperty } from "../index.js";
+import { Connection, SchemaChange, CreateSchemaChange, DropSchemaChange, AlterSchemaChange, TypeProperty, CustomShemaChange } from "../index.js";
 import { WriteStream, createWriteStream } from "fs";
 
 export class Migration {
     private schemaChanges: SchemaChange[];
-    private isUp: boolean = true;  // set this according to your migration direction logic
 
     constructor(schemaChanges: SchemaChange[] = []) {
         this.schemaChanges = schemaChanges;
@@ -26,20 +25,23 @@ export class Migration {
         return change;
     }
 
-    public up(callback: (connection: Connection) => Promise<void>): void {
-        //Only add tho the change queue if the direction matches
-        if (this.isUp) {
-            const change = new CustomShemaChange(callback);
-            this.schemaChanges.push(change);
-        }
+    public custom(action: (connection: Connection) => Promise<void>): void{
+        const change = new CustomShemaChange(action);
     }
 
-    public down(callback: (connection: Connection) => Promise<void>): void {
-        //Only add tho the change queue if the direction matches
-        if (!this.isUp) {
-            const change = new CustomShemaChange(callback);
-            this.schemaChanges.push(change);
-        }
+    /**
+     * Override this function to building this database.
+     */
+    public up(): void {
+
+    }
+
+    /**
+     * This function will be called on rollback.
+     * @param connection Connection to run custom queries.
+     */
+    public down(): void {
+
     }
 
     /**
@@ -47,6 +49,8 @@ export class Migration {
      * Only run it manually if really necessary.
      */
     public async applyTo(connection: Connection): Promise<void> {
+        this.schemaChanges = [];
+        this.up();
         connection.beginTransaction();
         for (const change of this.schemaChanges) {
             //We are awaiting to ensure the correct order
@@ -56,36 +60,53 @@ export class Migration {
     }
 
     public async applyRollbackTo(connection: Connection): Promise<void>{
-        //TODO: The tricky part will be that we do not actually know in case of alter or drop, what was the original type.
-        //A: Build From the bottom to see the type. -> Create a migration compressor, which adds up all migration into one file.
-        //B: Rollback to the latest migration what was the type before.
-        //C: Create up and down methods, and on creation save the original type.
+        this.schemaChanges = [];
+        this.down();
         connection.beginTransaction();
         for(const change of this.schemaChanges){
-
+            await change.applyTo(connection);
         }
         connection.endTransaction();
     }
 
-    public async save(path: string): Promise<void> {
+    public async save(path: string, name: string): Promise<void> {
         const writeStream = createWriteStream(path);
-        writeStream.write("import { Migration } from\"@fortles/model\";\n\n");
-        writeStream.write("export default function(migration: Migration){\n");
-        for (const schemaChange of this.schemaChanges) {
-            this.saveSchemaChange(writeStream, schemaChange);
+        writeStream.write("import { Migration } from\"@fortles/model\";");
+        writeStream.write("\n\nexport default class ");
+        if(name){
+            writeStream.write(name + " ");
         }
-        writeStream.write("}");
+        writeStream.write("extends Migration{");
+
+            //Up
+            writeStream.write("\n\n\toverride up(){")
+            for (const schemaChange of this.schemaChanges) {
+                this.saveSchemaChange(writeStream, schemaChange);
+            }
+            writeStream.write("\n\t}");
+
+            //Down with reversed order
+            writeStream.write("\n\n\toverride down(){")
+            for (const schemaChange of this.schemaChanges.reverse()) {
+                const reversedSchemaChange = schemaChange.getReversed();
+                if(reversedSchemaChange){
+                    this.saveSchemaChange(writeStream, reversedSchemaChange);
+                }
+            }
+            writeStream.write("\n\t}");
+        
+        writeStream.write("\n}");
     }
 
     protected saveSchemaChange(writeStream: WriteStream, schemaChanage: SchemaChange){
         
         //Start definition
         if(schemaChanage instanceof AlterSchemaChange){
-            writeStream.write("\n\tmigration.create(\"" + schemaChanage.getName() + "\")");
+            writeStream.write("\n\t\tmigration.create(\"" + schemaChanage.getName() + "\")");
         }else if(schemaChanage instanceof CreateSchemaChange){
-            writeStream.write("\n\tmigration.alter(\"" + schemaChanage.getName() + "\")");
+            writeStream.write("\n\t\tmigration.alter(\"" + schemaChanage.getName() + "\")");
         }else if(schemaChanage instanceof DropSchemaChange){
-            writeStream.write("\n\tmigration.drop(\"" + schemaChanage.getName() + "\")");
+            writeStream.write("\n\t\tmigration.drop(\"" + schemaChanage.getName() + "\")");
             return;
         }
 
@@ -97,7 +118,7 @@ export class Migration {
             && schemaChanage.getCreateFieldMap().size > 0
         ) {
             for(const [fieldName, fieldType] of schemaChanage.getCreateFieldMap()){
-                writeStream.write("\t\tmigration.addField(\"" + fieldName + "\")");
+                writeStream.write("\n\t\t\t.addField(\"" + fieldName + "\")");
                 this.saveProperties(writeStream, fieldType.getPropertyMap());
             }
         }
@@ -105,7 +126,7 @@ export class Migration {
         if(schemaChanage instanceof AlterSchemaChange){
             if(schemaChanage.getAlterFieldMap().size > 0){
                 for(const [fieldName, fieldType] of schemaChanage.getCreateFieldMap()){
-                    writeStream.write("\t\tmigration.addField(\"" + fieldName);
+                    writeStream.write("\n\t\t\t\.addField(\"" + fieldName);
                     if(schemaChanage.getNewName()){
                         writeStream.write(", \"" + schemaChanage.getNewName() + "\"");
                     }
@@ -116,7 +137,7 @@ export class Migration {
 
             if(schemaChanage.getDropFields().length > 0){
                 for(const fieldName of schemaChanage.getDropFields()){
-                    writeStream.write("\t\tmigration.dropField(\"" + fieldName + "\")");
+                    writeStream.write("\n\t\t\t.dropField(\"" + fieldName + "\")");
                 }
             }
         }

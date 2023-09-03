@@ -1,5 +1,4 @@
-import { readdir } from "fs/promises";
-import { existsSync } from "fs";
+import { readdir, copyFile } from "fs/promises";
 import { Connection, Model, ModelDescriptor, Migration, EntityDescriptor, CreateSchemaChange} from "../index.js";
 import DatabseVersion from "./model/DatabaseVersion.js";
 
@@ -51,16 +50,16 @@ export class MigrationRunner{
         }
     }
 
-    public async migrateConnectionToSnapshot(name: string = ".snapshot-latest"){
+    public async migrateConnectionFromSnapshot(name: string = "latest.snapshot"){
         //Detect changes from the last migration
         const path = this.basePath + "/" + name;
 
-        let latestSnapshot = await this.loadSnapshot(path);
-        if(!latestSnapshot){
-            latestSnapshot = new ModelDescriptor();
+        let snapshot = await this.loadSnapshot(path);
+        if(!snapshot){
+            snapshot = new ModelDescriptor();
         }
 
-        const changesMap = this.model.getModelDescriptor().getChanges(latestSnapshot);
+        const changesMap = this.model.getModelDescriptor().getChanges(snapshot);
 
         //Apply changes
         for(const [connectionName, changes] of changesMap.entries()){
@@ -69,8 +68,6 @@ export class MigrationRunner{
                 change.applyTo(connection);
             }
         }
-
-        this.saveSnapshot(path);
     }
 
     /**
@@ -91,11 +88,11 @@ export class MigrationRunner{
     }
 
     public async createBaseSnapshot(): Promise<void>{
-        ModelDescriptor.serialize(this.model.getModelDescriptor(), this.basePath + "/.snapshot-base");
+        ModelDescriptor.serialize(this.model.getModelDescriptor(), this.basePath + "/baseline.snapshot");
     }
 
-    public async createMigrationFromSnapshot(name: string): Promise<void>{
-        const baseSnapshot = await this.loadSnapshot(this.basePath + "/.snapshot-base");
+    public async saveMigrationFromSnapshot(name: string): Promise<void>{
+        const baseSnapshot = await this.loadSnapshot(this.basePath + "/.baseline.snapshot");
         if(!this.modelDescriptorSnapshot){
             return;
         }
@@ -103,8 +100,17 @@ export class MigrationRunner{
         for(const [connectionName, changes] of changesMap){
             const migartion = new Migration(changes);
             const version = this.databaseVersionMap.get(connectionName)?.version ?? 1;
-            migartion.save(this.basePath + "/" + connectionName + "/" + version + "_" + name);
+            migartion.save(this.basePath + "/" + connectionName + "/" + version + "_" + name, name);
             //TODO: Save version to the database.
         }
+    }
+
+    /**
+     * Updates the snapshot and the connection as well.
+     * @param name Name of the snapshot.
+     */
+    public async updateSnapshotAndMigrateConnection(name: string = "latest.snapshot"){
+        await this.migrateConnectionFromSnapshot(name);
+        await this.saveSnapshot(name);
     }
 }
